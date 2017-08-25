@@ -1,7 +1,7 @@
 {
     "files": [
         "src/main.ts",
-        "src/greet.ts"
+        "src/jsonTraverse.ts"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
