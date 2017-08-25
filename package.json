@@ -1,0 +1,29 @@
+{
+  "name": "type2docfx",
+  "version": "0.9.0",
+  "description": "A tool to convert json format output from TypeDoc to universal reference model for DocFx to consume.",
+  "main": "./dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuhanyumsft/type2docfx.git"
+  },
+  "keywords": [
+    "typescript",
+    "docfx",
+    "documentation"
+  ],
+  "author": "Simon Wu (siw)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/wuhanyumsft/type2docfx/issues"
+  },
+  "homepage": "https://github.com/wuhanyumsft/type2docfx#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.2",
+    "typescript": "^2.4.2"
+  }
+}
