@@ -1,19 +1,27 @@
-export function traverse(node: Node, parentNodeUid: string) {
+import { YamlModel } from './interfaces/YamlModel';
+
+export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>) {
     if (node.flags.isPrivate) {
         return;
     }
 
-    let uid = parentNodeUid;
+    let uid = parentUid;
 
     if (node.kind === 0) {
         uid = node.name;
     }
+    let myself: YamlModel = null;
     if (node.kindString === 'Class' && node.name) {
         if (!node.comment) {
             return;
         }
         uid += '.' + node.name;
         console.log(uid);
+        myself = {
+            uid: uid,
+            name: node.name,
+            children: []
+        };
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
         if (!node.signatures || !node.signatures[0].comment) {
@@ -21,11 +29,24 @@ export function traverse(node: Node, parentNodeUid: string) {
         }
         uid += '#' + node.name;
         console.log(uid);
+        myself = {
+            uid: uid,
+            name: node.name,
+            children: []
+        };
+    }
+
+    if (myself) {
+        parentContainer.push(myself);
     }
 
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
-            traverse(subNode, uid);
+            if (myself) {
+                traverse(subNode, uid, myself.children);
+            } else {
+                traverse(subNode, uid, parentContainer);
+            }
         });
     }
 }

@@ -60,3 +60,5 @@ typings/
 # vscode folder
 .vscode
 
+test/out
+

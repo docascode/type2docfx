@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@types/fs-extra": "^4.0.0",
+    "@types/js-yaml": "^3.9.1",
     "fs": "0.0.1-security",
     "fs-extra": "^4.0.1",
     "js-yaml": "^3.9.1"

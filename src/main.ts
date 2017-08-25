@@ -1,10 +1,14 @@
 import { traverse } from './jsonTraverse';
 import * as fs from 'fs-extra';
+import * as serializer from 'js-yaml';
+import { YamlModel } from './interfaces/YamlModel';
 
-if (process.argv.length < 3) {
-    console.log('Usage: node dist/main {apidoc_path}');
+if (process.argv.length < 4) {
+    console.log('Usage: node dist/main {apidoc_json_path} {output_path}');
 }
 let path = process.argv[2];
+let outputPath = process.argv[3];
+
 let json = null;
 if (fs.existsSync(path)) {
     let dataStr = fs.readFileSync(path).toString();
@@ -14,6 +18,13 @@ if (fs.existsSync(path)) {
     process.exit(1);
 }
 
+let classes: Array<YamlModel> = [];
 if (json) {
-    traverse(json, '');
+    traverse(json, '', classes);
+}
+
+if (classes) {
+    classes.forEach(classModel => {
+        fs.writeFileSync(`${outputPath}/${classModel.name}.yml`, serializer.safeDump(classModel));
+    });
 }
