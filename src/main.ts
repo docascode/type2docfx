@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { traverse } from './jsonTraverse';
 import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
