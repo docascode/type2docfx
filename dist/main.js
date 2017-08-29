@@ -5,6 +5,7 @@ var fs = require("fs-extra");
 var serializer = require("js-yaml");
 var jsonTraverse_1 = require("./jsonTraverse");
 var postTransformer_1 = require("./postTransformer");
+var tocGenerator_1 = require("./tocGenerator");
 if (process.argv.length < 4) {
     console.log('Usage: node dist/main {apidoc_json_path} {output_path}');
 }
@@ -24,6 +25,8 @@ if (json) {
     jsonTraverse_1.traverse(json, '', classes);
 }
 if (classes) {
+    var toc = tocGenerator_1.tocGenerator(classes);
+    fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
     classes.forEach(function (classModel) {
         var transfomredClass = postTransformer_1.postTransform(classModel);
         fs.writeFileSync(outputPath + "/" + classModel.name + ".yml", serializer.safeDump(transfomredClass));

@@ -3,7 +3,7 @@
         "src/main.ts",
         "src/jsonTraverse.ts",
         "src/postTransformer.ts",
-        "src/interface/YamlModel.ts",
+        "src/tocGenerator.ts",
         "src/common/constants.ts"
     ],
     "compilerOptions": {
