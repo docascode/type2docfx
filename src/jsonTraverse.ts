@@ -20,7 +20,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         myself = {
             uid: uid,
             name: node.name,
-            children: []
+            children: [],
+            type: 'Class',
+            summary: findDescriptionInTags(node.comment.tags)
         };
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
@@ -34,6 +36,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             name: node.name,
             children: []
         };
+        if (node.kindString === 'Method') {
+            myself.type = 'Function';
+        }
     }
 
     if (myself) {
@@ -49,6 +54,23 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             }
         });
     }
+}
+
+function findDescriptionInTags(tags: Array<Tag>): string {
+    if (tags) {
+        let text: string = null;
+        tags.forEach(tag => {
+            if (tag.tag === 'classdesc') {
+                text =  tag.text;
+                return;
+            }
+        });
+        if (text) {
+            return text;
+        }
+    }
+
+    return '';
 }
 
 interface Node {
