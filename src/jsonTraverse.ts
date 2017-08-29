@@ -21,6 +21,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             uid: uid,
             name: node.name,
             children: [],
+            langs: ['js'],
             type: 'Class',
             summary: findDescriptionInTags(node.comment.tags)
         };
@@ -34,7 +35,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         myself = {
             uid: uid,
             name: node.name,
-            children: []
+            children: [],
+            langs: ['js'],
+            summary: findDescriptionInTags(node.signatures[0].comment.tags)
         };
         if (node.kindString === 'Method') {
             myself.type = 'Function';
@@ -60,7 +63,7 @@ function findDescriptionInTags(tags: Array<Tag>): string {
     if (tags) {
         let text: string = null;
         tags.forEach(tag => {
-            if (tag.tag === 'classdesc') {
+            if (tag.tag === 'classdesc' || tag.tag === 'description') {
                 text =  tag.text;
                 return;
             }
