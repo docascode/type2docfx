@@ -1,6 +1,6 @@
 import { YamlModel } from './interfaces/YamlModel';
 
-export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>) {
+export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>): void {
     if (node.flags.isPrivate) {
         return;
     }
@@ -43,7 +43,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children);
+                traverse(subNode, uid, myself.children as Array<YamlModel>);
             } else {
                 traverse(subNode, uid, parentContainer);
             }

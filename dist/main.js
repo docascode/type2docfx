@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonTraverse_1 = require("./jsonTraverse");
 var fs = require("fs-extra");
 var serializer = require("js-yaml");
+var jsonTraverse_1 = require("./jsonTraverse");
+var postTransformer_1 = require("./postTransformer");
 if (process.argv.length < 4) {
     console.log('Usage: node dist/main {apidoc_json_path} {output_path}');
 }
@@ -24,6 +25,7 @@ if (json) {
 }
 if (classes) {
     classes.forEach(function (classModel) {
-        fs.writeFileSync(outputPath + "/" + classModel.name + ".yml", serializer.safeDump(classModel));
+        var transfomredClass = postTransformer_1.postTransform(classModel);
+        fs.writeFileSync(outputPath + "/" + classModel.name + ".yml", serializer.safeDump(transfomredClass));
     });
 }

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import { traverse } from './jsonTraverse';
 import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
+import { traverse } from './jsonTraverse';
+import { postTransform } from './postTransformer';
 import { YamlModel } from './interfaces/YamlModel';
 
 if (process.argv.length < 4) {
@@ -27,6 +28,7 @@ if (json) {
 
 if (classes) {
     classes.forEach(classModel => {
-        fs.writeFileSync(`${outputPath}/${classModel.name}.yml`, serializer.safeDump(classModel));
+        let transfomredClass = postTransform(classModel);
+        fs.writeFileSync(`${outputPath}/${classModel.name}.yml`, serializer.safeDump(transfomredClass));
     });
 }

@@ -1,7 +1,10 @@
 {
     "files": [
         "src/main.ts",
-        "src/jsonTraverse.ts"
+        "src/jsonTraverse.ts",
+        "src/postTransformer.ts",
+        "src/interface/YamlModel.ts",
+        "src/common/constants.ts"
     ],
     "compilerOptions": {
         "noImplicitAny": true,

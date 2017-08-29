@@ -1,5 +1,5 @@
 export interface YamlModel {
     uid: string;
     name: string;
-    children: Array<YamlModel>;
+    children: Array<YamlModel> | Array<string>;
 }
