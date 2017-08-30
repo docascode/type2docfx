@@ -41,6 +41,7 @@ function traverse(node, parentUid, parentContainer) {
                 content: ''
             }
         };
+        myself.syntax.content = generateCallFunction(myself.name, myself.syntax.parameters);
         if (node.kindString === 'Method') {
             myself.type = 'Function';
         }
@@ -78,7 +79,10 @@ function findDescriptionInTags(tags) {
 function fillParameters(parameters) {
     return parameters.map(function (parameter) { return ({
         id: parameter.name,
-        type: [parameter.type.name ? parameter.type.name : 'Object'],
+        type: [parameter.type.name ? parameter.type.name : 'function'],
         description: parameter.comment ? parameter.comment.text : ''
     }); });
+}
+function generateCallFunction(functionName, parameters) {
+    return "function " + functionName + "(" + parameters.map(function (p) { return p.id; }).join(', ') + ")";
 }

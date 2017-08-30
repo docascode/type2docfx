@@ -43,6 +43,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
                 content: ''
             }
         };
+        myself.syntax.content = generateCallFunction(myself.name, myself.syntax.parameters);
         if (node.kindString === 'Method') {
             myself.type = 'Function';
         }
@@ -83,9 +84,13 @@ function findDescriptionInTags(tags: Array<Tag>): string {
 function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
     return parameters.map<YamlParameter>(parameter => <YamlParameter> {
         id: parameter.name,
-        type: [parameter.type.name ? parameter.type.name : 'Object'],
+        type: [parameter.type.name ? parameter.type.name : 'function'],
         description: parameter.comment ? parameter.comment.text : ''
     });
+}
+
+function generateCallFunction(functionName: string, parameters: Array<YamlParameter>): string {
+    return `function ${functionName}(${parameters.map(p => p.id).join(', ')})`;
 }
 
 interface Node {
