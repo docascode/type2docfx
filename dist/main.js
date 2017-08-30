@@ -32,6 +32,8 @@ if (classes) {
     console.log('Yaml dump start.');
     classes.forEach(function (classModel) {
         var transfomredClass = postTransformer_1.postTransform(classModel);
+        // silly workaround to avoid issue in js-yaml dumper
+        transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         console.log("Dump " + outputPath + "/" + classModel.name + ".yml");
         fs.writeFileSync(outputPath + "/" + classModel.name + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
     });

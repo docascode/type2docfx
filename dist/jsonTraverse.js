@@ -35,13 +35,11 @@ function traverse(node, parentUid, parentContainer) {
             name: node.name,
             children: [],
             langs: ['js'],
-            summary: findDescriptionInTags(node.signatures[0].comment.tags)
-            /*
+            summary: findDescriptionInTags(node.signatures[0].comment.tags),
             syntax: {
                 parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
-            */
         };
         if (node.kindString === 'Method') {
             myself.type = 'Function';
