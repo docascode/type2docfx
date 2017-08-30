@@ -45,10 +45,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             }
         };
         if (node.kindString === 'Method') {
-            myself.syntax.content = generateCallFunction(`function ${myself.name}`, myself.syntax.parameters);
+            myself.fullName = generateCallFunction(myself.name, myself.syntax.parameters);
+            myself.syntax.content = `function ${myself.fullName}`;
             myself.type = 'Function';
         } else {
-            myself.syntax.content = generateCallFunction(`new ${myself.uid.split('.').reverse()[1]}`, myself.syntax.parameters);
+            myself.fullName = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
+            myself.syntax.content = `new ${myself.fullName}`;
             myself.type = 'Constructor';
         }
     }
