@@ -17,11 +17,11 @@ function postTransform(classModel) {
 }
 exports.postTransform = postTransform;
 function sortYamlModel(a, b) {
-    // sort classes alphabetically, but GLOBAL at last
-    if (a.uid === constants_1.globalUid) {
+    // sort classes alphabetically, but GLOBAL at last, contructor first
+    if (a.uid === constants_1.globalUid || b.name === constants_1.constructorName) {
         return 1;
     }
-    if (b.uid === constants_1.globalUid) {
+    if (b.uid === constants_1.globalUid || a.name === constants_1.constructorName) {
         return -1;
     }
     var nameA = a.name.toUpperCase();

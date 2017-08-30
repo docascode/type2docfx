@@ -12,10 +12,13 @@ export function tocGenerator(classes: Array<YamlModel>): Array<TocItem> {
             if (classModel.children) {
                 let items: Array<TocItem> = [];
                 (classModel.children as Array<YamlModel>).forEach(method => {
-                    items.push({
-                        uid: method.uid,
-                        name: method.name
-                    });
+                    if (method.name !== 'constructor') {
+                        items.push({
+                            uid: method.uid,
+                            name: method.name
+                        });
+                    }
+
                 });
                 firstLevelToc.items = items;
             }

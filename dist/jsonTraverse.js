@@ -18,6 +18,7 @@ function traverse(node, parentUid, parentContainer) {
         myself = {
             uid: uid,
             name: node.name,
+            fullName: node.name,
             children: [],
             langs: ['js'],
             type: 'Class',
@@ -25,25 +26,29 @@ function traverse(node, parentUid, parentContainer) {
         };
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
-        if (!node.signatures || !node.signatures[0].comment) {
+        if (!node.signatures || !node.signatures[0].comment && node.kindString === 'Method') {
             return;
         }
-        uid += '#' + node.name;
+        uid += '.' + node.name;
         console.log(uid);
         myself = {
             uid: uid,
             name: node.name,
             children: [],
             langs: ['js'],
-            summary: findDescriptionInTags(node.signatures[0].comment.tags),
+            summary: node.signatures[0].comment ? findDescriptionInTags(node.signatures[0].comment.tags) : '',
             syntax: {
                 parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
         };
-        myself.syntax.content = generateCallFunction(myself.name, myself.syntax.parameters);
         if (node.kindString === 'Method') {
+            myself.syntax.content = generateCallFunction("function " + myself.name, myself.syntax.parameters);
             myself.type = 'Function';
+        }
+        else {
+            myself.syntax.content = generateCallFunction("new " + myself.uid.split('.').reverse()[1], myself.syntax.parameters);
+            myself.type = 'Constructor';
         }
     }
     if (myself) {
@@ -77,12 +82,18 @@ function findDescriptionInTags(tags) {
     return '';
 }
 function fillParameters(parameters) {
-    return parameters.map(function (parameter) { return ({
-        id: parameter.name,
-        type: [parameter.type.name ? parameter.type.name : 'function'],
-        description: parameter.comment ? parameter.comment.text : ''
-    }); });
+    if (parameters) {
+        return parameters.map(function (parameter) { return ({
+            id: parameter.name,
+            type: [parameter.type.name ? parameter.type.name : 'function'],
+            description: parameter.comment ? parameter.comment.text : ''
+        }); });
+    }
+    return [];
 }
-function generateCallFunction(functionName, parameters) {
-    return "function " + functionName + "(" + parameters.map(function (p) { return p.id; }).join(', ') + ")";
+function generateCallFunction(prefix, parameters) {
+    if (parameters) {
+        return prefix + "(" + parameters.map(function (p) { return p.id; }).join(', ') + ")";
+    }
+    return '';
 }

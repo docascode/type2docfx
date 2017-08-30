@@ -20,6 +20,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         myself = {
             uid: uid,
             name: node.name,
+            fullName: node.name,
             children: [],
             langs: ['js'],
             type: 'Class',
@@ -27,25 +28,28 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         };
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
-        if (!node.signatures || !node.signatures[0].comment) {
+        if (!node.signatures || !node.signatures[0].comment && node.kindString === 'Method') {
             return;
         }
-        uid += '#' + node.name;
+        uid += '.' + node.name;
         console.log(uid);
         myself = {
             uid: uid,
             name: node.name,
             children: [],
             langs: ['js'],
-            summary: findDescriptionInTags(node.signatures[0].comment.tags),
+            summary: node.signatures[0].comment ? findDescriptionInTags(node.signatures[0].comment.tags) : '',
             syntax: {
                 parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
         };
-        myself.syntax.content = generateCallFunction(myself.name, myself.syntax.parameters);
         if (node.kindString === 'Method') {
+            myself.syntax.content = generateCallFunction(`function ${myself.name}`, myself.syntax.parameters);
             myself.type = 'Function';
+        } else {
+            myself.syntax.content = generateCallFunction(`new ${myself.uid.split('.').reverse()[1]}`, myself.syntax.parameters);
+            myself.type = 'Constructor';
         }
     }
 
@@ -82,15 +86,21 @@ function findDescriptionInTags(tags: Array<Tag>): string {
 }
 
 function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
-    return parameters.map<YamlParameter>(parameter => <YamlParameter> {
-        id: parameter.name,
-        type: [parameter.type.name ? parameter.type.name : 'function'],
-        description: parameter.comment ? parameter.comment.text : ''
-    });
+    if (parameters) {
+        return parameters.map<YamlParameter>(parameter => <YamlParameter> {
+            id: parameter.name,
+            type: [parameter.type.name ? parameter.type.name : 'function'],
+            description: parameter.comment ? parameter.comment.text : ''
+        });
+    }
+    return [];
 }
 
-function generateCallFunction(functionName: string, parameters: Array<YamlParameter>): string {
-    return `function ${functionName}(${parameters.map(p => p.id).join(', ')})`;
+function generateCallFunction(prefix: string, parameters: Array<YamlParameter>): string {
+    if (parameters) {
+        return `${prefix}(${parameters.map(p => p.id).join(', ')})`;
+    }
+    return '';
 }
 
 interface Node {

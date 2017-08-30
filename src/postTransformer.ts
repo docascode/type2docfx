@@ -1,5 +1,5 @@
 import { YamlModel, Root } from './interfaces/YamlModel';
-import { globalUid } from './common/constants';
+import { globalUid, constructorName } from './common/constants';
 
 export function postTransform(classModel: YamlModel): Root {
     let result: Array<YamlModel> = [classModel];
@@ -18,11 +18,11 @@ export function postTransform(classModel: YamlModel): Root {
 }
 
 function sortYamlModel(a: YamlModel, b: YamlModel): number {
-      // sort classes alphabetically, but GLOBAL at last
-      if (a.uid === globalUid) {
+      // sort classes alphabetically, but GLOBAL at last, contructor first
+      if (a.uid === globalUid || b.name === constructorName) {
         return 1;
       }
-      if (b.uid === globalUid) {
+      if (b.uid === globalUid || a.name === constructorName) {
         return -1;
       }
 

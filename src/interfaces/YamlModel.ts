@@ -6,6 +6,7 @@ export interface YamlModel {
     type?: string;
     summary?: string;
     syntax?: Syntax;
+    fullName?: string;
 }
 
 export interface Syntax {

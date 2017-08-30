@@ -11,10 +11,12 @@ function tocGenerator(classes) {
             if (classModel.children) {
                 var items_1 = [];
                 classModel.children.forEach(function (method) {
-                    items_1.push({
-                        uid: method.uid,
-                        name: method.name
-                    });
+                    if (method.name !== 'constructor') {
+                        items_1.push({
+                            uid: method.uid,
+                            name: method.name
+                        });
+                    }
                 });
                 firstLevelToc.items = items_1;
             }
