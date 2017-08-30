@@ -83,8 +83,8 @@ function findDescriptionInTags(tags: Array<Tag>): string {
 function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
     return parameters.map<YamlParameter>(parameter => <YamlParameter> {
         id: parameter.name,
-        type: [parameter.type.name],
-        description: ''
+        type: [parameter.type.name ? parameter.type.name : 'Object'],
+        description: parameter.comment ? parameter.comment.text : ''
     });
 }
 
@@ -104,7 +104,8 @@ interface Flags {
 }
 
 interface Comment {
-    tags: Array<Tag>;
+    text?: string;
+    tags?: Array<Tag>;
 }
 
 interface Tag {
@@ -121,6 +122,7 @@ interface Signature {
 interface Parameter {
     name: string;
     type: ParameterType;
+    comment: Comment;
 }
 
 interface ParameterType {

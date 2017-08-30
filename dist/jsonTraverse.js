@@ -78,7 +78,7 @@ function findDescriptionInTags(tags) {
 function fillParameters(parameters) {
     return parameters.map(function (parameter) { return ({
         id: parameter.name,
-        type: [parameter.type.name],
-        description: ''
+        type: [parameter.type.name ? parameter.type.name : 'Object'],
+        description: parameter.comment ? parameter.comment.text : ''
     }); });
 }
