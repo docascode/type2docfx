@@ -59,6 +59,6 @@ typings/
 
 # vscode folder
 .vscode
-
+test/data
 test/out
 

@@ -36,6 +36,12 @@ function traverse(node, parentUid, parentContainer) {
             children: [],
             langs: ['js'],
             summary: findDescriptionInTags(node.signatures[0].comment.tags)
+            /*
+            syntax: {
+                parameters: fillParameters(node.signatures[0].parameters),
+                content: ''
+            }
+            */
         };
         if (node.kindString === 'Method') {
             myself.type = 'Function';
@@ -70,4 +76,11 @@ function findDescriptionInTags(tags) {
         }
     }
     return '';
+}
+function fillParameters(parameters) {
+    return parameters.map(function (parameter) { return ({
+        id: parameter.name,
+        type: [parameter.type.name],
+        description: ''
+    }); });
 }

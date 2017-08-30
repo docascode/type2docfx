@@ -11,7 +11,9 @@ function postTransform(classModel) {
         });
         classModel.children = childrenUid_1;
     }
-    return result;
+    return {
+        items: result
+    };
 }
 exports.postTransform = postTransform;
 function sortYamlModel(a, b) {

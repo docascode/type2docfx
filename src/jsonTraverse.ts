@@ -1,4 +1,4 @@
-import { YamlModel } from './interfaces/YamlModel';
+import { YamlModel, YamlParameter } from './interfaces/YamlModel';
 
 export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>): void {
     if (node.flags.isPrivate) {
@@ -38,6 +38,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             children: [],
             langs: ['js'],
             summary: findDescriptionInTags(node.signatures[0].comment.tags)
+            /*
+            syntax: {
+                parameters: fillParameters(node.signatures[0].parameters),
+                content: ''
+            }
+            */
         };
         if (node.kindString === 'Method') {
             myself.type = 'Function';
@@ -76,6 +82,14 @@ function findDescriptionInTags(tags: Array<Tag>): string {
     return '';
 }
 
+function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
+    return parameters.map<YamlParameter>(parameter => <YamlParameter> {
+        id: parameter.name,
+        type: [parameter.type.name],
+        description: ''
+    });
+}
+
 interface Node {
     name: string;
     kind: number;
@@ -103,4 +117,15 @@ interface Tag {
 
 interface Signature {
     comment: Comment;
+    parameters: Array<Parameter>;
+}
+
+interface Parameter {
+    name: string;
+    type: ParameterType;
+}
+
+interface ParameterType {
+    type: string;
+    name: string;
 }

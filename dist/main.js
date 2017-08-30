@@ -6,6 +6,7 @@ var serializer = require("js-yaml");
 var jsonTraverse_1 = require("./jsonTraverse");
 var postTransformer_1 = require("./postTransformer");
 var tocGenerator_1 = require("./tocGenerator");
+var constants_1 = require("./common/constants");
 if (process.argv.length < 4) {
     console.log('Usage: node dist/main {apidoc_json_path} {output_path}');
 }
@@ -27,8 +28,12 @@ if (json) {
 if (classes) {
     var toc = tocGenerator_1.tocGenerator(classes);
     fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
+    console.log('toc genrated.');
+    console.log('Yaml dump start.');
     classes.forEach(function (classModel) {
         var transfomredClass = postTransformer_1.postTransform(classModel);
-        fs.writeFileSync(outputPath + "/" + classModel.name + ".yml", serializer.safeDump(transfomredClass));
+        console.log("Dump " + outputPath + "/" + classModel.name + ".yml");
+        fs.writeFileSync(outputPath + "/" + classModel.name + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
     });
+    console.log('Yaml dump end.');
 }

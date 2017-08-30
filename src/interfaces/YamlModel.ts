@@ -5,4 +5,20 @@ export interface YamlModel {
     langs: Array<string>;
     type?: string;
     summary?: string;
+    syntax?: Syntax;
+}
+
+export interface Syntax {
+    parameters: Array<YamlParameter>;
+    content: string;
+}
+
+export interface YamlParameter {
+    id: string;
+    type: Array<string>;
+    description: string;
+}
+
+export interface Root {
+    items: Array<YamlModel>;
 }

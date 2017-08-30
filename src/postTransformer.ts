@@ -1,7 +1,7 @@
-import { YamlModel } from './interfaces/YamlModel';
+import { YamlModel, Root } from './interfaces/YamlModel';
 import { globalUid } from './common/constants';
 
-export function postTransform(classModel: YamlModel): Array<YamlModel> {
+export function postTransform(classModel: YamlModel): Root {
     let result: Array<YamlModel> = [classModel];
     if (classModel.children) {
         let childrenUid: Array<string> = [];
@@ -12,7 +12,9 @@ export function postTransform(classModel: YamlModel): Array<YamlModel> {
 
         classModel.children = childrenUid;
     }
-    return result;
+    return {
+        items: result
+    };
 }
 
 function sortYamlModel(a: YamlModel, b: YamlModel): number {
