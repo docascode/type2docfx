@@ -110,14 +110,15 @@ function fillParameters(parameters) {
         return parameters.map(function (parameter) { return ({
             id: parameter.name,
             type: [parameter.type.name ? parameter.type.name : 'function'],
-            description: parameter.comment ? parameter.comment.text : ''
+            description: parameter.comment ? parameter.comment.text : '',
+            optional: parameter.flags && parameter.flags.isOptional
         }); });
     }
     return [];
 }
 function generateCallFunction(prefix, parameters) {
     if (parameters) {
-        return prefix + "(" + parameters.map(function (p) { return p.id; }).join(', ') + ")";
+        return prefix + "(" + parameters.map(function (p) { return "" + p.id + (p.optional ? '?' : '') + ": " + p.type; }).join(', ') + ")";
     }
     return '';
 }

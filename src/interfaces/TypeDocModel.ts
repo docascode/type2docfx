@@ -34,9 +34,14 @@ export interface Parameter {
     name: string;
     type: ParameterType;
     comment: Comment;
+    flags: ParameterFlag;
 }
 
 interface ParameterType {
     type: string;
     name: string;
+}
+
+interface ParameterFlag {
+    isOptional: boolean;
 }

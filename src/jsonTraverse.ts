@@ -119,7 +119,8 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
         return parameters.map<YamlParameter>(parameter => <YamlParameter> {
             id: parameter.name,
             type: [parameter.type.name ? parameter.type.name : 'function'],
-            description: parameter.comment ? parameter.comment.text : ''
+            description: parameter.comment ? parameter.comment.text : '',
+            optional: parameter.flags && parameter.flags.isOptional
         });
     }
     return [];
@@ -127,7 +128,7 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
 
 function generateCallFunction(prefix: string, parameters: Array<YamlParameter>): string {
     if (parameters) {
-        return `${prefix}(${parameters.map(p => p.id).join(', ')})`;
+        return `${prefix}(${parameters.map(p => `${p.id}${p.optional ? '?' : ''}: ${p.type}`).join(', ')})`;
     }
     return '';
 }

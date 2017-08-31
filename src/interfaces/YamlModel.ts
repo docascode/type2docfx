@@ -20,6 +20,7 @@ export interface YamlParameter {
     id: string;
     type: Array<string>;
     description: string;
+    optional?: boolean;
 }
 
 export interface Root {
