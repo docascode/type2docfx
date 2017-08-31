@@ -14,7 +14,7 @@ function tocGenerator(classes) {
                     if (method.name !== 'constructor') {
                         items_1.push({
                             uid: method.uid,
-                            name: method.name
+                            name: method.name.split('(')[0]
                         });
                     }
                 });

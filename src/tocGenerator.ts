@@ -15,7 +15,7 @@ export function tocGenerator(classes: Array<YamlModel>): Array<TocItem> {
                     if (method.name !== 'constructor') {
                         items.push({
                             uid: method.uid,
-                            name: method.name
+                            name: method.name.split('(')[0]
                         });
                     }
 
