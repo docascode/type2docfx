@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 function traverse(node, parentUid, parentContainer) {
     if (node.flags.isPrivate) {
         return;
@@ -54,6 +55,7 @@ function traverse(node, parentUid, parentContainer) {
         }
     }
     if (myself) {
+        myself.summary = linkConvertHelper_1.convertLinkToGfm(myself.summary);
         parentContainer.push(myself);
     }
     if (node.children && node.children.length > 0) {

@@ -4,10 +4,12 @@
         "src/jsonTraverse.ts",
         "src/postTransformer.ts",
         "src/tocGenerator.ts",
-        "src/common/constants.ts"
+        "src/common/constants.ts",
+        "src/helpers/linkConvertHelper.js"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
-        "target": "es5"
+        "target": "es5",
+        "allowJs": true
     }
 }

@@ -1,5 +1,6 @@
 import { YamlModel, YamlParameter } from './interfaces/YamlModel';
 import { Node, Tag, Parameter } from './interfaces/TypeDocModel';
+import { convertLinkToGfm } from './helpers/linkConvertHelper';
 
 export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>): void {
     if (node.flags.isPrivate) {
@@ -57,6 +58,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     }
 
     if (myself) {
+        myself.summary = convertLinkToGfm(myself.summary);
         parentContainer.push(myself);
     }
 
