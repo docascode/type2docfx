@@ -43,6 +43,26 @@ function traverse(node, parentUid, parentContainer) {
                 content: ''
             }
         };
+        if (node.signatures[0].type && node.signatures[0].type.name !== 'void') {
+            myself.syntax.return = {
+                type: [node.signatures[0].type.name]
+            };
+        }
+        var exceptions = void 0;
+        if (node.signatures[0].comment) {
+            exceptions = node.signatures[0].comment.tags.filter(function (tag) { return tag.tag === 'throws'; });
+        }
+        if (exceptions && exceptions.length) {
+            myself.exceptions = exceptions.map(function (e) {
+                var tokens = e.text.match(/{(.*)} +(.*)/);
+                if (tokens.length === 3) {
+                    return {
+                        type: tokens[1],
+                        description: tokens[2]
+                    };
+                }
+            });
+        }
         if (node.kindString === 'Method') {
             myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
             myself.syntax.content = "function " + myself.name;

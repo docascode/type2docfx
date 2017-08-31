@@ -7,11 +7,13 @@ export interface YamlModel {
     summary?: string;
     syntax?: Syntax;
     fullName?: string;
+    exceptions?: Array<Exception>;
 }
 
 export interface Syntax {
     parameters: Array<YamlParameter>;
     content: string;
+    return?: Type;
 }
 
 export interface YamlParameter {
@@ -22,4 +24,13 @@ export interface YamlParameter {
 
 export interface Root {
     items: Array<YamlModel>;
+}
+
+interface Type {
+    type: Array<string>;
+}
+
+interface Exception {
+    type: string;
+    description: string;
 }

@@ -27,6 +27,7 @@ export interface Tag {
 interface Signature {
     comment: Comment;
     parameters: Array<Parameter>;
+    type?: ParameterType;
 }
 
 export interface Parameter {
