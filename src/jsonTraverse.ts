@@ -24,7 +24,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             name: node.name,
             fullName: node.name,
             children: [],
-            langs: ['js'],
+            langs: ['typeScript'],
             type: 'Class',
             summary: findDescriptionInTags(node.comment.tags)
         };
@@ -39,7 +39,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             uid: uid,
             name: node.name,
             children: [],
-            langs: ['js'],
+            langs: ['typeScript'],
             summary: node.signatures[0].comment ? findDescriptionInTags(node.signatures[0].comment.tags) : '',
             syntax: {
                 parameters: fillParameters(node.signatures[0].parameters),
@@ -49,11 +49,11 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         if (node.kindString === 'Method') {
             myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
             myself.syntax.content = `function ${myself.name}`;
-            myself.type = 'Function';
+            myself.type = 'method';
         } else {
             myself.name = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
             myself.syntax.content = `new ${myself.name}`;
-            myself.type = 'Constructor';
+            myself.type = 'constructor';
         }
     }
 
