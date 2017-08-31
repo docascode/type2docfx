@@ -1,4 +1,5 @@
 import { YamlModel, YamlParameter } from './interfaces/YamlModel';
+import { Node, Tag, Parameter } from './interfaces/TypeDocModel';
 
 export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>): void {
     if (node.flags.isPrivate) {
@@ -103,46 +104,4 @@ function generateCallFunction(prefix: string, parameters: Array<YamlParameter>):
         return `${prefix}(${parameters.map(p => p.id).join(', ')})`;
     }
     return '';
-}
-
-interface Node {
-    name: string;
-    kind: number;
-    kindString: string;
-    children: Array<Node>;
-    flags: Flags;
-    comment: Comment;
-    signatures: Array<Signature>;
-}
-
-interface Flags {
-    isExported: boolean;
-    isPrivate: boolean;
-}
-
-interface Comment {
-    text?: string;
-    tags?: Array<Tag>;
-}
-
-interface Tag {
-    tag: string;
-    text: string;
-    param: string;
-}
-
-interface Signature {
-    comment: Comment;
-    parameters: Array<Parameter>;
-}
-
-interface Parameter {
-    name: string;
-    type: ParameterType;
-    comment: Comment;
-}
-
-interface ParameterType {
-    type: string;
-    name: string;
 }
