@@ -43,13 +43,13 @@ function traverse(node, parentUid, parentContainer) {
             }
         };
         if (node.kindString === 'Method') {
-            myself.fullName = generateCallFunction(myself.name, myself.syntax.parameters);
-            myself.syntax.content = "function " + myself.fullName;
+            myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
+            myself.syntax.content = "function " + myself.name;
             myself.type = 'Function';
         }
         else {
-            myself.fullName = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
-            myself.syntax.content = "new " + myself.fullName;
+            myself.name = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
+            myself.syntax.content = "new " + myself.name;
             myself.type = 'Constructor';
         }
     }
