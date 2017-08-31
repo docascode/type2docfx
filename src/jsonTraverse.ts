@@ -119,7 +119,7 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
         return parameters.map<YamlParameter>(parameter => <YamlParameter> {
             id: parameter.name,
             type: [parameter.type.name ? parameter.type.name : 'function'],
-            description: parameter.comment ? parameter.comment.text : '',
+            description: parameter.comment ? convertLinkToGfm(parameter.comment.text) : '',
             optional: parameter.flags && parameter.flags.isOptional
         });
     }

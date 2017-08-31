@@ -110,7 +110,7 @@ function fillParameters(parameters) {
         return parameters.map(function (parameter) { return ({
             id: parameter.name,
             type: [parameter.type.name ? parameter.type.name : 'function'],
-            description: parameter.comment ? parameter.comment.text : '',
+            description: parameter.comment ? linkConvertHelper_1.convertLinkToGfm(parameter.comment.text) : '',
             optional: parameter.flags && parameter.flags.isOptional
         }); });
     }

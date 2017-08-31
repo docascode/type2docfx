@@ -2,7 +2,7 @@ export function convertLinkToGfm(text, uidPrefix) {
     var linkRules = [
       {
         // [link text]{@link namepathOrURL}
-        regexp: /\[(?:([^\]]+))\]{(@link|@link|@linkcode|@linkplain) +([^}| ]+)}/g,
+        regexp: /\[(?:([^\]]+))\]{(@link|@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)}/g,
         callback: function (match, p1, p2, p3) {
           return generateDfmLink(p2, p3, p1);
         }
@@ -11,9 +11,9 @@ export function convertLinkToGfm(text, uidPrefix) {
         // {@link namepathOrURL}
         // {@link namepathOrURL|link text}
         // {@link namepathOrURL link text (after the first space)}
-        regexp: /\{(@link|@linkcode|@linkplain) +(module:)?([^}| ]+)(?:(?:\|| +)([^}]+))?\}/g,
-        callback: function (match, p1, p2, p3, p4) {
-          return generateDfmLink(p1, p3, p4);
+        regexp: /\{(@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)(?:(?:\|| +)([^}]+))?\}/g,
+        callback: function (match, p1, p2, p3) {
+          return generateDfmLink(p1, p2, p3);
         }
       }
     ];
