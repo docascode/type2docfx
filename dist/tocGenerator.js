@@ -4,9 +4,12 @@ function tocGenerator(classes) {
     var result = [];
     if (classes) {
         classes.forEach(function (classModel) {
+            if (classModel.uid.indexOf('constructor') >= 0) {
+                return;
+            }
             var firstLevelToc = {
                 uid: classModel.uid,
-                name: classModel.name
+                name: classModel.name.split('(')[0]
             };
             if (classModel.children) {
                 var items_1 = [];

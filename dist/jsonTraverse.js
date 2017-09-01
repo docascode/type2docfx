@@ -11,9 +11,6 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
     }
     var myself = null;
     if (node.kindString === 'Class' && node.name) {
-        if (!node.comment) {
-            return;
-        }
         uid += '.' + node.name;
         console.log(uid);
         myself = {
@@ -23,7 +20,7 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
             children: [],
             langs: ['typeScript'],
             type: 'Class',
-            summary: findDescriptionInTags(node.comment.tags)
+            summary: node.comment ? findDescriptionInTags(node.comment.tags) : ''
         };
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {

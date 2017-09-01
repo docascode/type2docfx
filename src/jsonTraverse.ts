@@ -15,9 +15,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     }
     let myself: YamlModel = null;
     if (node.kindString === 'Class' && node.name) {
-        if (!node.comment) {
-            return;
-        }
         uid += '.' + node.name;
         console.log(uid);
         myself = {
@@ -27,7 +24,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             children: [],
             langs: ['typeScript'],
             type: 'Class',
-            summary: findDescriptionInTags(node.comment.tags)
+            summary: node.comment ? findDescriptionInTags(node.comment.tags) : ''
         };
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {

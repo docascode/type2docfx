@@ -44,7 +44,7 @@ if (classes) {
         // silly workaround to avoid issue in js-yaml dumper
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         console.log(`Dump ${outputPath}/${classModel.name}.yml`);
-        fs.writeFileSync(`${outputPath}/${classModel.name}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+        fs.writeFileSync(`${outputPath}/${classModel.name.split('(')[0]}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
     });
     console.log('Yaml dump end.');
 }
