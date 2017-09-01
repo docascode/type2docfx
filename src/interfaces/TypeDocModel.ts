@@ -1,4 +1,5 @@
 export interface Node {
+    id: number;
     name: string;
     kind: number;
     kindString: string;
@@ -41,6 +42,7 @@ export interface Parameter {
 interface ParameterType {
     type: string;
     name: string;
+    id: number;
 }
 
 interface ParameterFlag {

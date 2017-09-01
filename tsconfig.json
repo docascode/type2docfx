@@ -4,6 +4,7 @@
         "src/jsonTraverse.ts",
         "src/postTransformer.ts",
         "src/tocGenerator.ts",
+        "src/idResolver.ts",
         "src/common/constants.ts",
         "src/helpers/linkConvertHelper.js"
     ],

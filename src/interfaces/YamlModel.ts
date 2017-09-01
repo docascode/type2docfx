@@ -18,6 +18,7 @@ export interface Syntax {
 
 export interface YamlParameter {
     id: string;
+    typeId?: number;
     type: Array<string>;
     description: string;
     optional?: boolean;
@@ -29,9 +30,10 @@ export interface Root {
 
 interface Type {
     type: Array<string>;
+    typeId?: number;
 }
 
-interface Exception {
+export interface Exception {
     type: string;
     description: string;
 }

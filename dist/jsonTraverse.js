@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
-function traverse(node, parentUid, parentContainer) {
+function traverse(node, parentUid, parentContainer, uidMapping) {
     if (node.flags.isPrivate) {
         return;
     }
@@ -45,7 +45,8 @@ function traverse(node, parentUid, parentContainer) {
         };
         if (node.signatures[0].type && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
-                type: [node.signatures[0].type.name]
+                type: [node.signatures[0].type.name],
+                typeId: node.signatures[0].type.id
             };
         }
         var exceptions = void 0;
@@ -53,15 +54,7 @@ function traverse(node, parentUid, parentContainer) {
             exceptions = node.signatures[0].comment.tags.filter(function (tag) { return tag.tag === 'throws'; });
         }
         if (exceptions && exceptions.length) {
-            myself.exceptions = exceptions.map(function (e) {
-                var tokens = e.text.match(/{(.*)} +(.*)/);
-                if (tokens.length === 3) {
-                    return {
-                        type: tokens[1],
-                        description: tokens[2]
-                    };
-                }
-            });
+            myself.exceptions = exceptions.map(function (e) { return extractException(e); });
         }
         if (node.kindString === 'Method') {
             myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
@@ -76,20 +69,31 @@ function traverse(node, parentUid, parentContainer) {
     }
     if (myself) {
         myself.summary = linkConvertHelper_1.convertLinkToGfm(myself.summary);
+        uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
     }
     if (node.children && node.children.length > 0) {
         node.children.forEach(function (subNode) {
             if (myself) {
-                traverse(subNode, uid, myself.children);
+                traverse(subNode, uid, myself.children, uidMapping);
             }
             else {
-                traverse(subNode, uid, parentContainer);
+                traverse(subNode, uid, parentContainer, uidMapping);
             }
         });
     }
 }
 exports.traverse = traverse;
+function extractException(exception) {
+    var tokens = exception.text.match(/{(.*)} +(.*)/);
+    if (tokens.length === 3) {
+        return {
+            type: tokens[1],
+            description: tokens[2]
+        };
+    }
+    return null;
+}
 function findDescriptionInTags(tags) {
     if (tags) {
         var text_1 = null;
@@ -116,7 +120,8 @@ function fillParameters(parameters) {
                 id: p.name,
                 type: [p.type.name ? p.type.name : 'function'],
                 description: linkConvertHelper_1.convertLinkToGfm(description),
-                optional: p.flags && p.flags.isOptional
+                optional: p.flags && p.flags.isOptional,
+                typeId: p.type.id
             };
         });
     }

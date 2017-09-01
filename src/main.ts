@@ -5,8 +5,10 @@ import * as serializer from 'js-yaml';
 import { traverse } from './jsonTraverse';
 import { postTransform } from './postTransformer';
 import { tocGenerator } from './tocGenerator';
+import { resolveIds } from './idResolver';
 import { YamlModel, Syntax, YamlParameter } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
+import { UidMapping } from './interfaces/UidMapping';
 import { yamlHeader } from './common/constants';
 
 if (process.argv.length < 4) {
@@ -25,11 +27,13 @@ if (fs.existsSync(path)) {
 }
 
 let classes: Array<YamlModel> = [];
+let uidMapping: UidMapping = {};
 if (json) {
-    traverse(json, '', classes);
+    traverse(json, '', classes, uidMapping);
 }
 
 if (classes) {
+    resolveIds(classes, uidMapping);
     let toc = tocGenerator(classes);
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
     console.log('toc genrated.');

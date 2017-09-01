@@ -1,8 +1,9 @@
-import { YamlModel, YamlParameter } from './interfaces/YamlModel';
+import { YamlModel, YamlParameter, Exception } from './interfaces/YamlModel';
 import { Node, Tag, Parameter } from './interfaces/TypeDocModel';
+import { UidMapping } from './interfaces/UidMapping';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 
-export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>): void {
+export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>, uidMapping: UidMapping): void {
     if (node.flags.isPrivate) {
         return;
     }
@@ -49,7 +50,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
 
         if (node.signatures[0].type && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
-                type: [node.signatures[0].type.name]
+                type: [node.signatures[0].type.name],
+                typeId: node.signatures[0].type.id
             };
         }
 
@@ -59,15 +61,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         }
 
         if (exceptions && exceptions.length) {
-            myself.exceptions = exceptions.map(e => {
-                let tokens = e.text.match(/{(.*)} +(.*)/);
-                if (tokens.length === 3) {
-                    return {
-                        type: tokens[1],
-                        description: tokens[2]
-                    };
-                }
-            });
+            myself.exceptions = exceptions.map(e => extractException(e));
         }
 
         if (node.kindString === 'Method') {
@@ -83,18 +77,30 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
 
     if (myself) {
         myself.summary = convertLinkToGfm(myself.summary);
+        uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
     }
 
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children as Array<YamlModel>);
+                traverse(subNode, uid, myself.children as Array<YamlModel>, uidMapping);
             } else {
-                traverse(subNode, uid, parentContainer);
+                traverse(subNode, uid, parentContainer, uidMapping);
             }
         });
     }
+}
+
+function extractException(exception: Tag): Exception {
+    let tokens = exception.text.match(/{(.*)} +(.*)/);
+    if (tokens.length === 3) {
+        return {
+            type: tokens[1],
+            description: tokens[2]
+        };
+    }
+    return null;
 }
 
 function findDescriptionInTags(tags: Array<Tag>): string {
@@ -125,7 +131,8 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
                 id: p.name,
                 type: [p.type.name ? p.type.name : 'function'],
                 description: convertLinkToGfm(description),
-                optional: p.flags && p.flags.isOptional
+                optional: p.flags && p.flags.isOptional,
+                typeId: p.type.id
             };
         });
     }
