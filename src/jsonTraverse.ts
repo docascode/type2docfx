@@ -54,7 +54,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         }
 
         let exceptions;
-        if (node.signatures[0].comment) {
+        if (node.signatures[0].comment && node.signatures[0].comment.tags) {
             exceptions = node.signatures[0].comment.tags.filter(tag => tag.tag === 'throws');
         }
 
@@ -116,11 +116,17 @@ function findDescriptionInTags(tags: Array<Tag>): string {
 
 function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
     if (parameters) {
-        return parameters.map<YamlParameter>(parameter => <YamlParameter> {
-            id: parameter.name,
-            type: [parameter.type.name ? parameter.type.name : 'function'],
-            description: parameter.comment ? convertLinkToGfm(parameter.comment.text) : '',
-            optional: parameter.flags && parameter.flags.isOptional
+        return parameters.map<YamlParameter>(p => {
+            let description = '';
+            if (p.comment) {
+                description = (p.comment.shortText && p.comment.shortText !== '') ? p.comment.shortText : p.comment.text;
+            }
+            return <YamlParameter> {
+                id: p.name,
+                type: [p.type.name ? p.type.name : 'function'],
+                description: convertLinkToGfm(description),
+                optional: p.flags && p.flags.isOptional
+            };
         });
     }
     return [];

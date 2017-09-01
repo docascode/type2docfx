@@ -49,7 +49,7 @@ function traverse(node, parentUid, parentContainer) {
             };
         }
         var exceptions = void 0;
-        if (node.signatures[0].comment) {
+        if (node.signatures[0].comment && node.signatures[0].comment.tags) {
             exceptions = node.signatures[0].comment.tags.filter(function (tag) { return tag.tag === 'throws'; });
         }
         if (exceptions && exceptions.length) {
@@ -107,12 +107,18 @@ function findDescriptionInTags(tags) {
 }
 function fillParameters(parameters) {
     if (parameters) {
-        return parameters.map(function (parameter) { return ({
-            id: parameter.name,
-            type: [parameter.type.name ? parameter.type.name : 'function'],
-            description: parameter.comment ? linkConvertHelper_1.convertLinkToGfm(parameter.comment.text) : '',
-            optional: parameter.flags && parameter.flags.isOptional
-        }); });
+        return parameters.map(function (p) {
+            var description = '';
+            if (p.comment) {
+                description = (p.comment.shortText && p.comment.shortText !== '') ? p.comment.shortText : p.comment.text;
+            }
+            return {
+                id: p.name,
+                type: [p.type.name ? p.type.name : 'function'],
+                description: linkConvertHelper_1.convertLinkToGfm(description),
+                optional: p.flags && p.flags.isOptional
+            };
+        });
     }
     return [];
 }

@@ -15,6 +15,7 @@ interface Flags {
 
 interface Comment {
     text?: string;
+    shortText?: string;
     tags?: Array<Tag>;
 }
 
