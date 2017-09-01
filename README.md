@@ -8,6 +8,11 @@ Type2DocFx runs on Node.js and is available as an NPM package.
 $ npm install type2docfx --save-dev
 ```
 
+## Usage
+```bash
+type2docfx {apidoc_json_path} {output_path}
+```
+
 ## License
 
 Licensed under the Apache License 2.0.
