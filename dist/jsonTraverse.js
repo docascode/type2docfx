@@ -67,6 +67,21 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
             myself.type = 'constructor';
         }
     }
+    if (node.kindString === 'Enumeration member' && node.name) {
+        uid += '.' + node.name;
+        console.log(" - " + node.kindString + ": " + uid);
+        myself = {
+            uid: uid,
+            name: node.name,
+            children: [],
+            langs: ['typeScript'],
+            summary: node.comment ? findDescriptionInComment(node.comment) : '',
+            type: 'field'
+        };
+        if (node.defaultValue) {
+            myself.numericValue = parseInt(node.defaultValue, 10);
+        }
+    }
     if (node.kindString === 'Property' && node.name) {
         uid += '.' + node.name;
         console.log(" - " + node.kindString + ": " + uid);

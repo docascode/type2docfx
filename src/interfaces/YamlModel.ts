@@ -8,6 +8,7 @@ export interface YamlModel {
     syntax?: Syntax;
     fullName?: string;
     exceptions?: Array<Exception>;
+    numericValue?: number;
 }
 
 export interface Syntax {

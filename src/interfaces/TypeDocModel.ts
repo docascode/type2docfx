@@ -8,6 +8,7 @@ export interface Node {
     comment: Comment;
     signatures: Array<Signature>;
     type: ParameterType;
+    defaultValue: string;
 }
 
 interface Flags {
