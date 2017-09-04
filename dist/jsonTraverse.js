@@ -10,37 +10,40 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
         uid = node.name;
     }
     var myself = null;
-    if (node.kindString === 'Class' && node.name) {
+    if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
         uid += '.' + node.name;
-        console.log(uid);
+        console.log(node.kindString + ": " + uid);
         myself = {
             uid: uid,
             name: node.name,
             fullName: node.name,
             children: [],
             langs: ['typeScript'],
-            type: 'Class',
-            summary: node.comment ? findDescriptionInTags(node.comment.tags) : ''
+            type: node.kindString.toLowerCase(),
+            summary: node.comment ? findDescriptionInComment(node.comment) : ''
         };
+        if (myself.type === 'enumeration') {
+            myself.type = 'enum';
+        }
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
         if (!node.signatures || !node.signatures[0].comment && node.kindString === 'Method') {
             return;
         }
         uid += '.' + node.name;
-        console.log(uid);
+        console.log(" - " + node.kindString + ": " + uid);
         myself = {
             uid: uid,
             name: node.name,
             children: [],
             langs: ['typeScript'],
-            summary: node.signatures[0].comment ? findDescriptionInTags(node.signatures[0].comment.tags) : '',
+            summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
             syntax: {
                 parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
         };
-        if (node.signatures[0].type && node.signatures[0].type.name !== 'void') {
+        if (node.signatures[0].type && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
                 type: [node.signatures[0].type.name],
                 typeId: node.signatures[0].type.id
@@ -63,6 +66,25 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
             myself.syntax.content = "new " + myself.name;
             myself.type = 'constructor';
         }
+    }
+    if (node.kindString === 'Property' && node.name) {
+        uid += '.' + node.name;
+        console.log(" - " + node.kindString + ": " + uid);
+        myself = {
+            uid: uid,
+            name: node.name,
+            fullName: node.name,
+            children: [],
+            langs: ['typeScript'],
+            type: node.kindString.toLowerCase(),
+            summary: node.comment ? findDescriptionInComment(node.comment) : '',
+            syntax: {
+                return: {
+                    type: [node.type.name ? node.type.name : 'union'],
+                    typeId: node.type.id
+                }
+            }
+        };
     }
     if (myself) {
         myself.summary = linkConvertHelper_1.convertLinkToGfm(myself.summary);
@@ -91,18 +113,24 @@ function extractException(exception) {
     }
     return null;
 }
-function findDescriptionInTags(tags) {
-    if (tags) {
+function findDescriptionInComment(comment) {
+    if (comment.tags) {
         var text_1 = null;
-        tags.forEach(function (tag) {
-            if (tag.tag === 'classdesc' || tag.tag === 'description') {
+        comment.tags.forEach(function (tag) {
+            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
                 text_1 = tag.text;
                 return;
             }
         });
         if (text_1) {
-            return text_1;
+            return text_1.trim();
         }
+    }
+    if (comment.text) {
+        return comment.text.trim();
+    }
+    if (comment.shortText) {
+        return comment.shortText.trim();
     }
     return '';
 }

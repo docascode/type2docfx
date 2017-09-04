@@ -1,16 +1,16 @@
 import { YamlModel, Root } from './interfaces/YamlModel';
 import { globalUid, constructorName } from './common/constants';
 
-export function postTransform(classModel: YamlModel): Root {
-    let result: Array<YamlModel> = [classModel];
-    if (classModel.children) {
+export function postTransform(element: YamlModel): Root {
+    let result: Array<YamlModel> = [element];
+    if (element.children) {
         let childrenUid: Array<string> = [];
-        (classModel.children as Array<YamlModel>).sort(sortYamlModel).forEach(method => {
-            childrenUid.push(method.uid);
-            result.push(method);
+        (element.children as Array<YamlModel>).sort(sortYamlModel).forEach(child => {
+            childrenUid.push(child.uid);
+            result.push(child);
         });
 
-        classModel.children = childrenUid;
+        element.children = childrenUid;
     }
     return {
         items: result

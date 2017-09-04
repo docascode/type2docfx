@@ -7,6 +7,7 @@ export interface Node {
     flags: Flags;
     comment: Comment;
     signatures: Array<Signature>;
+    type: ParameterType;
 }
 
 interface Flags {
@@ -14,7 +15,7 @@ interface Flags {
     isPrivate: boolean;
 }
 
-interface Comment {
+export interface Comment {
     text?: string;
     shortText?: string;
     tags?: Array<Tag>;

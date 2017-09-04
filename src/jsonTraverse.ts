@@ -1,5 +1,5 @@
 import { YamlModel, YamlParameter, Exception } from './interfaces/YamlModel';
-import { Node, Tag, Parameter } from './interfaces/TypeDocModel';
+import { Node, Tag, Parameter, Comment } from './interfaces/TypeDocModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 
@@ -14,38 +14,42 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         uid = node.name;
     }
     let myself: YamlModel = null;
-    if (node.kindString === 'Class' && node.name) {
+    if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
         uid += '.' + node.name;
-        console.log(uid);
+        console.log(`${node.kindString}: ${uid}`);
         myself = {
             uid: uid,
             name: node.name,
             fullName: node.name,
             children: [],
             langs: ['typeScript'],
-            type: 'Class',
-            summary: node.comment ? findDescriptionInTags(node.comment.tags) : ''
+            type: node.kindString.toLowerCase(),
+            summary: node.comment ? findDescriptionInComment(node.comment) : ''
         };
+        if (myself.type === 'enumeration') {
+            myself.type = 'enum';
+        }
     }
+
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
         if (!node.signatures || !node.signatures[0].comment && node.kindString === 'Method') {
             return;
         }
         uid += '.' + node.name;
-        console.log(uid);
+        console.log(` - ${node.kindString}: ${uid}`);
         myself = {
             uid: uid,
             name: node.name,
             children: [],
             langs: ['typeScript'],
-            summary: node.signatures[0].comment ? findDescriptionInTags(node.signatures[0].comment.tags) : '',
+            summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
             syntax: {
                 parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
         };
 
-        if (node.signatures[0].type && node.signatures[0].type.name !== 'void') {
+        if (node.signatures[0].type && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
                 type: [node.signatures[0].type.name],
                 typeId: node.signatures[0].type.id
@@ -70,6 +74,26 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             myself.syntax.content = `new ${myself.name}`;
             myself.type = 'constructor';
         }
+    }
+
+    if (node.kindString === 'Property' && node.name) {
+        uid += '.' + node.name;
+        console.log(` - ${node.kindString}: ${uid}`);
+        myself = {
+            uid: uid,
+            name: node.name,
+            fullName: node.name,
+            children: [],
+            langs: ['typeScript'],
+            type: node.kindString.toLowerCase(),
+            summary: node.comment ? findDescriptionInComment(node.comment) : '',
+            syntax: {
+                return: {
+                    type : [ node.type.name ? node.type.name : 'union' ],
+                    typeId : node.type.id
+                }
+            }
+        };
     }
 
     if (myself) {
@@ -100,18 +124,26 @@ function extractException(exception: Tag): Exception {
     return null;
 }
 
-function findDescriptionInTags(tags: Array<Tag>): string {
-    if (tags) {
+function findDescriptionInComment(comment: Comment): string {
+    if (comment.tags) {
         let text: string = null;
-        tags.forEach(tag => {
-            if (tag.tag === 'classdesc' || tag.tag === 'description') {
+        comment.tags.forEach(tag => {
+            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
                 text =  tag.text;
                 return;
             }
         });
         if (text) {
-            return text;
+            return text.trim();
         }
+    }
+
+    if (comment.text) {
+        return comment.text.trim();
+    }
+
+    if (comment.shortText) {
+        return comment.shortText.trim();
     }
 
     return '';

@@ -1,20 +1,21 @@
 import { YamlModel } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 
-export function tocGenerator(classes: Array<YamlModel>): Array<TocItem> {
+export function tocGenerator(elements: Array<YamlModel>): Array<TocItem> {
     let result: Array<TocItem> = [];
-    if (classes) {
-        classes.forEach(classModel => {
-            if (classModel.uid.indexOf('constructor') >= 0) {
+    if (elements) {
+        elements.forEach(element => {
+            if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
             let firstLevelToc: TocItem = {
-                uid: classModel.uid,
-                name: classModel.name.split('(')[0]
+                uid: element.uid,
+                name: element.name.split('(')[0]
             };
-            if (classModel.children) {
+            /*
+            if (element.children) {
                 let items: Array<TocItem> = [];
-                (classModel.children as Array<YamlModel>).forEach(method => {
+                (element.children as Array<YamlModel>).forEach(method => {
                     if (method.name !== 'constructor') {
                         items.push({
                             uid: method.uid,
@@ -25,6 +26,7 @@ export function tocGenerator(classes: Array<YamlModel>): Array<TocItem> {
                 });
                 firstLevelToc.items = items;
             }
+            */
             result.push(firstLevelToc);
         });
     }

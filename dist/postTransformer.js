@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = require("./common/constants");
-function postTransform(classModel) {
-    var result = [classModel];
-    if (classModel.children) {
+function postTransform(element) {
+    var result = [element];
+    if (element.children) {
         var childrenUid_1 = [];
-        classModel.children.sort(sortYamlModel).forEach(function (method) {
-            childrenUid_1.push(method.uid);
-            result.push(method);
+        element.children.sort(sortYamlModel).forEach(function (child) {
+            childrenUid_1.push(child.uid);
+            result.push(child);
         });
-        classModel.children = childrenUid_1;
+        element.children = childrenUid_1;
     }
     return {
         items: result

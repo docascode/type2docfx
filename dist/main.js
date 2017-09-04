@@ -22,23 +22,23 @@ else {
     console.error('Api doc file ' + path + ' doesn\'t exist.');
     process.exit(1);
 }
-var classes = [];
+var rootElements = [];
 var uidMapping = {};
 if (json) {
-    jsonTraverse_1.traverse(json, '', classes, uidMapping);
+    jsonTraverse_1.traverse(json, '', rootElements, uidMapping);
 }
-if (classes) {
-    idResolver_1.resolveIds(classes, uidMapping);
-    var toc = tocGenerator_1.tocGenerator(classes);
+if (rootElements) {
+    idResolver_1.resolveIds(rootElements, uidMapping);
+    var toc = tocGenerator_1.tocGenerator(rootElements);
     fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
     console.log('toc genrated.');
     console.log('Yaml dump start.');
-    classes.forEach(function (classModel) {
-        var transfomredClass = postTransformer_1.postTransform(classModel);
+    rootElements.forEach(function (rootElement) {
+        var transfomredClass = postTransformer_1.postTransform(rootElement);
         // silly workaround to avoid issue in js-yaml dumper
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-        console.log("Dump " + outputPath + "/" + classModel.name + ".yml");
-        fs.writeFileSync(outputPath + "/" + classModel.name.split('(')[0] + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
+        console.log("Dump " + outputPath + "/" + rootElement.name + ".yml");
+        fs.writeFileSync(outputPath + "/" + rootElement.name.split('(')[0] + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
     });
     console.log('Yaml dump end.');
 }

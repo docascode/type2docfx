@@ -26,25 +26,25 @@ if (fs.existsSync(path)) {
     process.exit(1);
 }
 
-let classes: Array<YamlModel> = [];
+let rootElements: Array<YamlModel> = [];
 let uidMapping: UidMapping = {};
 if (json) {
-    traverse(json, '', classes, uidMapping);
+    traverse(json, '', rootElements, uidMapping);
 }
 
-if (classes) {
-    resolveIds(classes, uidMapping);
-    let toc = tocGenerator(classes);
+if (rootElements) {
+    resolveIds(rootElements, uidMapping);
+    let toc = tocGenerator(rootElements);
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
     console.log('toc genrated.');
 
     console.log('Yaml dump start.');
-    classes.forEach(classModel => {
-        let transfomredClass = postTransform(classModel);
+    rootElements.forEach(rootElement => {
+        let transfomredClass = postTransform(rootElement);
         // silly workaround to avoid issue in js-yaml dumper
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-        console.log(`Dump ${outputPath}/${classModel.name}.yml`);
-        fs.writeFileSync(`${outputPath}/${classModel.name.split('(')[0]}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+        console.log(`Dump ${outputPath}/${rootElement.name}.yml`);
+        fs.writeFileSync(`${outputPath}/${rootElement.name.split('(')[0]}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
     });
     console.log('Yaml dump end.');
 }

@@ -1,13 +1,13 @@
 import { YamlModel } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 
-export function resolveIds(classes: Array<YamlModel>, uidMapping: UidMapping): void {
-    if (classes) {
-        classes.forEach(classItem => {
-            (classItem.children as Array<YamlModel>).forEach(method => {
-                if (method.syntax) {
-                    if (method.syntax.parameters) {
-                        method.syntax.parameters.forEach(p => {
+export function resolveIds(elements: Array<YamlModel>, uidMapping: UidMapping): void {
+    if (elements) {
+        elements.forEach(element => {
+            (element.children as Array<YamlModel>).forEach(child => {
+                if (child.syntax) {
+                    if (child.syntax.parameters) {
+                        child.syntax.parameters.forEach(p => {
                             if (uidMapping[p.typeId]) {
                                 p.id = uidMapping[p.typeId];
                             }
@@ -15,11 +15,11 @@ export function resolveIds(classes: Array<YamlModel>, uidMapping: UidMapping): v
                         });
                     }
 
-                    if (method.syntax.return) {
-                        if (uidMapping[method.syntax.return.typeId]) {
-                            method.syntax.return.type[0] = uidMapping[method.syntax.return.typeId];
+                    if (child.syntax.return) {
+                        if (uidMapping[child.syntax.return.typeId]) {
+                            child.syntax.return.type[0] = uidMapping[child.syntax.return.typeId];
                         }
-                        method.syntax.return.typeId = undefined;
+                        child.syntax.return.typeId = undefined;
                     }
                 }
             });

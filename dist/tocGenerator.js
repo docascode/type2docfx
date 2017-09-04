@@ -1,28 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function tocGenerator(classes) {
+function tocGenerator(elements) {
     var result = [];
-    if (classes) {
-        classes.forEach(function (classModel) {
-            if (classModel.uid.indexOf('constructor') >= 0) {
+    if (elements) {
+        elements.forEach(function (element) {
+            if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
             var firstLevelToc = {
-                uid: classModel.uid,
-                name: classModel.name.split('(')[0]
+                uid: element.uid,
+                name: element.name.split('(')[0]
             };
-            if (classModel.children) {
-                var items_1 = [];
-                classModel.children.forEach(function (method) {
+            /*
+            if (element.children) {
+                let items: Array<TocItem> = [];
+                (element.children as Array<YamlModel>).forEach(method => {
                     if (method.name !== 'constructor') {
-                        items_1.push({
+                        items.push({
                             uid: method.uid,
                             name: method.name.split('(')[0]
                         });
                     }
+
                 });
-                firstLevelToc.items = items_1;
+                firstLevelToc.items = items;
             }
+            */
             result.push(firstLevelToc);
         });
     }

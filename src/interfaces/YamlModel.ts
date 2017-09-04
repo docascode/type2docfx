@@ -11,8 +11,8 @@ export interface YamlModel {
 }
 
 export interface Syntax {
-    parameters: Array<YamlParameter>;
-    content: string;
+    parameters?: Array<YamlParameter>;
+    content?: string;
     return?: Type;
 }
 
