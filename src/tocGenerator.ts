@@ -3,11 +3,16 @@ import { TocItem } from './interfaces/TocItem';
 
 export function tocGenerator(elements: Array<YamlModel>): Array<TocItem> {
     let result: Array<TocItem> = [];
+    let previousUid: string = null;
     if (elements) {
         elements.sort(sortToc).forEach(element => {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
+            if (element.uid === previousUid) {
+                return;
+            }
+            previousUid = element.uid;
             let firstLevelToc: TocItem = {
                 uid: element.uid,
                 name: element.name.split('(')[0]

@@ -2,11 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 function tocGenerator(elements) {
     var result = [];
+    var previousUid = null;
     if (elements) {
         elements.sort(sortToc).forEach(function (element) {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
+            if (element.uid === previousUid) {
+                return;
+            }
+            previousUid = element.uid;
             var firstLevelToc = {
                 uid: element.uid,
                 name: element.name.split('(')[0]
