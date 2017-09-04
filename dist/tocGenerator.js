@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function tocGenerator(elements) {
     var result = [];
     if (elements) {
-        elements.forEach(function (element) {
+        elements.sort(sortToc).forEach(function (element) {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
@@ -32,3 +32,14 @@ function tocGenerator(elements) {
     return result;
 }
 exports.tocGenerator = tocGenerator;
+function sortToc(a, b) {
+    var nameA = a.name.toUpperCase();
+    var nameB = b.name.toUpperCase();
+    if (nameA < nameB) {
+        return -1;
+    }
+    if (nameA > nameB) {
+        return 1;
+    }
+    return 0;
+}

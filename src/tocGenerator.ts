@@ -4,7 +4,7 @@ import { TocItem } from './interfaces/TocItem';
 export function tocGenerator(elements: Array<YamlModel>): Array<TocItem> {
     let result: Array<TocItem> = [];
     if (elements) {
-        elements.forEach(element => {
+        elements.sort(sortToc).forEach(element => {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
@@ -31,4 +31,17 @@ export function tocGenerator(elements: Array<YamlModel>): Array<TocItem> {
         });
     }
     return result;
+}
+
+function sortToc(a: YamlModel, b: YamlModel) {
+    let nameA = a.name.toUpperCase();
+    let nameB = b.name.toUpperCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    return 0;
 }
