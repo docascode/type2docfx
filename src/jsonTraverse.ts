@@ -13,6 +13,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     if (node.kind === 0) {
         uid = node.name;
     }
+
+    if (node.kindString === 'Module') {
+        uid += '.' + node.name.replace(/"/g, '').replace(/\//g, '.');
+        console.log(`${node.kindString}: ${uid}`);
+    }
+
     let myself: YamlModel = null;
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
         uid += '.' + node.name;
@@ -28,6 +34,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         };
         if (myself.type === 'enumeration') {
             myself.type = 'enum';
+        }
+
+        let tokens = parentUid.split('.');
+        myself.package = tokens[0];
+        if (tokens.length > 1) {
+            myself.module = parentUid.substring(tokens[0].length + 1);
         }
     }
 

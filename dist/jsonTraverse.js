@@ -9,6 +9,10 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
     if (node.kind === 0) {
         uid = node.name;
     }
+    if (node.kindString === 'Module') {
+        uid += '.' + node.name.replace(/"/g, '').replace(/\//g, '.');
+        console.log(node.kindString + ": " + uid);
+    }
     var myself = null;
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
         uid += '.' + node.name;
@@ -24,6 +28,11 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
         };
         if (myself.type === 'enumeration') {
             myself.type = 'enum';
+        }
+        var tokens = parentUid.split('.');
+        myself.package = tokens[0];
+        if (tokens.length > 1) {
+            myself.module = parentUid.substring(tokens[0].length + 1);
         }
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {

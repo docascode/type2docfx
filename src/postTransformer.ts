@@ -18,6 +18,10 @@ export function postTransform(element: YamlModel): Root {
 }
 
 function sortYamlModel(a: YamlModel, b: YamlModel): number {
+      if (a.numericValue !== undefined && b.numericValue !== undefined) {
+        return a.numericValue - b.numericValue;
+      }
+
       // sort classes alphabetically, but GLOBAL at last, contructor first
       if (a.uid === globalUid || b.name === constructorName) {
         return 1;

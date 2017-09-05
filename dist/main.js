@@ -37,8 +37,16 @@ if (rootElements) {
         var transfomredClass = postTransformer_1.postTransform(rootElement);
         // silly workaround to avoid issue in js-yaml dumper
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-        console.log("Dump " + outputPath + "/" + rootElement.name + ".yml");
-        fs.writeFileSync(outputPath + "/" + rootElement.name.split('(')[0] + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
+        var filename = null;
+        if (rootElement.module) {
+            filename = rootElement.module + "." + rootElement.name;
+        }
+        else {
+            filename = rootElement.name;
+        }
+        filename = filename.split('(')[0];
+        console.log("Dump " + outputPath + "/" + filename + ".yml");
+        fs.writeFileSync(outputPath + "/" + filename + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
     });
     console.log('Yaml dump end.');
 }

@@ -17,6 +17,9 @@ function postTransform(element) {
 }
 exports.postTransform = postTransform;
 function sortYamlModel(a, b) {
+    if (a.numericValue !== undefined && b.numericValue !== undefined) {
+        return a.numericValue - b.numericValue;
+    }
     // sort classes alphabetically, but GLOBAL at last, contructor first
     if (a.uid === constants_1.globalUid || b.name === constants_1.constructorName) {
         return 1;

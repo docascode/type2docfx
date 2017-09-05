@@ -9,6 +9,8 @@ export interface YamlModel {
     fullName?: string;
     exceptions?: Array<Exception>;
     numericValue?: number;
+    package?: string;
+    module?: string;
 }
 
 export interface Syntax {
