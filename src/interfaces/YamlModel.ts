@@ -34,7 +34,7 @@ export interface YamlParameter {
 
 export interface Root {
     items: Array<YamlModel>;
-    reference?: Array<Reference>;
+    references?: Array<Reference>;
 }
 
 interface Type {

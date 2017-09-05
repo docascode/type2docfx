@@ -3,7 +3,7 @@ import { YamlModel, Root } from './interfaces/YamlModel';
 export function generatePackage(elements: Array<YamlModel>): Root {
     let root: Root = {
         items: [],
-        reference: []
+        references: []
     };
     let packageModel: YamlModel = null;
     if (elements && elements.length) {
@@ -17,7 +17,7 @@ export function generatePackage(elements: Array<YamlModel>): Root {
         };
 
         elements.forEach(element => {
-            root.reference.push({
+            root.references.push({
                 uid: element.uid,
                 name: element.name
             });

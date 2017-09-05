@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function generatePackage(elements) {
     var root = {
         items: [],
-        reference: []
+        references: []
     };
     var packageModel = null;
     if (elements && elements.length) {
@@ -16,7 +16,7 @@ function generatePackage(elements) {
             langs: ['typeScript']
         };
         elements.forEach(function (element) {
-            root.reference.push({
+            root.references.push({
                 uid: element.uid,
                 name: element.name
             });
