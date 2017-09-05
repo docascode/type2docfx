@@ -10,7 +10,12 @@ export interface YamlModel {
     exceptions?: Array<Exception>;
     numericValue?: number;
     package?: string;
-    module?: string;
+    module?: string; 
+}
+
+interface Reference {
+    uid: string;
+    name: string;
 }
 
 export interface Syntax {
@@ -29,6 +34,7 @@ export interface YamlParameter {
 
 export interface Root {
     items: Array<YamlModel>;
+    reference?: Array<Reference>;
 }
 
 interface Type {

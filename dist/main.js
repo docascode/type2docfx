@@ -6,6 +6,7 @@ var serializer = require("js-yaml");
 var jsonTraverse_1 = require("./jsonTraverse");
 var postTransformer_1 = require("./postTransformer");
 var tocGenerator_1 = require("./tocGenerator");
+var packageGenerator_1 = require("./packageGenerator");
 var idResolver_1 = require("./idResolver");
 var constants_1 = require("./common/constants");
 if (process.argv.length < 4) {
@@ -29,9 +30,12 @@ if (json) {
 }
 if (rootElements) {
     idResolver_1.resolveIds(rootElements, uidMapping);
-    var toc = tocGenerator_1.tocGenerator(rootElements);
+    var toc = tocGenerator_1.generateToc(rootElements);
     fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
     console.log('toc genrated.');
+    var index = packageGenerator_1.generatePackage(rootElements);
+    fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(index));
+    console.log('index genrated.');
     console.log('Yaml dump start.');
     rootElements.forEach(function (rootElement) {
         var transfomredClass = postTransformer_1.postTransform(rootElement);

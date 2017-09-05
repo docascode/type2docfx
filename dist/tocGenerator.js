@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function tocGenerator(elements) {
+function generateToc(elements) {
     var result = [];
     var previousUid = null;
     if (elements) {
@@ -36,7 +36,7 @@ function tocGenerator(elements) {
     }
     return result;
 }
-exports.tocGenerator = tocGenerator;
+exports.generateToc = generateToc;
 function sortToc(a, b) {
     var nameA = a.name.toUpperCase();
     var nameB = b.name.toUpperCase();

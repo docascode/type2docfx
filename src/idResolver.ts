@@ -9,7 +9,7 @@ export function resolveIds(elements: Array<YamlModel>, uidMapping: UidMapping): 
                     if (child.syntax.parameters) {
                         child.syntax.parameters.forEach(p => {
                             if (uidMapping[p.typeId]) {
-                                p.id = uidMapping[p.typeId];
+                                p.type[0] = uidMapping[p.typeId];
                             }
                             p.typeId = undefined;
                         });

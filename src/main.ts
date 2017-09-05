@@ -4,7 +4,8 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import { traverse } from './jsonTraverse';
 import { postTransform } from './postTransformer';
-import { tocGenerator } from './tocGenerator';
+import { generateToc } from './tocGenerator';
+import { generatePackage } from './packageGenerator';
 import { resolveIds } from './idResolver';
 import { YamlModel, Syntax, YamlParameter } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
@@ -34,9 +35,13 @@ if (json) {
 
 if (rootElements) {
     resolveIds(rootElements, uidMapping);
-    let toc = tocGenerator(rootElements);
+    let toc = generateToc(rootElements);
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
     console.log('toc genrated.');
+
+    let index = generatePackage(rootElements);
+    fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(index)}`);
+    console.log('index genrated.');
 
     console.log('Yaml dump start.');
     rootElements.forEach(rootElement => {

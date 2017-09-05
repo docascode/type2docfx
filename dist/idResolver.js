@@ -8,7 +8,7 @@ function resolveIds(elements, uidMapping) {
                     if (child.syntax.parameters) {
                         child.syntax.parameters.forEach(function (p) {
                             if (uidMapping[p.typeId]) {
-                                p.id = uidMapping[p.typeId];
+                                p.type[0] = uidMapping[p.typeId];
                             }
                             p.typeId = undefined;
                         });

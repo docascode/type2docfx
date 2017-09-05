@@ -52,7 +52,7 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
                 content: ''
             }
         };
-        if (node.signatures[0].type && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
+        if (node.signatures[0].type && node.kindString !== 'Constructor' && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
                 type: [node.signatures[0].type.name],
                 typeId: node.signatures[0].type.id

@@ -1,7 +1,7 @@
 import { YamlModel } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 
-export function tocGenerator(elements: Array<YamlModel>): Array<TocItem> {
+export function generateToc(elements: Array<YamlModel>): Array<TocItem> {
     let result: Array<TocItem> = [];
     let previousUid: string = null;
     if (elements) {
