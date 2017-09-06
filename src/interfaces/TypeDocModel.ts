@@ -50,6 +50,7 @@ export interface ParameterType {
     id: number;
     typeArguments: Array<ParameterType>;
     declaration: Node;
+    elementType: ParameterType;
 }
 
 interface ParameterFlag {

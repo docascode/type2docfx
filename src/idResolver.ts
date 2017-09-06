@@ -26,6 +26,8 @@ function restoreTypes(types: Array<Type>, uidMapping: UidMapping): Array<string>
         return types.map(t => {
             if (t.reflectedType) {
                 return typeToString(t);
+            } else if (t.genericType) {
+                return typeToString(t);
             } else {
                 if (t.typeId && uidMapping[t.typeId]) {
                     return uidMapping[t.typeId];
@@ -47,8 +49,16 @@ export function typeToString(type: Type | string): string {
         return type;
     }
 
+    if (type.isArray) {
+        let newType = type;
+        newType.isArray = false;
+        return `Array<${typeToString(newType)}>`;
+    }
+
     if (type.reflectedType) {
-        return `[key: ${type.reflectedType.key.typeName}]: ${type.reflectedType.value.typeName}`;
+        return `[key: ${typeToString(type.reflectedType.key)}]: ${typeToString(type.reflectedType.value)}`;
+    } else if (type.genericType) {
+        return `${typeToString(type.genericType.outter)}<${typeToString(type.genericType.inner)}>`;
     } else {
         return type.typeName;
     }

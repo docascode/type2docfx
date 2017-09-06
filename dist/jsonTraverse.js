@@ -137,34 +137,46 @@ function extractType(type) {
             typeName: type.types[0].name.split('.')[0]
         });
     }
-    else if (type.type === 'reflection') {
-        if (type.declaration && type.declaration.indexSignature && type.declaration.indexSignature.length) {
-            result.push({
-                reflectedType: {
-                    key: {
-                        typeName: type.declaration.indexSignature[0].parameters[0].type.name,
-                        typeId: type.declaration.indexSignature[0].parameters[0].type.id
-                    },
-                    value: {
-                        typeName: type.declaration.indexSignature[0].type.name,
-                        typeId: type.declaration.indexSignature[0].type.id
-                    }
+    else if (type.type === 'array') {
+        var newType = extractType(type.elementType);
+        newType[0].isArray = true;
+        result.push(newType[0]);
+    }
+    else if (type.type === 'reflection' && type.declaration && type.declaration.indexSignature && type.declaration.indexSignature.length) {
+        result.push({
+            reflectedType: {
+                key: {
+                    typeName: type.declaration.indexSignature[0].parameters[0].type.name,
+                    typeId: type.declaration.indexSignature[0].parameters[0].type.id
+                },
+                value: {
+                    typeName: type.declaration.indexSignature[0].type.name,
+                    typeId: type.declaration.indexSignature[0].type.id
                 }
-            });
-        }
+            }
+        });
+    }
+    else if (type.typeArguments && type.typeArguments.length) {
+        result.push({
+            genericType: {
+                outter: {
+                    typeName: type.name,
+                    typeId: type.id
+                },
+                inner: extractType(type.typeArguments[0])[0]
+            }
+        });
+    }
+    else if (type.name) {
+        result.push({
+            typeName: type.name,
+            typeId: type.id
+        });
     }
     else {
-        if (type.name) {
-            result.push({
-                typeName: type.name,
-                typeId: type.id
-            });
-        }
-        else {
-            result.push({
-                typeName: 'function'
-            });
-        }
+        result.push({
+            typeName: 'function'
+        });
     }
     return result;
 }

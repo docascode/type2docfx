@@ -45,10 +45,12 @@ export interface Type {
     typeId?: number;
     reflectedType?: ReflectedType;
     genericType?: GenericType;
+    isArray?: boolean;
 }
 
 interface GenericType {
-
+    outter: Type;
+    inner: Type;
 }
 
 interface ReflectedType {
