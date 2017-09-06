@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
+var idResolver_1 = require("./idResolver");
 function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
     if (node.flags.isPrivate) {
         return;
@@ -58,8 +59,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         };
         if (node.signatures[0].type && node.kindString !== 'Constructor' && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
-                type: [node.signatures[0].type.name],
-                typeId: node.signatures[0].type.id
+                type: extractType(node.signatures[0].type)
             };
         }
         var exceptions = void 0;
@@ -108,8 +108,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             syntax: {
                 return: {
-                    type: [node.type.name ? node.type.name : 'union'],
-                    typeId: node.type.id
+                    type: extractType(node.type)
                 }
             }
         };
@@ -131,6 +130,44 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
     }
 }
 exports.traverse = traverse;
+function extractType(type) {
+    var result = [];
+    if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
+        result.push({
+            typeName: type.types[0].name.split('.')[0]
+        });
+    }
+    else if (type.type === 'reflection') {
+        if (type.declaration && type.declaration.indexSignature && type.declaration.indexSignature.length) {
+            result.push({
+                reflectedType: {
+                    key: {
+                        typeName: type.declaration.indexSignature[0].parameters[0].type.name,
+                        typeId: type.declaration.indexSignature[0].parameters[0].type.id
+                    },
+                    value: {
+                        typeName: type.declaration.indexSignature[0].type.name,
+                        typeId: type.declaration.indexSignature[0].type.id
+                    }
+                }
+            });
+        }
+    }
+    else {
+        if (type.name) {
+            result.push({
+                typeName: type.name,
+                typeId: type.id
+            });
+        }
+        else {
+            result.push({
+                typeName: 'function'
+            });
+        }
+    }
+    return result;
+}
 function extractException(exception) {
     var tokens = exception.text.match(/{(.*)} +(.*)/);
     if (tokens.length === 3) {
@@ -174,10 +211,9 @@ function fillParameters(parameters) {
             }
             return {
                 id: p.name,
-                type: [p.type.name ? p.type.name : 'function'],
+                type: extractType(p.type),
                 description: linkConvertHelper_1.convertLinkToGfm(description),
-                optional: p.flags && p.flags.isOptional,
-                typeId: p.type.id
+                optional: p.flags && p.flags.isOptional
             };
         });
     }
@@ -185,7 +221,7 @@ function fillParameters(parameters) {
 }
 function generateCallFunction(prefix, parameters) {
     if (parameters) {
-        return prefix + "(" + parameters.map(function (p) { return "" + p.id + (p.optional ? '?' : '') + ": " + p.type; }).join(', ') + ")";
+        return prefix + "(" + parameters.map(function (p) { return "" + p.id + (p.optional ? '?' : '') + ": " + (idResolver_1.typeToString(p.type[0])); }).join(', ') + ")";
     }
     return '';
 }

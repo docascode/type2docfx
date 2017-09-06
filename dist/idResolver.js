@@ -7,17 +7,11 @@ function resolveIds(elements, uidMapping) {
                 if (child.syntax) {
                     if (child.syntax.parameters) {
                         child.syntax.parameters.forEach(function (p) {
-                            if (uidMapping[p.typeId]) {
-                                p.type[0] = uidMapping[p.typeId];
-                            }
-                            p.typeId = undefined;
+                            p.type = restoreTypes(p.type, uidMapping);
                         });
                     }
                     if (child.syntax.return) {
-                        if (uidMapping[child.syntax.return.typeId]) {
-                            child.syntax.return.type[0] = uidMapping[child.syntax.return.typeId];
-                        }
-                        child.syntax.return.typeId = undefined;
+                        child.syntax.return.type = restoreTypes(child.syntax.return.type, uidMapping);
                     }
                 }
             });
@@ -25,3 +19,36 @@ function resolveIds(elements, uidMapping) {
     }
 }
 exports.resolveIds = resolveIds;
+function restoreTypes(types, uidMapping) {
+    if (types) {
+        return types.map(function (t) {
+            if (t.reflectedType) {
+                return typeToString(t);
+            }
+            else {
+                if (t.typeId && uidMapping[t.typeId]) {
+                    return uidMapping[t.typeId];
+                }
+                else {
+                    return t.typeName;
+                }
+            }
+        });
+    }
+    return null;
+}
+function typeToString(type) {
+    if (!type) {
+        return 'function';
+    }
+    if (typeof (type) === 'string') {
+        return type;
+    }
+    if (type.reflectedType) {
+        return "[key: " + type.reflectedType.key.typeName + "]: " + type.reflectedType.value.typeName;
+    }
+    else {
+        return type.typeName;
+    }
+}
+exports.typeToString = typeToString;

@@ -1,7 +1,8 @@
-import { YamlModel, YamlParameter, Exception } from './interfaces/YamlModel';
-import { Node, Tag, Parameter, Comment } from './interfaces/TypeDocModel';
+import { YamlModel, YamlParameter, Exception, Type } from './interfaces/YamlModel';
+import { Node, Tag, Parameter, Comment, ParameterType } from './interfaces/TypeDocModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
+import { typeToString } from './idResolver';
 
 export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>, moduleName: string, uidMapping: UidMapping): void {
     if (node.flags.isPrivate) {
@@ -66,8 +67,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
 
         if (node.signatures[0].type && node.kindString !== 'Constructor' && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
             myself.syntax.return = {
-                type: [node.signatures[0].type.name],
-                typeId: node.signatures[0].type.id
+                type: extractType(node.signatures[0].type)
             };
         }
 
@@ -120,8 +120,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             syntax: {
                 return: {
-                    type : [ node.type.name ? node.type.name : 'union' ],
-                    typeId : node.type.id
+                    type: extractType(node.type)
                 }
             }
         };
@@ -142,6 +141,43 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
             }
         });
     }
+}
+
+function extractType(type: ParameterType): Array<Type> {
+    let result: Array<Type> = [];
+    if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
+        result.push({
+            typeName: type.types[0].name.split('.')[0]
+        });
+    } else if (type.type === 'reflection') {
+        if (type.declaration && type.declaration.indexSignature && type.declaration.indexSignature.length) {
+            result.push({
+                reflectedType: {
+                    key: {
+                        typeName: type.declaration.indexSignature[0].parameters[0].type.name,
+                        typeId: type.declaration.indexSignature[0].parameters[0].type.id
+                    },
+                    value: {
+                        typeName: type.declaration.indexSignature[0].type.name,
+                        typeId: type.declaration.indexSignature[0].type.id
+                    }
+                }
+            });
+        }
+    } else {
+        if (type.name) {
+            result.push({
+                typeName: type.name,
+                typeId: type.id
+            });
+        } else {
+            result.push({
+                typeName: 'function'
+            });
+        }
+    }
+
+    return result;
 }
 
 function extractException(exception: Tag): Exception {
@@ -193,10 +229,9 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
             }
             return <YamlParameter> {
                 id: p.name,
-                type: [p.type.name ? p.type.name : 'function'],
+                type: extractType(p.type),
                 description: convertLinkToGfm(description),
-                optional: p.flags && p.flags.isOptional,
-                typeId: p.type.id
+                optional: p.flags && p.flags.isOptional
             };
         });
     }
@@ -205,7 +240,7 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
 
 function generateCallFunction(prefix: string, parameters: Array<YamlParameter>): string {
     if (parameters) {
-        return `${prefix}(${parameters.map(p => `${p.id}${p.optional ? '?' : ''}: ${p.type}`).join(', ')})`;
+        return `${prefix}(${parameters.map(p => `${p.id}${p.optional ? '?' : ''}: ${(typeToString(p.type[0]))}`).join(', ')})`;
     }
     return '';
 }

@@ -9,6 +9,8 @@ export interface Node {
     signatures: Array<Signature>;
     type: ParameterType;
     defaultValue: string;
+    parameters: Array<Parameter>;
+    indexSignature: Array<Node>;
 }
 
 interface Flags {
@@ -41,10 +43,13 @@ export interface Parameter {
     flags: ParameterFlag;
 }
 
-interface ParameterType {
+export interface ParameterType {
     type: string;
+    types: Array<ParameterType>;
     name: string;
     id: number;
+    typeArguments: Array<ParameterType>;
+    declaration: Node;
 }
 
 interface ParameterFlag {
