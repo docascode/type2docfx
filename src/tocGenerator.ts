@@ -13,32 +13,34 @@ export function generateToc(elements: Array<YamlModel>): Array<TocItem> {
                 return;
             }
             previousUid = element.uid;
-            let firstLevelToc: TocItem = {
+            let secondLevelToc: TocItem = {
                 uid: element.uid,
                 name: element.name.split('(')[0]
             };
-            /*
-            if (element.children) {
-                let items: Array<TocItem> = [];
-                (element.children as Array<YamlModel>).forEach(method => {
-                    if (method.name !== 'constructor') {
-                        items.push({
-                            uid: method.uid,
-                            name: method.name.split('(')[0]
-                        });
-                    }
 
+            if (result.length === 0 || result[result.length - 1].name !== element.module) {
+                result.push({
+                    uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
+                    name: element.module,
+                    items: []
                 });
-                firstLevelToc.items = items;
             }
-            */
-            result.push(firstLevelToc);
+            result[result.length - 1].items.push(secondLevelToc);
         });
     }
     return result;
 }
 
 function sortToc(a: YamlModel, b: YamlModel) {
+    let moduleNameA = a.module.toUpperCase();
+    let moduleNameB = b.module.toUpperCase();
+    if (moduleNameA < moduleNameB) {
+      return -1;
+    }
+    if (moduleNameA > moduleNameB) {
+      return 1;
+    }
+
     let nameA = a.name.toUpperCase();
     let nameB = b.name.toUpperCase();
     if (nameA < nameB) {

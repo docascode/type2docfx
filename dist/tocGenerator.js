@@ -12,32 +12,32 @@ function generateToc(elements) {
                 return;
             }
             previousUid = element.uid;
-            var firstLevelToc = {
+            var secondLevelToc = {
                 uid: element.uid,
                 name: element.name.split('(')[0]
             };
-            /*
-            if (element.children) {
-                let items: Array<TocItem> = [];
-                (element.children as Array<YamlModel>).forEach(method => {
-                    if (method.name !== 'constructor') {
-                        items.push({
-                            uid: method.uid,
-                            name: method.name.split('(')[0]
-                        });
-                    }
-
+            if (result.length === 0 || result[result.length - 1].name !== element.module) {
+                result.push({
+                    uid: element.package + "." + element.module.replace(/\//g, '.'),
+                    name: element.module,
+                    items: []
                 });
-                firstLevelToc.items = items;
             }
-            */
-            result.push(firstLevelToc);
+            result[result.length - 1].items.push(secondLevelToc);
         });
     }
     return result;
 }
 exports.generateToc = generateToc;
 function sortToc(a, b) {
+    var moduleNameA = a.module.toUpperCase();
+    var moduleNameB = b.module.toUpperCase();
+    if (moduleNameA < moduleNameB) {
+        return -1;
+    }
+    if (moduleNameA > moduleNameB) {
+        return 1;
+    }
     var nameA = a.name.toUpperCase();
     var nameB = b.name.toUpperCase();
     if (nameA < nameB) {

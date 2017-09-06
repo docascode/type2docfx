@@ -41,6 +41,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
         myself.package = tokens[0];
         if (moduleName) {
             myself.module = moduleName;
+        } else {
+            myself.module = 'Global';
         }
     }
 
