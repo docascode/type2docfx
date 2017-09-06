@@ -154,6 +154,9 @@ function findDescriptionInComment(comment) {
             return text_1.trim();
         }
     }
+    if (comment.shortText && comment.text) {
+        return comment.shortText + "\n" + comment.text;
+    }
     if (comment.text) {
         return comment.text.trim();
     }

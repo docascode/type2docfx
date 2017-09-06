@@ -169,6 +169,10 @@ function findDescriptionInComment(comment: Comment): string {
         }
     }
 
+    if (comment.shortText && comment.text) {
+        return `${comment.shortText}\n${comment.text}`;
+    }
+
     if (comment.text) {
         return comment.text.trim();
     }
