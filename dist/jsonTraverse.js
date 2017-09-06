@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
-function traverse(node, parentUid, parentContainer, uidMapping) {
+function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
     if (node.flags.isPrivate) {
         return;
     }
@@ -10,7 +10,8 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
         uid = node.name;
     }
     if (node.kindString === 'Module') {
-        uid += '.' + node.name.replace(/"/g, '').replace(/\//g, '.');
+        moduleName = node.name.replace(/"/g, '');
+        uid += '.' + moduleName.replace(/\//g, '.');
         console.log(node.kindString + ": " + uid);
     }
     var myself = null;
@@ -31,8 +32,8 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
         }
         var tokens = parentUid.split('.');
         myself.package = tokens[0];
-        if (tokens.length > 1) {
-            myself.module = parentUid.substring(tokens[0].length + 1);
+        if (moduleName) {
+            myself.module = moduleName;
         }
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
@@ -118,10 +119,10 @@ function traverse(node, parentUid, parentContainer, uidMapping) {
     if (node.children && node.children.length > 0) {
         node.children.forEach(function (subNode) {
             if (myself) {
-                traverse(subNode, uid, myself.children, uidMapping);
+                traverse(subNode, uid, myself.children, moduleName, uidMapping);
             }
             else {
-                traverse(subNode, uid, parentContainer, uidMapping);
+                traverse(subNode, uid, parentContainer, moduleName, uidMapping);
             }
         });
     }

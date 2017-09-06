@@ -26,7 +26,7 @@ else {
 var rootElements = [];
 var uidMapping = {};
 if (json) {
-    jsonTraverse_1.traverse(json, '', rootElements, uidMapping);
+    jsonTraverse_1.traverse(json, '', rootElements, null, uidMapping);
 }
 if (rootElements) {
     idResolver_1.resolveIds(rootElements, uidMapping);
@@ -43,7 +43,7 @@ if (rootElements) {
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         var filename = null;
         if (rootElement.module) {
-            filename = rootElement.module + "." + rootElement.name;
+            filename = rootElement.module.replace(/\//g, '.') + "." + rootElement.name;
         }
         else {
             filename = rootElement.name;

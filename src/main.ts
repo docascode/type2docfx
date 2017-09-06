@@ -30,7 +30,7 @@ if (fs.existsSync(path)) {
 let rootElements: Array<YamlModel> = [];
 let uidMapping: UidMapping = {};
 if (json) {
-    traverse(json, '', rootElements, uidMapping);
+    traverse(json, '', rootElements, null, uidMapping);
 }
 
 if (rootElements) {
@@ -50,7 +50,7 @@ if (rootElements) {
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         let filename = null;
         if (rootElement.module) {
-            filename = `${rootElement.module}.${rootElement.name}`;
+            filename = `${rootElement.module.replace(/\//g, '.')}.${rootElement.name}`;
         } else {
             filename = rootElement.name;
         }

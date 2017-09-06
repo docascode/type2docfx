@@ -3,7 +3,7 @@ import { Node, Tag, Parameter, Comment } from './interfaces/TypeDocModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 
-export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>, uidMapping: UidMapping): void {
+export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>, moduleName: string, uidMapping: UidMapping): void {
     if (node.flags.isPrivate) {
         return;
     }
@@ -15,7 +15,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     }
 
     if (node.kindString === 'Module') {
-        uid += '.' + node.name.replace(/"/g, '').replace(/\//g, '.');
+        moduleName = node.name.replace(/"/g, '');
+        uid += '.' + moduleName.replace(/\//g, '.');
         console.log(`${node.kindString}: ${uid}`);
     }
 
@@ -38,8 +39,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
 
         let tokens = parentUid.split('.');
         myself.package = tokens[0];
-        if (tokens.length > 1) {
-            myself.module = parentUid.substring(tokens[0].length + 1);
+        if (moduleName) {
+            myself.module = moduleName;
         }
     }
 
@@ -133,9 +134,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children as Array<YamlModel>, uidMapping);
+                traverse(subNode, uid, myself.children as Array<YamlModel>, moduleName, uidMapping);
             } else {
-                traverse(subNode, uid, parentContainer, uidMapping);
+                traverse(subNode, uid, parentContainer, moduleName, uidMapping);
             }
         });
     }
