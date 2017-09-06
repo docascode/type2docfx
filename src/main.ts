@@ -27,7 +27,7 @@ if (fs.existsSync(path)) {
     process.exit(1);
 }
 
-let rootElements: Array<YamlModel> = [];
+let rootElements: YamlModel[] = [];
 let uidMapping: UidMapping = {};
 if (json) {
     traverse(json, '', rootElements, null, uidMapping);

@@ -4,7 +4,7 @@ import { UidMapping } from './interfaces/UidMapping';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 
-export function traverse(node: Node, parentUid: string, parentContainer: Array<YamlModel>, moduleName: string, uidMapping: UidMapping): void {
+export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping): void {
     if (node.flags.isPrivate) {
         return;
     }
@@ -135,7 +135,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children as Array<YamlModel>, moduleName, uidMapping);
+                traverse(subNode, uid, myself.children as YamlModel[], moduleName, uidMapping);
             } else {
                 traverse(subNode, uid, parentContainer, moduleName, uidMapping);
             }
@@ -143,8 +143,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: Array<Y
     }
 }
 
-function extractType(type: ParameterType): Array<Type> {
-    let result: Array<Type> = [];
+function extractType(type: ParameterType): Type[] {
+    let result: Type[] = [];
     if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
         result.push({
             typeName: type.types[0].name.split('.')[0]
@@ -230,7 +230,7 @@ function findDescriptionInComment(comment: Comment): string {
     return '';
 }
 
-function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
+function fillParameters(parameters: Parameter[]): YamlParameter[] {
     if (parameters) {
         return parameters.map<YamlParameter>(p => {
             let description = '';
@@ -248,7 +248,7 @@ function fillParameters(parameters: Array<Parameter>): Array<YamlParameter> {
     return [];
 }
 
-function generateCallFunction(prefix: string, parameters: Array<YamlParameter>): string {
+function generateCallFunction(prefix: string, parameters: YamlParameter[]): string {
     if (parameters) {
         return `${prefix}(${parameters.map(p => `${p.id}${p.optional ? '?' : ''}: ${(typeToString(p.type[0]))}`).join(', ')})`;
     }

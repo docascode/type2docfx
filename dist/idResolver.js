@@ -50,7 +50,7 @@ function typeToString(type) {
     if (type.isArray) {
         var newType = type;
         newType.isArray = false;
-        return "Array<" + typeToString(newType) + ">";
+        return typeToString(newType) + "[]";
     }
     if (type.reflectedType) {
         return "[key: " + typeToString(type.reflectedType.key) + "]: " + typeToString(type.reflectedType.value);

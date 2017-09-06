@@ -1,6 +1,6 @@
 import { YamlModel, Root } from './interfaces/YamlModel';
 
-export function generatePackage(elements: Array<YamlModel>): Root {
+export function generatePackage(elements: YamlModel[]): Root {
     let root: Root = {
         items: [],
         references: []
@@ -21,7 +21,7 @@ export function generatePackage(elements: Array<YamlModel>): Root {
                 uid: element.uid,
                 name: element.name
             });
-            (packageModel.children as Array<string>).push(element.uid);
+            (packageModel.children as string[]).push(element.uid);
         });
     }
     root.items.push(packageModel);

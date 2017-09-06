@@ -1,19 +1,19 @@
 import { YamlModel, Type } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 
-export function resolveIds(elements: Array<YamlModel>, uidMapping: UidMapping): void {
+export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void {
     if (elements) {
         elements.forEach(element => {
-            (element.children as Array<YamlModel>).forEach(child => {
+            (element.children as YamlModel[]).forEach(child => {
                 if (child.syntax) {
                     if (child.syntax.parameters) {
                         child.syntax.parameters.forEach(p => {
-                            p.type = restoreTypes(p.type as Array<Type>, uidMapping);
+                            p.type = restoreTypes(p.type as Type[], uidMapping);
                         });
                     }
 
                     if (child.syntax.return) {
-                        child.syntax.return.type = restoreTypes(child.syntax.return.type as Array<Type>, uidMapping);
+                        child.syntax.return.type = restoreTypes(child.syntax.return.type as Type[], uidMapping);
                     }
                 }
             });
@@ -21,7 +21,7 @@ export function resolveIds(elements: Array<YamlModel>, uidMapping: UidMapping): 
     }
 }
 
-function restoreTypes(types: Array<Type>, uidMapping: UidMapping): Array<string> {
+function restoreTypes(types: Type[], uidMapping: UidMapping): string[] {
     if (types) {
         return types.map(t => {
             if (t.reflectedType) {
@@ -52,7 +52,7 @@ export function typeToString(type: Type | string): string {
     if (type.isArray) {
         let newType = type;
         newType.isArray = false;
-        return `Array<${typeToString(newType)}>`;
+        return `${typeToString(newType)}[]`;
     }
 
     if (type.reflectedType) {
