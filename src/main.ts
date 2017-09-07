@@ -11,12 +11,17 @@ import { YamlModel, Syntax, YamlParameter } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { UidMapping } from './interfaces/UidMapping';
 import { yamlHeader } from './common/constants';
+import { flags } from './common/flags';
 
 if (process.argv.length < 4) {
     console.log('Usage: node dist/main {apidoc_json_path} {output_path}');
 }
 let path = process.argv[2];
 let outputPath = process.argv[3];
+let hasModule = false;
+if (process.argv[4] === '-m') {
+    flags.hasModule = true;
+}
 
 let json = null;
 if (fs.existsSync(path)) {

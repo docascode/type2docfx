@@ -9,11 +9,16 @@ var tocGenerator_1 = require("./tocGenerator");
 var packageGenerator_1 = require("./packageGenerator");
 var idResolver_1 = require("./idResolver");
 var constants_1 = require("./common/constants");
+var flags_1 = require("./common/flags");
 if (process.argv.length < 4) {
     console.log('Usage: node dist/main {apidoc_json_path} {output_path}');
 }
 var path = process.argv[2];
 var outputPath = process.argv[3];
+var hasModule = false;
+if (process.argv[4] === '-m') {
+    flags_1.flags.hasModule = true;
+}
 var json = null;
 if (fs.existsSync(path)) {
     var dataStr = fs.readFileSync(path).toString();

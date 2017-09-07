@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 var idResolver_1 = require("./idResolver");
+var flags_1 = require("./common/flags");
 function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
     if (node.flags.isPrivate) {
         return;
@@ -33,11 +34,13 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         }
         var tokens = parentUid.split('.');
         myself.package = tokens[0];
-        if (moduleName) {
-            myself.module = moduleName;
-        }
-        else {
-            myself.module = 'Global';
+        if (flags_1.flags.hasModule) {
+            if (moduleName) {
+                myself.module = moduleName;
+            }
+            else {
+                myself.module = 'Global';
+            }
         }
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {

@@ -3,6 +3,7 @@ import { Node, Tag, Parameter, Comment, ParameterType } from './interfaces/TypeD
 import { UidMapping } from './interfaces/UidMapping';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
+import { flags } from './common/flags';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping): void {
     if (node.flags.isPrivate) {
@@ -40,10 +41,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
         let tokens = parentUid.split('.');
         myself.package = tokens[0];
-        if (moduleName) {
-            myself.module = moduleName;
-        } else {
-            myself.module = 'Global';
+        if (flags.hasModule) {
+            if (moduleName) {
+                myself.module = moduleName;
+            } else {
+                myself.module = 'Global';
+            }
         }
     }
 

@@ -7,7 +7,8 @@
         "src/tocGenerator.ts",
         "src/idResolver.ts",
         "src/common/constants.ts",
-        "src/helpers/linkConvertHelper.js"
+        "src/common/flags.ts",
+        "src/helpers/linkConvertHelper.js"        
     ],
     "compilerOptions": {
         "noImplicitAny": true,
