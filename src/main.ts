@@ -52,6 +52,10 @@ if (rootElements) {
 
     console.log('Yaml dump start.');
     rootElements.forEach(rootElement => {
+        if (rootElement.uid.indexOf('constructor') >= 0) {
+            return;
+        }
+
         let transfomredClass = postTransform(rootElement);
         // silly workaround to avoid issue in js-yaml dumper
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
