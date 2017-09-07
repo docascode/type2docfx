@@ -4,19 +4,18 @@ import { UidMapping } from './interfaces/UidMapping';
 export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void {
     if (elements) {
         elements.forEach(element => {
-            (element.children as YamlModel[]).forEach(child => {
-                if (child.syntax) {
-                    if (child.syntax.parameters) {
-                        child.syntax.parameters.forEach(p => {
-                            p.type = restoreTypes(p.type as Type[], uidMapping);
-                        });
-                    }
-
-                    if (child.syntax.return) {
-                        child.syntax.return.type = restoreTypes(child.syntax.return.type as Type[], uidMapping);
-                    }
+            if (element.syntax) {
+                if (element.syntax.parameters) {
+                    element.syntax.parameters.forEach(p => {
+                        p.type = restoreTypes(p.type as Type[], uidMapping);
+                    });
                 }
-            });
+
+                if (element.syntax.return) {
+                    element.syntax.return.type = restoreTypes(element.syntax.return.type as Type[], uidMapping);
+                }
+            }
+            resolveIds(element.children as YamlModel[], uidMapping);
         });
     }
 }
