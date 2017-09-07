@@ -41,10 +41,12 @@ if (json) {
 if (rootElements) {
     resolveIds(rootElements, uidMapping);
     let toc = generateToc(rootElements);
+    toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
     console.log('toc genrated.');
 
     let index = generatePackage(rootElements);
+    index = JSON.parse(JSON.stringify(index));
     fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(index)}`);
     console.log('index genrated.');
 

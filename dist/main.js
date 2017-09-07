@@ -36,9 +36,11 @@ if (json) {
 if (rootElements) {
     idResolver_1.resolveIds(rootElements, uidMapping);
     var toc = tocGenerator_1.generateToc(rootElements);
+    toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
     console.log('toc genrated.');
     var index = packageGenerator_1.generatePackage(rootElements);
+    index = JSON.parse(JSON.stringify(index));
     fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(index));
     console.log('index genrated.');
     console.log('Yaml dump start.');
