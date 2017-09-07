@@ -3,18 +3,23 @@ import { globalUid, constructorName } from './common/constants';
 
 export function postTransform(element: YamlModel): Root {
     let result: YamlModel[] = [element];
-    if (element.children) {
-        let childrenUid: string[] = [];
-        (element.children as YamlModel[]).sort(sortYamlModel).forEach(child => {
-            childrenUid.push(child.uid);
-            result.push(child);
-        });
-
-        element.children = childrenUid;
-    }
+    flattening(element, result);
     return {
         items: result
     };
+}
+
+function flattening(element: YamlModel, items: YamlModel[]) {
+  if (element.children) {
+    let childrenUid: string[] = [];
+    (element.children as YamlModel[]).sort(sortYamlModel).forEach(child => {
+        childrenUid.push(child.uid);
+        items.push(child);
+        flattening(child, items);
+    });
+
+    element.children = childrenUid;
+  }
 }
 
 function sortYamlModel(a: YamlModel, b: YamlModel): number {
