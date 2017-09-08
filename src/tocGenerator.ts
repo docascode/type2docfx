@@ -2,7 +2,7 @@ import { YamlModel } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
 
-export function generateToc(elements: YamlModel[]): TocItem[] {
+export function generateToc(elements: YamlModel[], packageUid: string): TocItem[] {
     let result: TocItem[] = [];
     let previousUid: string = null;
     if (elements) {
@@ -37,7 +37,11 @@ export function generateToc(elements: YamlModel[]): TocItem[] {
             }
         });
     }
-    return result;
+    return [{
+        uid: packageUid,
+        name: packageUid,
+        items: result
+    }];
 }
 
 function sortToc(a: YamlModel, b: YamlModel) {

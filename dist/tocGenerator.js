@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var flags_1 = require("./common/flags");
-function generateToc(elements) {
+function generateToc(elements, packageUid) {
     var result = [];
     var previousUid = null;
     if (elements) {
@@ -35,7 +35,11 @@ function generateToc(elements) {
             }
         });
     }
-    return result;
+    return [{
+            uid: packageUid,
+            name: packageUid,
+            items: result
+        }];
 }
 exports.generateToc = generateToc;
 function sortToc(a, b) {
