@@ -45,7 +45,8 @@ export function typeToString(type: Type | string): string {
     }
 
     if (typeof(type) === 'string') {
-        return type;
+        let t = type.split('.');
+        return t[t.length - 1];
     }
 
     if (type.isArray) {
@@ -59,6 +60,6 @@ export function typeToString(type: Type | string): string {
     } else if (type.genericType) {
         return `${typeToString(type.genericType.outter)}<${typeToString(type.genericType.inner)}>`;
     } else {
-        return type.typeName;
+        return typeToString(type.typeName);
     }
 }

@@ -44,7 +44,8 @@ function typeToString(type) {
         return 'function';
     }
     if (typeof (type) === 'string') {
-        return type;
+        var t = type.split('.');
+        return t[t.length - 1];
     }
     if (type.isArray) {
         var newType = type;
@@ -58,7 +59,7 @@ function typeToString(type) {
         return typeToString(type.genericType.outter) + "<" + typeToString(type.genericType.inner) + ">";
     }
     else {
-        return type.typeName;
+        return typeToString(type.typeName);
     }
 }
 exports.typeToString = typeToString;
