@@ -11,6 +11,19 @@ export interface YamlModel {
     numericValue?: number;
     package?: string;
     module?: string;
+    source?: Source;
+}
+
+interface Source {
+    path: string;
+    startLine: number;
+    remote: Remote;
+}
+
+interface Remote {
+    path: string;
+    branch: string;
+    repo: string;
 }
 
 interface Reference {
