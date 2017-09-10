@@ -38,7 +38,7 @@ if (json) {
     traverse(json, '', rootElements, null, uidMapping);
 }
 
-if (rootElements) {
+if (rootElements && rootElements.length) {
     resolveIds(rootElements, uidMapping);
     let index = generatePackage(rootElements);
     index = JSON.parse(JSON.stringify(index));

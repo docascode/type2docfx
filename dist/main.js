@@ -33,7 +33,7 @@ var uidMapping = {};
 if (json) {
     jsonTraverse_1.traverse(json, '', rootElements, null, uidMapping);
 }
-if (rootElements) {
+if (rootElements && rootElements.length) {
     idResolver_1.resolveIds(rootElements, uidMapping);
     var index = packageGenerator_1.generatePackage(rootElements);
     index = JSON.parse(JSON.stringify(index));
