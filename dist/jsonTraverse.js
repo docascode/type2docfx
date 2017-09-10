@@ -7,6 +7,9 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
     if (node.flags.isPrivate) {
         return;
     }
+    if (node.name && node.name[0] === '_') {
+        return;
+    }
     var uid = parentUid;
     if (node.kind === 0) {
         uid = node.name;

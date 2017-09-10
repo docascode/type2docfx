@@ -10,6 +10,10 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         return;
     }
 
+    if (node.name && node.name[0] === '_') {
+        return;
+    }
+
     let uid = parentUid;
 
     if (node.kind === 0) {
