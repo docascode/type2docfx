@@ -12,9 +12,11 @@ export interface YamlModel {
     package?: string;
     module?: string;
     source?: Source;
-    extends?: Array<Type> | Array<string>;
+    extends?: Types;
     deprecated?: Deprecated;
 }
+
+type Types = Array<Type> | Array<string>;
 
 interface Deprecated {
     content: string;
@@ -44,12 +46,12 @@ export interface Syntax {
 }
 
 interface Return {
-    type: Array<Type> | Array<string>;
+    type: Types;
 }
 
 export interface YamlParameter {
     id: string;
-    type: Array<Type> | Array<string>;
+    type: Types;
     description: string;
     optional?: boolean;
 }
