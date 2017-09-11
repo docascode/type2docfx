@@ -137,6 +137,15 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         myself.summary = convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
+
+        if (node.comment) {
+            let deprecated = findDeprecatedInfoInComment(node.comment);
+            if (deprecated != null) {
+                myself.deprecated = {
+                    content: convertLinkToGfm(deprecated)
+                };
+            }
+        }
     }
 
     if (node.children && node.children.length > 0) {
@@ -205,6 +214,23 @@ function extractException(exception: Tag): Exception {
             description: tokens[2]
         };
     }
+    return null;
+}
+
+function findDeprecatedInfoInComment(comment: Comment): string {
+    if (comment.tags) {
+        let text: string = null;
+        comment.tags.forEach(tag => {
+            if (tag.tag === 'deprecated') {
+                text =  tag.text;
+                return;
+            }
+        });
+        if (text) {
+            return text.trim();
+        }
+    }
+
     return null;
 }
 

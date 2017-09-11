@@ -12,6 +12,12 @@ export interface YamlModel {
     package?: string;
     module?: string;
     source?: Source;
+    extends?: Array<Type> | Array<string>;
+    deprecated?: Deprecated;
+}
+
+interface Deprecated {
+    content: string;
 }
 
 interface Source {

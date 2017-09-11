@@ -11,6 +11,7 @@ export interface Node {
     defaultValue: string;
     parameters: Array<Parameter>;
     indexSignature: Array<Node>;
+    extendedTypes: Array<ParameterType>;
 }
 
 interface Flags {

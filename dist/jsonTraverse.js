@@ -123,6 +123,14 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         myself.summary = linkConvertHelper_1.convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
+        if (node.comment) {
+            var deprecated = findDeprecatedInfoInComment(node.comment);
+            if (deprecated != null) {
+                myself.deprecated = {
+                    content: linkConvertHelper_1.convertLinkToGfm(deprecated)
+                };
+            }
+        }
     }
     if (node.children && node.children.length > 0) {
         node.children.forEach(function (subNode) {
@@ -196,17 +204,32 @@ function extractException(exception) {
     }
     return null;
 }
-function findDescriptionInComment(comment) {
+function findDeprecatedInfoInComment(comment) {
     if (comment.tags) {
         var text_1 = null;
         comment.tags.forEach(function (tag) {
-            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
+            if (tag.tag === 'deprecated') {
                 text_1 = tag.text;
                 return;
             }
         });
         if (text_1) {
             return text_1.trim();
+        }
+    }
+    return null;
+}
+function findDescriptionInComment(comment) {
+    if (comment.tags) {
+        var text_2 = null;
+        comment.tags.forEach(function (tag) {
+            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
+                text_2 = tag.text;
+                return;
+            }
+        });
+        if (text_2) {
+            return text_2.trim();
         }
     }
     if (comment.shortText && comment.text) {
