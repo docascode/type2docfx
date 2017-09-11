@@ -50,7 +50,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         }
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
-        if (!node.signatures || !node.signatures[0].comment && node.kindString === 'Method') {
+        if (!node.signatures) {
             return;
         }
         uid += '.' + node.name;
