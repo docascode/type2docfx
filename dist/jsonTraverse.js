@@ -35,6 +35,9 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         if (myself.type === 'enumeration') {
             myself.type = 'enum';
         }
+        if (node.extendedTypes && node.extendedTypes.length) {
+            myself.extends = extractType(node.extendedTypes[0]);
+        }
         var tokens = parentUid.split('.');
         myself.package = tokens[0];
         if (flags_1.flags.hasModule) {

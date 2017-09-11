@@ -43,6 +43,10 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             myself.type = 'enum';
         }
 
+        if (node.extendedTypes && node.extendedTypes.length) {
+            myself.extends = extractType(node.extendedTypes[0]);
+        }
+
         let tokens = parentUid.split('.');
         myself.package = tokens[0];
         if (flags.hasModule) {

@@ -14,6 +14,10 @@ export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void 
                 if (element.syntax.return) {
                     element.syntax.return.type = restoreTypes(element.syntax.return.type as Type[], uidMapping);
                 }
+
+                if (element.extends) {
+                    element.extends = restoreTypes(element.extends as Type[], uidMapping);
+                }
             }
             resolveIds(element.children as YamlModel[], uidMapping);
         });

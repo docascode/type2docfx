@@ -12,6 +12,9 @@ function resolveIds(elements, uidMapping) {
                 if (element.syntax.return) {
                     element.syntax.return.type = restoreTypes(element.syntax.return.type, uidMapping);
                 }
+                if (element.extends) {
+                    element.extends = restoreTypes(element.extends, uidMapping);
+                }
             }
             resolveIds(element.children, uidMapping);
         });
