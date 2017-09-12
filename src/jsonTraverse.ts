@@ -6,7 +6,7 @@ import { typeToString } from './idResolver';
 import { flags } from './common/flags';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping): void {
-    if (node.flags.isPrivate) {
+    if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
 
@@ -59,7 +59,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
-        if (!node.signatures) {
+        if (!node.signatures || node.inheritedFrom) {
             return;
         }
         uid += '.' + node.name;
@@ -119,6 +119,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if (node.kindString === 'Property' && node.name) {
+        if (node.inheritedFrom) {
+            return;
+        }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
         myself = {

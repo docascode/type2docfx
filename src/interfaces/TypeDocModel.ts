@@ -12,11 +12,13 @@ export interface Node {
     parameters: Array<Parameter>;
     indexSignature: Array<Node>;
     extendedTypes: Array<ParameterType>;
+    inheritedFrom: ParameterType;
 }
 
 interface Flags {
     isExported: boolean;
     isPrivate: boolean;
+    isProtected: boolean;
 }
 
 export interface Comment {

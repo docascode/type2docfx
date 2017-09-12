@@ -4,7 +4,7 @@ var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 var idResolver_1 = require("./idResolver");
 var flags_1 = require("./common/flags");
 function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
-    if (node.flags.isPrivate) {
+    if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
     if (node.name && node.name[0] === '_') {
@@ -50,7 +50,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         }
     }
     if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
-        if (!node.signatures) {
+        if (!node.signatures || node.inheritedFrom) {
             return;
         }
         uid += '.' + node.name;
@@ -105,6 +105,9 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         }
     }
     if (node.kindString === 'Property' && node.name) {
+        if (node.inheritedFrom) {
+            return;
+        }
         uid += '.' + node.name;
         console.log(" - " + node.kindString + ": " + uid);
         myself = {
