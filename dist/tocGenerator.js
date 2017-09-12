@@ -5,7 +5,11 @@ function generateToc(elements, packageUid) {
     var result = [];
     var previousUid = null;
     if (elements) {
-        elements.sort(sortToc).forEach(function (element) {
+        var tocs = elements;
+        if (flags_1.flags.enableAlphabetOrder) {
+            tocs = elements.sort(sortToc);
+        }
+        tocs.forEach(function (element) {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }

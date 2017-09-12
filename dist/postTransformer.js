@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = require("./common/constants");
+var flags_1 = require("./common/flags");
 function postTransform(element) {
     var result = [element];
     flattening(element, result);
@@ -12,7 +13,11 @@ exports.postTransform = postTransform;
 function flattening(element, items) {
     if (element.children) {
         var childrenUid_1 = [];
-        element.children.sort(sortYamlModel).forEach(function (child) {
+        var children = element.children;
+        if (flags_1.flags.enableAlphabetOrder) {
+            children = children.sort(sortYamlModel);
+        }
+        children.forEach(function (child) {
             childrenUid_1.push(child.uid);
             items.push(child);
             flattening(child, items);

@@ -19,8 +19,15 @@ if (process.argv.length < 4) {
 let path = process.argv[2];
 let outputPath = process.argv[3];
 let hasModule = false;
-if (process.argv[4] === '-m') {
-    flags.hasModule = true;
+
+for (let index in process.argv) {
+    if (process.argv[index] === '--hasModule') {
+        flags.hasModule = true;
+    }
+
+    if (process.argv[index] === '--disableAlphabetOrder') {
+        flags.enableAlphabetOrder = false;
+    }
 }
 
 let json = null;

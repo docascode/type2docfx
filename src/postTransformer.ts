@@ -1,5 +1,6 @@
 import { YamlModel, Root } from './interfaces/YamlModel';
 import { globalUid, constructorName } from './common/constants';
+import { flags } from './common/flags';
 
 export function postTransform(element: YamlModel): Root {
     let result: YamlModel[] = [element];
@@ -12,7 +13,11 @@ export function postTransform(element: YamlModel): Root {
 function flattening(element: YamlModel, items: YamlModel[]) {
   if (element.children) {
     let childrenUid: string[] = [];
-    (element.children as YamlModel[]).sort(sortYamlModel).forEach(child => {
+    let children = element.children as YamlModel[];
+    if (flags.enableAlphabetOrder) {
+      children = children.sort(sortYamlModel);
+    }
+    children.forEach(child => {
         childrenUid.push(child.uid);
         items.push(child);
         flattening(child, items);

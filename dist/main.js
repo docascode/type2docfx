@@ -16,8 +16,13 @@ if (process.argv.length < 4) {
 var path = process.argv[2];
 var outputPath = process.argv[3];
 var hasModule = false;
-if (process.argv[4] === '-m') {
-    flags_1.flags.hasModule = true;
+for (var index in process.argv) {
+    if (process.argv[index] === '--hasModule') {
+        flags_1.flags.hasModule = true;
+    }
+    if (process.argv[index] === '--disableAlphabetOrder') {
+        flags_1.flags.enableAlphabetOrder = false;
+    }
 }
 var json = null;
 if (fs.existsSync(path)) {

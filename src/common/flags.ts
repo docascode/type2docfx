@@ -1,3 +1,4 @@
 export let flags = {
-    hasModule: false
+    hasModule: false,
+    enableAlphabetOrder: true
 };

@@ -6,7 +6,11 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
     let result: TocItem[] = [];
     let previousUid: string = null;
     if (elements) {
-        elements.sort(sortToc).forEach(element => {
+        let tocs = elements;
+        if (flags.enableAlphabetOrder) {
+            tocs  = elements.sort(sortToc);
+        }
+        tocs.forEach(element => {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
             }
