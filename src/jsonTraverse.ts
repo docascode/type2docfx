@@ -152,6 +152,13 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                     content: convertLinkToGfm(deprecated)
                 };
             }
+
+            let inherits = findInheritsInfoInComment(node.comment);
+            if (inherits != null) {
+                myself.extends = [
+                    convertLinkToGfm(inherits)
+                ];
+            }
         }
     }
 
@@ -224,11 +231,19 @@ function extractException(exception: Tag): Exception {
     return null;
 }
 
+function findInheritsInfoInComment(comment: Comment): string {
+    return findInfoInComment('inherited', comment);
+}
+
 function findDeprecatedInfoInComment(comment: Comment): string {
+    return findInfoInComment('deprecated', comment);
+}
+
+function findInfoInComment(infoName: string, comment: Comment): string {
     if (comment.tags) {
         let text: string = null;
         comment.tags.forEach(tag => {
-            if (tag.tag === 'deprecated') {
+            if (tag.tag === infoName) {
                 text =  tag.text;
                 return;
             }

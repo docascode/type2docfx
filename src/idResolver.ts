@@ -1,4 +1,4 @@
-import { YamlModel, Type } from './interfaces/YamlModel';
+import { YamlModel, Type, Types } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 
 export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void {
@@ -7,25 +7,29 @@ export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void 
             if (element.syntax) {
                 if (element.syntax.parameters) {
                     element.syntax.parameters.forEach(p => {
-                        p.type = restoreTypes(p.type as Type[], uidMapping);
+                        p.type = restoreTypes(p.type, uidMapping);
                     });
                 }
 
                 if (element.syntax.return) {
-                    element.syntax.return.type = restoreTypes(element.syntax.return.type as Type[], uidMapping);
+                    element.syntax.return.type = restoreTypes(element.syntax.return.type, uidMapping);
                 }
             }
             if (element.extends) {
-                element.extends = restoreTypes(element.extends as Type[], uidMapping);
+                element.extends = restoreTypes(element.extends, uidMapping);
             }
             resolveIds(element.children as YamlModel[], uidMapping);
         });
     }
 }
 
-function restoreTypes(types: Type[], uidMapping: UidMapping): string[] {
+function restoreTypes(types: Types, uidMapping: UidMapping): string[] {
     if (types) {
-        return types.map(t => {
+        return (types as any[]).map(t => {
+            if (typeof(t) === 'string') {
+                return t;
+            }
+
             if (t.reflectedType) {
                 return typeToString(t);
             } else if (t.genericType) {

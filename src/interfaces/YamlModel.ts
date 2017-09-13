@@ -16,7 +16,7 @@ export interface YamlModel {
     deprecated?: Deprecated;
 }
 
-type Types = Array<Type> | Array<string>;
+export type Types = Array<Type> | Array<string>;
 
 interface Deprecated {
     content: string;

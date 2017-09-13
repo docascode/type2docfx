@@ -24,6 +24,9 @@ exports.resolveIds = resolveIds;
 function restoreTypes(types, uidMapping) {
     if (types) {
         return types.map(function (t) {
+            if (typeof (t) === 'string') {
+                return t;
+            }
             if (t.reflectedType) {
                 return typeToString(t);
             }

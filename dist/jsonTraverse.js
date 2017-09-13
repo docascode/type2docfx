@@ -136,6 +136,12 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
                     content: linkConvertHelper_1.convertLinkToGfm(deprecated)
                 };
             }
+            var inherits = findInheritsInfoInComment(node.comment);
+            if (inherits != null) {
+                myself.extends = [
+                    linkConvertHelper_1.convertLinkToGfm(inherits)
+                ];
+            }
         }
     }
     if (node.children && node.children.length > 0) {
@@ -210,11 +216,17 @@ function extractException(exception) {
     }
     return null;
 }
+function findInheritsInfoInComment(comment) {
+    return findInfoInComment('inherited', comment);
+}
 function findDeprecatedInfoInComment(comment) {
+    return findInfoInComment('deprecated', comment);
+}
+function findInfoInComment(infoName, comment) {
     if (comment.tags) {
         var text_1 = null;
         comment.tags.forEach(function (tag) {
-            if (tag.tag === 'deprecated') {
+            if (tag.tag === infoName) {
                 text_1 = tag.text;
                 return;
             }
