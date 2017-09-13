@@ -30,8 +30,10 @@
     "typescript": "^2.4.2"
   },
   "dependencies": {
+    "@types/commander": "^2.9.2",
     "@types/fs-extra": "^4.0.0",
     "@types/js-yaml": "^3.9.1",
+    "commander": "^2.11.0",
     "fs": "0.0.1-security",
     "fs-extra": "^4.0.1",
     "js-yaml": "^3.9.1"
