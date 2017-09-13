@@ -1,11 +1,12 @@
 import { YamlModel, YamlParameter, Exception, Type } from './interfaces/YamlModel';
 import { Node, Tag, Parameter, Comment, ParameterType } from './interfaces/TypeDocModel';
 import { UidMapping } from './interfaces/UidMapping';
+import { RepoConfig } from './interfaces/RepoConfig';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
 
-export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping): void {
+export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
@@ -45,6 +46,18 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
         if (node.extendedTypes && node.extendedTypes.length) {
             myself.extends = extractType(node.extendedTypes[0]);
+        }
+
+        if (repoConfig && node.sources && node.sources.length) {
+            myself.source = {
+                path: node.sources[0].fileName,
+                startLine: node.sources[0].line,
+                remote: {
+                    path: `${repoConfig.basePath}\\${node.sources[0].fileName}`,
+                    repo: repoConfig.repo,
+                    branch: repoConfig.branch
+                }
+            };
         }
 
         let tokens = parentUid.split('.');
@@ -165,9 +178,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children as YamlModel[], moduleName, uidMapping);
+                traverse(subNode, uid, myself.children as YamlModel[], moduleName, uidMapping, repoConfig);
             } else {
-                traverse(subNode, uid, parentContainer, moduleName, uidMapping);
+                traverse(subNode, uid, parentContainer, moduleName, uidMapping, repoConfig);
             }
         });
     }

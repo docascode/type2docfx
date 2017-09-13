@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 var idResolver_1 = require("./idResolver");
 var flags_1 = require("./common/flags");
-function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
+function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repoConfig) {
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
@@ -37,6 +37,17 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
         }
         if (node.extendedTypes && node.extendedTypes.length) {
             myself.extends = extractType(node.extendedTypes[0]);
+        }
+        if (repoConfig && node.sources && node.sources.length) {
+            myself.source = {
+                path: node.sources[0].fileName,
+                startLine: node.sources[0].line,
+                remote: {
+                    path: repoConfig.basePath + "\\" + node.sources[0].fileName,
+                    repo: repoConfig.repo,
+                    branch: repoConfig.branch
+                }
+            };
         }
         var tokens = parentUid.split('.');
         myself.package = tokens[0];
@@ -147,10 +158,10 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping) {
     if (node.children && node.children.length > 0) {
         node.children.forEach(function (subNode) {
             if (myself) {
-                traverse(subNode, uid, myself.children, moduleName, uidMapping);
+                traverse(subNode, uid, myself.children, moduleName, uidMapping, repoConfig);
             }
             else {
-                traverse(subNode, uid, parentContainer, moduleName, uidMapping);
+                traverse(subNode, uid, parentContainer, moduleName, uidMapping, repoConfig);
             }
         });
     }

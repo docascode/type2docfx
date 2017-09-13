@@ -13,6 +13,12 @@ export interface Node {
     indexSignature: Array<Node>;
     extendedTypes: Array<ParameterType>;
     inheritedFrom: ParameterType;
+    sources: Source[];
+}
+
+interface Source {
+    fileName: string;
+    line: number;
 }
 
 interface Flags {
