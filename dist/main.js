@@ -42,6 +42,10 @@ if (repoConfigPath && program.basePath) {
             basePath: program.basePath
         };
     }
+    else {
+        console.log("Error: repository config file path {" + repoConfigPath + "} doesn't exit!");
+        program.help();
+    }
 }
 if (program.hasModule) {
     flags_1.flags.hasModule = true;

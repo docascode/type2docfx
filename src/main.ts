@@ -48,6 +48,9 @@ if (repoConfigPath && program.basePath) {
             branch: temp.branch,
             basePath: program.basePath
         };
+    } else {
+        console.log(`Error: repository config file path {${repoConfigPath}} doesn't exit!`);
+        program.help();
     }
 }
 
