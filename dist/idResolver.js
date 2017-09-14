@@ -23,40 +23,47 @@ function resolveIds(elements, uidMapping) {
 exports.resolveIds = resolveIds;
 function restoreTypes(types, uidMapping) {
     if (types) {
-        return types.map(function (t) {
-            if (typeof (t) === 'string') {
-                return t;
-            }
-            if (t.reflectedType) {
-                return typeToString(t);
-            }
-            else if (t.genericType) {
-                return typeToString(t);
-            }
-            else {
-                if (t.typeId && uidMapping[t.typeId]) {
-                    return uidMapping[t.typeId];
-                }
-                else {
-                    return t.typeName;
-                }
-            }
-        });
+        return types.map(function (t) { return restoreType(t, uidMapping); });
     }
     return null;
+}
+function restoreType(type, uidMapping) {
+    if (typeof (type) === 'string') {
+        return type;
+    }
+    if (type.reflectedType) {
+        type.reflectedType.key = restoreType(type.reflectedType.key, uidMapping);
+        type.reflectedType.value = restoreType(type.reflectedType.value, uidMapping);
+    }
+    else if (type.genericType) {
+        type.genericType.inner = restoreType(type.genericType.inner, uidMapping);
+        type.genericType.outter = restoreType(type.genericType.outter, uidMapping);
+    }
+    else {
+        if (type.typeId && uidMapping[type.typeId]) {
+            type.typeName = "@" + uidMapping[type.typeId];
+        }
+    }
+    return typeToString(type);
 }
 function typeToString(type) {
     if (!type) {
         return 'function';
     }
     if (typeof (type) === 'string') {
-        var t = type.split('.');
-        return t[t.length - 1];
+        if (type[0] === '@') {
+            return type;
+        }
+        else {
+            var t = type.split('.');
+            return t[t.length - 1];
+        }
     }
     if (type.isArray) {
-        var newType = type;
-        newType.isArray = false;
-        return typeToString(newType) + "[]";
+        type.isArray = false;
+        var result = typeToString(type) + "[]";
+        type.isArray = true;
+        return result;
     }
     if (type.reflectedType) {
         return "[key: " + typeToString(type.reflectedType.key) + "]: " + typeToString(type.reflectedType.value);

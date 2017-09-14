@@ -60,7 +60,7 @@ if (fs.existsSync(path)) {
 }
 else {
     console.error('Api doc file ' + path + ' doesn\'t exist.');
-    process.exit(1);
+    program.help();
 }
 var rootElements = [];
 var uidMapping = {};

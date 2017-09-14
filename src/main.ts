@@ -68,7 +68,7 @@ if (fs.existsSync(path)) {
     json = JSON.parse(dataStr);
 } else {
     console.error('Api doc file ' + path + ' doesn\'t exist.');
-    process.exit(1);
+    program.help();
 }
 
 let rootElements: YamlModel[] = [];

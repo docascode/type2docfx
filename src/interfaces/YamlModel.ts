@@ -69,14 +69,14 @@ export interface Type {
     isArray?: boolean;
 }
 
-interface GenericType {
-    outter: Type;
-    inner: Type;
+export interface GenericType {
+    outter: Type | string;
+    inner: Type | string;
 }
 
-interface ReflectedType {
-    key: Type;
-    value: Type;
+export interface ReflectedType {
+    key: Type | string;
+    value: Type | string;
 }
 
 export interface Exception {
