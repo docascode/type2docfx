@@ -25,6 +25,7 @@ interface Flags {
     isExported: boolean;
     isPrivate: boolean;
     isProtected: boolean;
+    isStatic: boolean;
 }
 
 export interface Comment {

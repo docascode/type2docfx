@@ -1,5 +1,6 @@
 import { YamlModel, Type, Types, GenericType, ReflectedType } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
+import { typePlaceHolder } from './common/constants';
 
 export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void {
     if (elements) {
@@ -13,6 +14,9 @@ export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void 
 
                 if (element.syntax.return) {
                     element.syntax.return.type = restoreTypes(element.syntax.return.type, uidMapping);
+                    if (element.type === 'property' && element.syntax.content) {
+                        element.syntax.content = element.syntax.content.replace(typePlaceHolder, element.syntax.return.type[0]);
+                    }
                 }
             }
             if (element.extends) {

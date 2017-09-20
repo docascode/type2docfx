@@ -5,6 +5,7 @@ import { RepoConfig } from './interfaces/RepoConfig';
 import { convertLinkToGfm } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
+import { typePlaceHolder } from './common/constants';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
     if (node.flags.isPrivate || node.flags.isProtected) {
@@ -106,7 +107,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
         if (node.kindString === 'Method') {
             myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
-            myself.syntax.content = `function ${myself.name}`;
+            myself.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${myself.name}`;
             myself.type = 'method';
         } else {
             myself.name = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
@@ -146,6 +147,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             type: node.kindString.toLowerCase(),
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             syntax: {
+                content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typePlaceHolder} ${node.name}`,
                 return: {
                     type: extractType(node.type)
                 }

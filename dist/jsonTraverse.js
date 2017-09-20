@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 var idResolver_1 = require("./idResolver");
 var flags_1 = require("./common/flags");
+var constants_1 = require("./common/constants");
 function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repoConfig) {
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
@@ -91,7 +92,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         }
         if (node.kindString === 'Method') {
             myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
-            myself.syntax.content = "function " + myself.name;
+            myself.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + myself.name;
             myself.type = 'method';
         }
         else {
@@ -130,6 +131,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             type: node.kindString.toLowerCase(),
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             syntax: {
+                content: "" + (node.flags && node.flags.isStatic ? 'static ' : '') + constants_1.typePlaceHolder + " " + node.name,
                 return: {
                     type: extractType(node.type)
                 }
