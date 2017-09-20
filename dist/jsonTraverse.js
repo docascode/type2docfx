@@ -42,7 +42,8 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         if (repoConfig && node.sources && node.sources.length) {
             myself.source = {
                 path: node.sources[0].fileName,
-                startLine: node.sources[0].line,
+                // shift one line up as systematic off for TypeDoc
+                startLine: node.sources[0].line > 0 ? node.sources[0].line - 1 : 0,
                 remote: {
                     path: repoConfig.basePath + "\\" + node.sources[0].fileName,
                     repo: repoConfig.repo,
