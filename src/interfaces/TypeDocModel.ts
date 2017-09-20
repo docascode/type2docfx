@@ -3,17 +3,18 @@ export interface Node {
     name: string;
     kind: number;
     kindString: string;
-    children: Array<Node>;
+    children: Node[];
     flags: Flags;
     comment: Comment;
-    signatures: Array<Signature>;
+    signatures: Signature[];
     type: ParameterType;
     defaultValue: string;
-    parameters: Array<Parameter>;
-    indexSignature: Array<Node>;
-    extendedTypes: Array<ParameterType>;
+    parameters: Parameter[];
+    indexSignature: Node[];
+    extendedTypes: ParameterType[];
     inheritedFrom: ParameterType;
     sources: Source[];
+    typeParameter: ParameterType[];
 }
 
 interface Source {
@@ -31,7 +32,7 @@ interface Flags {
 export interface Comment {
     text?: string;
     shortText?: string;
-    tags?: Array<Tag>;
+    tags?: Tag[];
 }
 
 export interface Tag {
@@ -42,7 +43,7 @@ export interface Tag {
 
 interface Signature {
     comment: Comment;
-    parameters: Array<Parameter>;
+    parameters: Parameter[];
     type?: ParameterType;
 }
 
@@ -55,10 +56,10 @@ export interface Parameter {
 
 export interface ParameterType {
     type: string;
-    types: Array<ParameterType>;
+    types: ParameterType[];
     name: string;
     id: number;
-    typeArguments: Array<ParameterType>;
+    typeArguments: ParameterType[];
     declaration: Node;
     elementType: ParameterType;
 }

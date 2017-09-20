@@ -26,7 +26,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         console.log(node.kindString + ": " + uid);
         myself = {
             uid: uid,
-            name: node.name,
+            name: node.name + getGenericType(node.typeParameter),
             fullName: node.name,
             children: [],
             langs: ['typeScript'],
@@ -92,7 +92,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             myself.exceptions = exceptions.map(function (e) { return extractException(e); });
         }
         if (node.kindString === 'Method') {
-            myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
+            myself.name = generateCallFunction(myself.name, myself.syntax.parameters, node.typeParameter);
             myself.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + myself.name;
             myself.type = 'method';
         }
@@ -292,9 +292,15 @@ function fillParameters(parameters) {
     }
     return [];
 }
-function generateCallFunction(prefix, parameters) {
+function generateCallFunction(prefix, parameters, typeParameters) {
     if (parameters) {
-        return prefix + "(" + parameters.map(function (p) { return "" + p.id + (p.optional ? '?' : '') + ": " + (idResolver_1.typeToString(p.type[0])); }).join(', ') + ")";
+        return "" + prefix + getGenericType(typeParameters) + "(" + parameters.map(function (p) { return "" + p.id + (p.optional ? '?' : '') + ": " + (idResolver_1.typeToString(p.type[0])); }).join(', ') + ")";
+    }
+    return '';
+}
+function getGenericType(typeParameters) {
+    if (typeParameters && typeParameters.length) {
+        return "<" + typeParameters[0].name + ">";
     }
     return '';
 }

@@ -34,7 +34,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         console.log(`${node.kindString}: ${uid}`);
         myself = {
             uid: uid,
-            name: node.name,
+            name: node.name + getGenericType(node.typeParameter),
             fullName: node.name,
             children: [],
             langs: ['typeScript'],
@@ -107,7 +107,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
 
         if (node.kindString === 'Method') {
-            myself.name = generateCallFunction(myself.name, myself.syntax.parameters);
+            myself.name = generateCallFunction(myself.name, myself.syntax.parameters, node.typeParameter);
             myself.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${myself.name}`;
             myself.type = 'method';
         } else {
@@ -319,9 +319,16 @@ function fillParameters(parameters: Parameter[]): YamlParameter[] {
     return [];
 }
 
-function generateCallFunction(prefix: string, parameters: YamlParameter[]): string {
+function generateCallFunction(prefix: string, parameters: YamlParameter[], typeParameters?: ParameterType[]): string {
     if (parameters) {
-        return `${prefix}(${parameters.map(p => `${p.id}${p.optional ? '?' : ''}: ${(typeToString(p.type[0]))}`).join(', ')})`;
+        return `${prefix}${getGenericType(typeParameters)}(${parameters.map(p => `${p.id}${p.optional ? '?' : ''}: ${(typeToString(p.type[0]))}`).join(', ')})`;
+    }
+    return '';
+}
+
+function getGenericType(typeParameters: ParameterType[]): string {
+    if (typeParameters && typeParameters.length) {
+        return `<${typeParameters[0].name}>`;
     }
     return '';
 }
