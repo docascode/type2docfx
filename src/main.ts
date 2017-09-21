@@ -104,7 +104,6 @@ if (rootElements && rootElements.length) {
         } else {
             filename = rootElement.name;
         }
-        filename = filename.replace(/<.*>/, '');
         filename = filename.split('(')[0];
         console.log(`Dump ${outputPath}/${filename}.yml`);
         fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);

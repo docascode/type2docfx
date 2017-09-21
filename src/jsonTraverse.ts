@@ -34,8 +34,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         console.log(`${node.kindString}: ${uid}`);
         myself = {
             uid: uid,
-            name: node.name + getGenericType(node.typeParameter),
-            fullName: node.name,
+            name: node.name,
+            fullName: node.name + getGenericType(node.typeParameter),
             children: [],
             langs: ['typeScript'],
             type: node.kindString.toLowerCase(),
