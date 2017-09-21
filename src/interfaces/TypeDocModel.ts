@@ -45,6 +45,7 @@ interface Signature {
     comment: Comment;
     parameters: Parameter[];
     type?: ParameterType;
+    typeParameter: ParameterType[];
 }
 
 export interface Parameter {

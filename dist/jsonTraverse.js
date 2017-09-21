@@ -92,7 +92,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             myself.exceptions = exceptions.map(function (e) { return extractException(e); });
         }
         if (node.kindString === 'Method') {
-            myself.name = generateCallFunction(myself.name, myself.syntax.parameters, node.typeParameter);
+            myself.name = generateCallFunction(myself.name, myself.syntax.parameters, node.signatures[0].typeParameter);
             myself.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + myself.name;
             myself.type = 'method';
         }
