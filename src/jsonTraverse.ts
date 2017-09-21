@@ -6,6 +6,7 @@ import { convertLinkToGfm, getTextAndLink } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
 import { typePlaceHolder } from './common/constants';
+import * as _ from 'lodash';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
     if (node.flags.isPrivate || node.flags.isProtected) {
@@ -88,35 +89,11 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             langs: ['typeScript'],
             summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
             syntax: {
-                parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
         };
 
-        if (node.signatures[0].type && node.kindString !== 'Constructor' && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
-            myself.syntax.return = {
-                type: extractType(node.signatures[0].type)
-            };
-        }
-
-        let exceptions;
-        if (node.signatures[0].comment && node.signatures[0].comment.tags) {
-            exceptions = node.signatures[0].comment.tags.filter(tag => tag.tag === 'throws');
-        }
-
-        if (exceptions && exceptions.length) {
-            myself.exceptions = exceptions.map(e => extractException(e));
-        }
-
-        if (node.kindString === 'Method') {
-            myself.name = generateCallFunction(myself.name, myself.syntax.parameters, node.signatures[0].typeParameter);
-            myself.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${myself.name}`;
-            myself.type = 'method';
-        } else {
-            myself.name = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
-            myself.syntax.content = `new ${myself.name}`;
-            myself.type = 'constructor';
-        }
+        extractInformationFromSignature(myself, node, 0);
     }
 
     if (node.kindString === 'Enumeration member' && node.name) {
@@ -182,6 +159,15 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 }
             }
         }
+
+        if (node.signatures && node.signatures.length > 1) {
+            for (let index = 1; index < node.signatures.length; index++) {
+                let newMethod = _.cloneDeep(myself);
+                newMethod.uid = `${newMethod.uid}_${index}`;
+                extractInformationFromSignature(newMethod, node, index);
+                parentContainer.push(newMethod);
+            }
+        }
     }
 
     if (node.children && node.children.length > 0) {
@@ -192,6 +178,35 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 traverse(subNode, uid, parentContainer, moduleName, uidMapping, repoConfig);
             }
         });
+    }
+}
+
+function extractInformationFromSignature(method: YamlModel, node: Node, signatureIndex: number) {
+    method.syntax.parameters = fillParameters(node.signatures[0].parameters);
+
+    if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name && node.signatures[signatureIndex].type.name !== 'void') {
+        method.syntax.return = {
+            type: extractType(node.signatures[signatureIndex].type)
+        };
+    }
+
+    let exceptions;
+    if (node.signatures[signatureIndex].comment && node.signatures[signatureIndex].comment.tags) {
+        exceptions = node.signatures[signatureIndex].comment.tags.filter(tag => tag.tag === 'throws');
+    }
+
+    if (exceptions && exceptions.length) {
+        method.exceptions = exceptions.map(e => extractException(e));
+    }
+
+    if (node.kindString === 'Method') {
+        method.name = generateCallFunction(node.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
+        method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${method.name}`;
+        method.type = 'method';
+    } else {
+        method.name = generateCallFunction(method.uid.split('.').reverse()[1], method.syntax.parameters);
+        method.syntax.content = `new ${method.name}`;
+        method.type = 'constructor';
     }
 }
 

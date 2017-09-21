@@ -4,6 +4,7 @@ var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 var idResolver_1 = require("./idResolver");
 var flags_1 = require("./common/flags");
 var constants_1 = require("./common/constants");
+var _ = require("lodash");
 function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repoConfig) {
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
@@ -77,32 +78,10 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             langs: ['typeScript'],
             summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
             syntax: {
-                parameters: fillParameters(node.signatures[0].parameters),
                 content: ''
             }
         };
-        if (node.signatures[0].type && node.kindString !== 'Constructor' && node.signatures[0].type.name && node.signatures[0].type.name !== 'void') {
-            myself.syntax.return = {
-                type: extractType(node.signatures[0].type)
-            };
-        }
-        var exceptions = void 0;
-        if (node.signatures[0].comment && node.signatures[0].comment.tags) {
-            exceptions = node.signatures[0].comment.tags.filter(function (tag) { return tag.tag === 'throws'; });
-        }
-        if (exceptions && exceptions.length) {
-            myself.exceptions = exceptions.map(function (e) { return extractException(e); });
-        }
-        if (node.kindString === 'Method') {
-            myself.name = generateCallFunction(myself.name, myself.syntax.parameters, node.signatures[0].typeParameter);
-            myself.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + myself.name;
-            myself.type = 'method';
-        }
-        else {
-            myself.name = generateCallFunction(myself.uid.split('.').reverse()[1], myself.syntax.parameters);
-            myself.syntax.content = "new " + myself.name;
-            myself.type = 'constructor';
-        }
+        extractInformationFromSignature(myself, node, 0);
     }
     if (node.kindString === 'Enumeration member' && node.name) {
         uid += '.' + node.name;
@@ -163,6 +142,14 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
                 }
             }
         }
+        if (node.signatures && node.signatures.length > 1) {
+            for (var index = 1; index < node.signatures.length; index++) {
+                var newMethod = _.cloneDeep(myself);
+                newMethod.uid = newMethod.uid + "_" + index;
+                extractInformationFromSignature(newMethod, node, index);
+                parentContainer.push(newMethod);
+            }
+        }
     }
     if (node.children && node.children.length > 0) {
         node.children.forEach(function (subNode) {
@@ -176,6 +163,31 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
     }
 }
 exports.traverse = traverse;
+function extractInformationFromSignature(method, node, signatureIndex) {
+    method.syntax.parameters = fillParameters(node.signatures[0].parameters);
+    if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name && node.signatures[signatureIndex].type.name !== 'void') {
+        method.syntax.return = {
+            type: extractType(node.signatures[signatureIndex].type)
+        };
+    }
+    var exceptions;
+    if (node.signatures[signatureIndex].comment && node.signatures[signatureIndex].comment.tags) {
+        exceptions = node.signatures[signatureIndex].comment.tags.filter(function (tag) { return tag.tag === 'throws'; });
+    }
+    if (exceptions && exceptions.length) {
+        method.exceptions = exceptions.map(function (e) { return extractException(e); });
+    }
+    if (node.kindString === 'Method') {
+        method.name = generateCallFunction(node.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
+        method.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + method.name;
+        method.type = 'method';
+    }
+    else {
+        method.name = generateCallFunction(method.uid.split('.').reverse()[1], method.syntax.parameters);
+        method.syntax.content = "new " + method.name;
+        method.type = 'constructor';
+    }
+}
 function extractType(type) {
     var result = [];
     if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
