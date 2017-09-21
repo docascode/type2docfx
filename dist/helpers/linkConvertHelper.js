@@ -5,9 +5,13 @@ var dfmRegex = [
     /\{(@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)(?:(?:\|| +)([^}]+))?\}/g
 ];
 function getTextAndLink(text) {
-    var matches = text.match(/\[(?:([^\]]+))\]{(@link|@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)}/);
+    var matches = dfmRegex[0].exec(text);
     if (matches[1] && matches[3]) {
         return [matches[1], matches[3]];
+    }
+    matches = dfmRegex[1].exec(text);
+    if (matches[3] && matches[2]) {
+        return [matches[3], matches[2]];
     }
     return [];
 }
