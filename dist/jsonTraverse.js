@@ -37,7 +37,9 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             myself.type = 'enum';
         }
         if (node.extendedTypes && node.extendedTypes.length) {
-            myself.extends = extractType(node.extendedTypes[0]);
+            myself.extends = {
+                name: extractType(node.extendedTypes[0])[0]
+            };
         }
         if (repoConfig && node.sources && node.sources.length) {
             myself.source = {
@@ -152,9 +154,13 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             }
             var inherits = findInheritsInfoInComment(node.comment);
             if (inherits != null) {
-                myself.extends = [
-                    linkConvertHelper_1.convertLinkToGfm(inherits)
-                ];
+                var tokens = linkConvertHelper_1.getTextAndLink(inherits);
+                if (tokens.length === 2) {
+                    myself.extends = {
+                        name: tokens[0],
+                        url: tokens[1]
+                    };
+                }
             }
         }
     }
@@ -231,7 +237,7 @@ function extractException(exception) {
     return null;
 }
 function findInheritsInfoInComment(comment) {
-    return findInfoInComment('inherited', comment);
+    return findInfoInComment('inherits', comment);
 }
 function findDeprecatedInfoInComment(comment) {
     return findInfoInComment('deprecated', comment);

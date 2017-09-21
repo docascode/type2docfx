@@ -2,7 +2,7 @@ import { YamlModel, YamlParameter, Exception, Type } from './interfaces/YamlMode
 import { Node, Tag, Parameter, Comment, ParameterType } from './interfaces/TypeDocModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
-import { convertLinkToGfm } from './helpers/linkConvertHelper';
+import { convertLinkToGfm, getTextAndLink } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
 import { typePlaceHolder } from './common/constants';
@@ -46,7 +46,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
-            myself.extends = extractType(node.extendedTypes[0]);
+            myself.extends = {
+                name : extractType(node.extendedTypes[0])[0]
+            };
         }
 
         if (repoConfig && node.sources && node.sources.length) {
@@ -171,9 +173,13 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
             let inherits = findInheritsInfoInComment(node.comment);
             if (inherits != null) {
-                myself.extends = [
-                    convertLinkToGfm(inherits)
-                ];
+                let tokens = getTextAndLink(inherits);
+                if (tokens.length === 2) {
+                    myself.extends = {
+                        name: tokens[0],
+                        url: tokens[1]
+                    };
+                }
             }
         }
     }
@@ -248,7 +254,7 @@ function extractException(exception: Tag): Exception {
 }
 
 function findInheritsInfoInComment(comment: Comment): string {
-    return findInfoInComment('inherited', comment);
+    return findInfoInComment('inherits', comment);
 }
 
 function findDeprecatedInfoInComment(comment: Comment): string {

@@ -12,12 +12,16 @@ export interface YamlModel {
     package?: string;
     module?: string;
     source?: Source;
-    extends?: Types;
+    extends?: NameWithUrl;
     deprecated?: Deprecated;
 }
 
 export type Types = Array<Type> | Array<string>;
 
+interface NameWithUrl {
+    name: Type | string;
+    url?: string;
+}
 interface Deprecated {
     content: string;
 }

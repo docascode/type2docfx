@@ -1,10 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var dfmRegex = [
+    /\[(?:([^\]]+))\]{(@link|@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)}/g,
+    /\{(@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)(?:(?:\|| +)([^}]+))?\}/g
+];
+function getTextAndLink(text) {
+    var matches = text.match(/\[(?:([^\]]+))\]{(@link|@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)}/);
+    if (matches[1] && matches[3]) {
+        return [matches[1], matches[3]];
+    }
+    return [];
+}
+exports.getTextAndLink = getTextAndLink;
 function convertLinkToGfm(text, uidPrefix) {
-    var linkRules = [
+    if (!text)
+        return '';
+    var dfmLinkRules = [
         {
             // [link text]{@link namepathOrURL}
-            regexp: /\[(?:([^\]]+))\]{(@link|@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)}/g,
+            regexp: dfmRegex[0],
             callback: function (match, p1, p2, p3) {
                 return generateDfmLink(p2, p3, p1);
             }
@@ -13,16 +27,14 @@ function convertLinkToGfm(text, uidPrefix) {
             // {@link namepathOrURL}
             // {@link namepathOrURL|link text}
             // {@link namepathOrURL link text (after the first space)}
-            regexp: /\{(@link|@linkcode|@linkplain) +(?:module:)?([^}| ]+)(?:(?:\|| +)([^}]+))?\}/g,
+            regexp: dfmRegex[1],
             callback: function (match, p1, p2, p3) {
                 return generateDfmLink(p1, p2, p3);
             }
         }
     ];
-    if (!text)
-        return '';
     var result = text;
-    linkRules.forEach(function (r) {
+    dfmLinkRules.forEach(function (r) {
         result = result.replace(r.regexp, r.callback);
     });
     return result;

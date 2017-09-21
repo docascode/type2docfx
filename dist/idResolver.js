@@ -18,7 +18,7 @@ function resolveIds(elements, uidMapping) {
                 }
             }
             if (element.extends) {
-                element.extends = restoreTypes(element.extends, uidMapping);
+                element.extends.name = restoreTypes([element.extends.name], uidMapping)[0];
             }
             resolveIds(element.children, uidMapping);
         });

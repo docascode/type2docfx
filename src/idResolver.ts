@@ -20,7 +20,7 @@ export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void 
                 }
             }
             if (element.extends) {
-                element.extends = restoreTypes(element.extends, uidMapping);
+                element.extends.name = restoreTypes([element.extends.name as Type], uidMapping)[0];
             }
             resolveIds(element.children as YamlModel[], uidMapping);
         });
