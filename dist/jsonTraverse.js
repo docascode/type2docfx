@@ -200,19 +200,31 @@ function extractType(type) {
         newType[0].isArray = true;
         result.push(newType[0]);
     }
-    else if (type.type === 'reflection' && type.declaration && type.declaration.indexSignature && type.declaration.indexSignature.length) {
-        result.push({
-            reflectedType: {
-                key: {
-                    typeName: type.declaration.indexSignature[0].parameters[0].type.name,
-                    typeId: type.declaration.indexSignature[0].parameters[0].type.id
-                },
-                value: {
-                    typeName: type.declaration.indexSignature[0].type.name,
-                    typeId: type.declaration.indexSignature[0].type.id
+    else if (type.type === 'reflection' && type.declaration) {
+        if (type.declaration.indexSignature && type.declaration.indexSignature.length) {
+            result.push({
+                reflectedType: {
+                    key: {
+                        typeName: type.declaration.indexSignature[0].parameters[0].type.name,
+                        typeId: type.declaration.indexSignature[0].parameters[0].type.id
+                    },
+                    value: {
+                        typeName: type.declaration.indexSignature[0].type.name,
+                        typeId: type.declaration.indexSignature[0].type.id
+                    }
                 }
-            }
-        });
+            });
+        }
+        else if (type.declaration.signatures && type.declaration.signatures.length) {
+            result.push({
+                typeName: generateCallFunction('', fillParameters(type.declaration.signatures[0].parameters)) + " => " + idResolver_1.typeToString(extractType(type.declaration.signatures[0].type)[0])
+            });
+        }
+        else {
+            result.push({
+                typeName: 'function'
+            });
+        }
     }
     else if (type.typeArguments && type.typeArguments.length) {
         result.push({
