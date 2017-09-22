@@ -258,8 +258,8 @@ function extractType(type: ParameterType): Type[] {
 }
 
 function extractException(exception: Tag): Exception {
-    let tokens = exception.text.match(/{(.*)} +(.*)/);
-    if (tokens.length === 3) {
+    let tokens = exception.text.match(/{(.*)} +((.|\s)+)/);
+    if (tokens.length >= 3) {
         return {
             type: tokens[1],
             description: tokens[2]

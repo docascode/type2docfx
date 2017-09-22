@@ -239,8 +239,8 @@ function extractType(type) {
     return result;
 }
 function extractException(exception) {
-    var tokens = exception.text.match(/{(.*)} +(.*)/);
-    if (tokens.length === 3) {
+    var tokens = exception.text.match(/{(.*)} +((.|\s)+)/);
+    if (tokens.length >= 3) {
         return {
             type: tokens[1],
             description: tokens[2]
