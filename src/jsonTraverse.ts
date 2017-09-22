@@ -182,7 +182,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 }
 
 function extractInformationFromSignature(method: YamlModel, node: Node, signatureIndex: number) {
-    method.syntax.parameters = fillParameters(node.signatures[0].parameters);
+    method.syntax.parameters = fillParameters(node.signatures[signatureIndex].parameters);
 
     if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {
@@ -200,12 +200,14 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
     }
 
     if (node.kindString === 'Method') {
-        method.name = generateCallFunction(node.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
-        method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${method.name}`;
+        method.name = node.name;
+        let functionBody = generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
+        method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${functionBody}`;
         method.type = 'method';
     } else {
-        method.name = generateCallFunction(method.uid.split('.').reverse()[1], method.syntax.parameters);
-        method.syntax.content = `new ${method.name}`;
+        method.name = method.uid.split('.').reverse()[1];
+        let functionBody = generateCallFunction(method.name, method.syntax.parameters);
+        method.syntax.content = `new ${functionBody}`;
         method.type = 'constructor';
     }
 }

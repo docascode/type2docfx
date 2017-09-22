@@ -164,7 +164,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
 }
 exports.traverse = traverse;
 function extractInformationFromSignature(method, node, signatureIndex) {
-    method.syntax.parameters = fillParameters(node.signatures[0].parameters);
+    method.syntax.parameters = fillParameters(node.signatures[signatureIndex].parameters);
     if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {
             type: extractType(node.signatures[signatureIndex].type)
@@ -178,13 +178,15 @@ function extractInformationFromSignature(method, node, signatureIndex) {
         method.exceptions = exceptions.map(function (e) { return extractException(e); });
     }
     if (node.kindString === 'Method') {
-        method.name = generateCallFunction(node.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
-        method.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + method.name;
+        method.name = node.name;
+        var functionBody = generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
+        method.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + functionBody;
         method.type = 'method';
     }
     else {
-        method.name = generateCallFunction(method.uid.split('.').reverse()[1], method.syntax.parameters);
-        method.syntax.content = "new " + method.name;
+        method.name = method.uid.split('.').reverse()[1];
+        var functionBody = generateCallFunction(method.name, method.syntax.parameters);
+        method.syntax.content = "new " + functionBody;
         method.type = 'constructor';
     }
 }
