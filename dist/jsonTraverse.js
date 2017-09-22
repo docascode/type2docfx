@@ -137,7 +137,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
                 if (tokens.length === 2) {
                     myself.extends = {
                         name: tokens[0],
-                        url: tokens[1]
+                        href: tokens[1]
                     };
                 }
             }

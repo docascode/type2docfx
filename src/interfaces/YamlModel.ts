@@ -20,7 +20,7 @@ export type Types = Array<Type> | Array<string>;
 
 interface NameWithUrl {
     name: Type | string;
-    url?: string;
+    href?: string;
 }
 interface Deprecated {
     content: string;
