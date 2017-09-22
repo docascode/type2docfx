@@ -2,15 +2,18 @@ import { YamlModel, Root } from './interfaces/YamlModel';
 import { globalUid, constructorName } from './common/constants';
 import { flags } from './common/flags';
 
-export function postTransform(element: YamlModel): Root {
-    let result: YamlModel[] = [element];
-    flattening(element, result);
-    return {
-        items: result
-    };
+export function postTransform(element: YamlModel): Root[] {
+    return flattening(element);
 }
 
-function flattening(element: YamlModel, items: YamlModel[]) {
+function flattening(element: YamlModel): Root[] {
+  if (!element) {
+    return [];
+  }
+  let result: Root[] = [];
+  result.push({
+    items: [element]
+  });
   if (element.children) {
     let childrenUid: string[] = [];
     let children = element.children as YamlModel[];
@@ -18,12 +21,16 @@ function flattening(element: YamlModel, items: YamlModel[]) {
       children = children.sort(sortYamlModel);
     }
     children.forEach(child => {
-        childrenUid.push(child.uid);
-        items.push(child);
-        flattening(child, items);
+        if (child.children && child.children.length > 0) {
+          result = result.concat(flattening(child));
+        } else {
+          childrenUid.push(child.uid);
+          result[0].items.push(child);
+        }
     });
 
     element.children = childrenUid;
+    return result;
   }
 }
 

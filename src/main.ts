@@ -95,18 +95,15 @@ if (rootElements && rootElements.length) {
             return;
         }
 
-        let transfomredClass = postTransform(rootElement);
+        let transfomredClasses = postTransform(rootElement);
         // silly workaround to avoid issue in js-yaml dumper
-        transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-        let filename = null;
-        if (rootElement.module) {
-            filename = `${rootElement.module.replace(/\//g, '.')}.${rootElement.name}`;
-        } else {
-            filename = rootElement.name;
-        }
-        filename = filename.split('(')[0];
-        console.log(`Dump ${outputPath}/${filename}.yml`);
-        fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+        transfomredClasses.forEach(transfomredClass => {
+            transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
+            let filename = transfomredClass.items[0].uid.replace(`${rootElement.package}.`, '');
+            filename = filename.split('(')[0];
+            console.log(`Dump ${outputPath}/${filename}.yml`);
+            fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+        });
     });
     console.log('Yaml dump end.');
 }

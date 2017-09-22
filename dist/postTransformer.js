@@ -3,14 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = require("./common/constants");
 var flags_1 = require("./common/flags");
 function postTransform(element) {
-    var result = [element];
-    flattening(element, result);
-    return {
-        items: result
-    };
+    return flattening(element);
 }
 exports.postTransform = postTransform;
-function flattening(element, items) {
+function flattening(element) {
+    if (!element) {
+        return [];
+    }
+    var result = [];
+    result.push({
+        items: [element]
+    });
     if (element.children) {
         var childrenUid_1 = [];
         var children = element.children;
@@ -18,11 +21,16 @@ function flattening(element, items) {
             children = children.sort(sortYamlModel);
         }
         children.forEach(function (child) {
-            childrenUid_1.push(child.uid);
-            items.push(child);
-            flattening(child, items);
+            if (child.children && child.children.length > 0) {
+                result = result.concat(flattening(child));
+            }
+            else {
+                childrenUid_1.push(child.uid);
+                result[0].items.push(child);
+            }
         });
         element.children = childrenUid_1;
+        return result;
     }
 }
 function sortYamlModel(a, b) {
