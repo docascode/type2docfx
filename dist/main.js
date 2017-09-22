@@ -69,28 +69,33 @@ if (json) {
 }
 if (rootElements && rootElements.length) {
     idResolver_1.resolveIds(rootElements, uidMapping);
-    var index = packageGenerator_1.generatePackage(rootElements);
+    var flattenElements = rootElements.map(function (rootElement) {
+        if (rootElement.uid.indexOf('constructor') >= 0) {
+            return [];
+        }
+        return postTransformer_1.postTransform(rootElement);
+    }).reduce(function (a, b) {
+        return a.concat(b);
+    }, []);
+    console.log('Yaml dump start.');
+    flattenElements.forEach(function (transfomredClass) {
+        transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
+        var filename = transfomredClass.items[0].uid.replace(transfomredClass.items[0].package + ".", '');
+        filename = filename.split('(')[0];
+        console.log("Dump " + outputPath + "/" + filename + ".yml");
+        fs.writeFileSync(outputPath + "/" + filename + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
+    });
+    console.log('Yaml dump end.');
+    var yamlModels_1 = [];
+    flattenElements.forEach(function (element) {
+        yamlModels_1.push(element.items[0]);
+    });
+    var index = packageGenerator_1.generatePackage(yamlModels_1);
     index = JSON.parse(JSON.stringify(index));
     fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(index));
     console.log('index genrated.');
-    var toc = tocGenerator_1.generateToc(rootElements, index.items[0].uid);
+    var toc = tocGenerator_1.generateToc(yamlModels_1, flattenElements[0].items[0].package);
     toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
     console.log('toc genrated.');
-    console.log('Yaml dump start.');
-    rootElements.forEach(function (rootElement) {
-        if (rootElement.uid.indexOf('constructor') >= 0) {
-            return;
-        }
-        var transfomredClasses = postTransformer_1.postTransform(rootElement);
-        // silly workaround to avoid issue in js-yaml dumper
-        transfomredClasses.forEach(function (transfomredClass) {
-            transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-            var filename = transfomredClass.items[0].uid.replace(rootElement.package + ".", '');
-            filename = filename.split('(')[0];
-            console.log("Dump " + outputPath + "/" + filename + ".yml");
-            fs.writeFileSync(outputPath + "/" + filename + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(transfomredClass));
-        });
-    });
-    console.log('Yaml dump end.');
 }

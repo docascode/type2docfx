@@ -8,7 +8,7 @@ import { postTransform } from './postTransformer';
 import { generateToc } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { resolveIds } from './idResolver';
-import { YamlModel, Syntax, YamlParameter } from './interfaces/YamlModel';
+import { YamlModel, Syntax, YamlParameter, Root } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
@@ -79,31 +79,39 @@ if (json) {
 
 if (rootElements && rootElements.length) {
     resolveIds(rootElements, uidMapping);
-    let index = generatePackage(rootElements);
+
+    let flattenElements = rootElements.map(rootElement => {
+        if (rootElement.uid.indexOf('constructor') >= 0) {
+            return [];
+        }
+
+        return postTransform(rootElement);
+    }).reduce(function(a, b) {
+        return a.concat(b);
+    }, []);
+
+    console.log('Yaml dump start.');
+    flattenElements.forEach(transfomredClass => {
+        transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
+        let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
+        filename = filename.split('(')[0];
+        console.log(`Dump ${outputPath}/${filename}.yml`);
+        fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+    });
+    console.log('Yaml dump end.');
+
+    let yamlModels: YamlModel[] = [];
+    flattenElements.forEach(element => {
+        yamlModels.push(element.items[0]);
+    });
+
+    let index = generatePackage(yamlModels);
     index = JSON.parse(JSON.stringify(index));
     fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(index)}`);
     console.log('index genrated.');
 
-    let toc = generateToc(rootElements, index.items[0].uid);
+    let toc = generateToc(yamlModels, flattenElements[0].items[0].package);
     toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
     console.log('toc genrated.');
-
-    console.log('Yaml dump start.');
-    rootElements.forEach(rootElement => {
-        if (rootElement.uid.indexOf('constructor') >= 0) {
-            return;
-        }
-
-        let transfomredClasses = postTransform(rootElement);
-        // silly workaround to avoid issue in js-yaml dumper
-        transfomredClasses.forEach(transfomredClass => {
-            transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-            let filename = transfomredClass.items[0].uid.replace(`${rootElement.package}.`, '');
-            filename = filename.split('(')[0];
-            console.log(`Dump ${outputPath}/${filename}.yml`);
-            fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
-        });
-    });
-    console.log('Yaml dump end.');
 }

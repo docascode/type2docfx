@@ -38,7 +38,7 @@ interface Remote {
     repo: string;
 }
 
-interface Reference {
+export interface Reference {
     uid: string;
     name: string;
 }
