@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = require("./common/constants");
 function resolveIds(elements, uidMapping) {
     if (elements) {
         elements.forEach(function (element) {
@@ -12,9 +11,6 @@ function resolveIds(elements, uidMapping) {
                 }
                 if (element.syntax.return) {
                     element.syntax.return.type = restoreTypes(element.syntax.return.type, uidMapping);
-                    if (element.type === 'property' && element.syntax.content) {
-                        element.syntax.content = element.syntax.content.replace(constants_1.typePlaceHolder, element.syntax.return.type[0]);
-                    }
                 }
             }
             if (element.extends) {

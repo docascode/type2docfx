@@ -5,7 +5,6 @@ import { RepoConfig } from './interfaces/RepoConfig';
 import { convertLinkToGfm, getTextAndLink } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
-import { typePlaceHolder } from './common/constants';
 import * as _ from 'lodash';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
@@ -127,7 +126,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             type: node.kindString.toLowerCase(),
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             syntax: {
-                content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typePlaceHolder} ${node.name}`,
+                content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(node.type)[0])} ${node.name}`,
                 return: {
                     type: extractType(node.type)
                 }
