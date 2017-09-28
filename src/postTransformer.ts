@@ -23,7 +23,7 @@ export function groupGlobalFunction(elements: YamlModel[]): void {
           name: 'Global',
           module: first.module,
           children: mapping[key],
-          type: 'class',
+          type: 'package',
           langs: [
             'typeScript'
           ]
