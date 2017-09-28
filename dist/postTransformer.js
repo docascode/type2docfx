@@ -20,6 +20,7 @@ function groupGlobalFunction(elements) {
             var first = mapping[key][0];
             elements.push({
                 uid: first.uid.replace("." + first.name, '') + '.Global',
+                package: first.uid.split('.')[0],
                 name: 'Global',
                 module: first.module,
                 children: mapping[key],
