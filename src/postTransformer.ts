@@ -19,10 +19,11 @@ export function groupGlobalFunction(elements: YamlModel[]): void {
     for (let key in mapping) {
         let first = mapping[key][0];
         elements.push({
-          uid: `${first.package}.${key.replace(/\//g, '.')}.Global`,
+          uid: first.uid.replace(`.${first.name}`, '') + '.Global',
           name: 'Global',
           module: first.module,
           children: mapping[key],
+          type: 'class',
           langs: [
             'typeScript'
           ]

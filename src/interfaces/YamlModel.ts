@@ -3,7 +3,7 @@ export interface YamlModel {
     name: string;
     children: Array<YamlModel> | Array<string>;
     langs: Array<string>;
-    type?: string;
+    type: string;
     summary?: string;
     syntax?: Syntax;
     fullName?: string;

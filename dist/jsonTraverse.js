@@ -66,6 +66,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             uid: uid,
             name: node.name,
             children: [],
+            type: '',
             langs: ['typeScript'],
             summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
             syntax: {

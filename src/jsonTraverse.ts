@@ -78,6 +78,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             uid: uid,
             name: node.name,
             children: [],
+            type: '',
             langs: ['typeScript'],
             summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
             syntax: {
