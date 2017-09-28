@@ -69,6 +69,7 @@ if (json) {
 }
 if (rootElements && rootElements.length) {
     idResolver_1.resolveIds(rootElements, uidMapping);
+    postTransformer_1.groupGlobalFunction(rootElements);
     var flattenElements = rootElements.map(function (rootElement) {
         if (rootElement.uid.indexOf('constructor') >= 0) {
             return [];

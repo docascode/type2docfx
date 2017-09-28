@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
-import { postTransform } from './postTransformer';
+import { groupGlobalFunction, postTransform } from './postTransformer';
 import { generateToc } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { resolveIds } from './idResolver';
@@ -79,6 +79,8 @@ if (json) {
 
 if (rootElements && rootElements.length) {
     resolveIds(rootElements, uidMapping);
+
+    groupGlobalFunction(rootElements);
 
     let flattenElements = rootElements.map(rootElement => {
         if (rootElement.uid.indexOf('constructor') >= 0) {

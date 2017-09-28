@@ -55,16 +55,8 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         }
         var tokens = parentUid.split('.');
         myself.package = tokens[0];
-        if (flags_1.flags.hasModule) {
-            if (moduleName) {
-                myself.module = moduleName;
-            }
-            else {
-                myself.module = 'Global';
-            }
-        }
     }
-    if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
+    if ((node.kindString === 'Method' || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
         if (!node.signatures || node.inheritedFrom) {
             return;
         }
@@ -123,6 +115,14 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         myself.summary = linkConvertHelper_1.convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
+        if (flags_1.flags.hasModule) {
+            if (moduleName) {
+                myself.module = moduleName;
+            }
+            else {
+                myself.module = 'Global';
+            }
+        }
         if (node.comment) {
             var deprecated = findDeprecatedInfoInComment(node.comment);
             if (deprecated != null) {
@@ -176,11 +176,11 @@ function extractInformationFromSignature(method, node, signatureIndex) {
     if (exceptions && exceptions.length) {
         method.exceptions = exceptions.map(function (e) { return extractException(e); });
     }
-    if (node.kindString === 'Method') {
+    if (node.kindString === 'Method' || node.kindString === 'Function') {
         method.name = node.name;
         var functionBody = generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
         method.syntax.content = (node.flags && node.flags.isStatic ? 'static ' : '') + "function " + functionBody;
-        method.type = 'method';
+        method.type = node.kindString.toLowerCase();
     }
     else {
         method.name = method.uid.split('.').reverse()[1];

@@ -2,6 +2,35 @@ import { YamlModel, Root } from './interfaces/YamlModel';
 import { globalUid, constructorName } from './common/constants';
 import { flags } from './common/flags';
 
+export function groupGlobalFunction(elements: YamlModel[]): void {
+  if (elements && elements.length) {
+    let mapping: { [key: string]: YamlModel[] } = {};
+    for (let i = 0; i < elements.length; i++) {
+      if (elements[i].type === 'function') {
+        let key = elements[i].module ? elements[i].module : 'Global';
+        if (!mapping[key]) {
+          mapping[key] = [];
+        }
+        mapping[key].push(elements[i]);
+        elements.splice(i, 1);
+        i--;
+      }
+    }
+    for (let key in mapping) {
+        let first = mapping[key][0];
+        elements.push({
+          uid: `${first.package}.${key.replace(/\//g, '.')}.Global`,
+          name: 'Global',
+          module: first.module,
+          children: mapping[key],
+          langs: [
+            'typeScript'
+          ]
+        });
+    }
+  }
+}
+
 export function postTransform(element: YamlModel): Root[] {
     return flattening(element);
 }

@@ -2,6 +2,35 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = require("./common/constants");
 var flags_1 = require("./common/flags");
+function groupGlobalFunction(elements) {
+    if (elements && elements.length) {
+        var mapping = {};
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].type === 'function') {
+                var key = elements[i].module ? elements[i].module : 'Global';
+                if (!mapping[key]) {
+                    mapping[key] = [];
+                }
+                mapping[key].push(elements[i]);
+                elements.splice(i, 1);
+                i--;
+            }
+        }
+        for (var key in mapping) {
+            var first = mapping[key][0];
+            elements.push({
+                uid: first.package + "." + key.replace(/\//g, '.') + ".Global",
+                name: 'Global',
+                module: first.module,
+                children: mapping[key],
+                langs: [
+                    'typeScript'
+                ]
+            });
+        }
+    }
+}
+exports.groupGlobalFunction = groupGlobalFunction;
 function postTransform(element) {
     return flattening(element);
 }

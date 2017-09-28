@@ -66,16 +66,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
         let tokens = parentUid.split('.');
         myself.package = tokens[0];
-        if (flags.hasModule) {
-            if (moduleName) {
-                myself.module = moduleName;
-            } else {
-                myself.module = 'Global';
-            }
-        }
     }
 
-    if ((node.kindString === 'Method' || node.kindString === 'Constructor') && node.name) {
+    if ((node.kindString === 'Method'  || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
         if (!node.signatures || node.inheritedFrom) {
             return;
         }
@@ -139,6 +132,14 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
 
+        if (flags.hasModule) {
+            if (moduleName) {
+                myself.module = moduleName;
+            } else {
+                myself.module = 'Global';
+            }
+        }
+
         if (node.comment) {
             let deprecated = findDeprecatedInfoInComment(node.comment);
             if (deprecated != null) {
@@ -198,11 +199,11 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
         method.exceptions = exceptions.map(e => extractException(e));
     }
 
-    if (node.kindString === 'Method') {
+    if (node.kindString === 'Method' || node.kindString === 'Function') {
         method.name = node.name;
         let functionBody = generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
         method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${functionBody}`;
-        method.type = 'method';
+        method.type = node.kindString.toLowerCase();
     } else {
         method.name = method.uid.split('.').reverse()[1];
         let functionBody = generateCallFunction(method.name, method.syntax.parameters);
