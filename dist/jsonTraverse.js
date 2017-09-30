@@ -112,6 +112,28 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             }
         };
     }
+    if (node.kindString === 'Accessor' && node.name) {
+        if (node.inheritedFrom) {
+            return;
+        }
+        uid += '.' + node.name;
+        console.log(" - " + node.kindString + ": " + uid);
+        myself = {
+            uid: uid,
+            name: node.name,
+            fullName: node.name,
+            children: [],
+            langs: ['typeScript'],
+            type: 'property',
+            summary: node.comment ? findDescriptionInComment(node.comment) : '',
+            syntax: {
+                content: "" + (node.flags && node.flags.isStatic ? 'static ' : '') + idResolver_1.typeToString(extractType(node.getSignature[0].type)[0]) + " " + node.name,
+                return: {
+                    type: extractType(node.getSignature[0].type)
+                }
+            }
+        };
+    }
     if (myself) {
         myself.summary = linkConvertHelper_1.convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
