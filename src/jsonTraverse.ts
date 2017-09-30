@@ -134,6 +134,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
+        let signatureType = node.getSignature ? node.getSignature[0].type : node.setSignature[0].type;
         myself = {
             uid: uid,
             name: node.name,
@@ -143,9 +144,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             type: 'property',
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             syntax: {
-                content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(node.getSignature[0].type)[0])} ${node.name}`,
+                content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(signatureType)[0])} ${node.name}`,
                 return: {
-                    type: extractType(node.getSignature[0].type)
+                    type: extractType(signatureType)
                 }
             }
         };

@@ -16,6 +16,7 @@ export interface Node {
     sources: Source[];
     typeParameter: ParameterType[];
     getSignature: Node[];
+    setSignature: Node[];
 }
 
 interface Source {
