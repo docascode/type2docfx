@@ -141,6 +141,10 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
                     };
                 }
             }
+            var isPreview = findPreviewInfoInComment(node.comment);
+            if (isPreview != null) {
+                myself.isPreview = true;
+            }
         }
         if (node.signatures && node.signatures.length > 1) {
             for (var index = 1; index < node.signatures.length; index++) {
@@ -267,6 +271,9 @@ function findInheritsInfoInComment(comment) {
 }
 function findDeprecatedInfoInComment(comment) {
     return findInfoInComment('deprecated', comment);
+}
+function findPreviewInfoInComment(comment) {
+    return findInfoInComment('beta', comment);
 }
 function findInfoInComment(infoName, comment) {
     if (comment.tags) {

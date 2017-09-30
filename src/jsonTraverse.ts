@@ -159,6 +159,11 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                     };
                 }
             }
+
+            let isPreview = findPreviewInfoInComment(node.comment);
+            if (isPreview != null) {
+                myself.isPreview = true;
+            }
         }
 
         if (node.signatures && node.signatures.length > 1) {
@@ -287,6 +292,10 @@ function findInheritsInfoInComment(comment: Comment): string {
 
 function findDeprecatedInfoInComment(comment: Comment): string {
     return findInfoInComment('deprecated', comment);
+}
+
+function findPreviewInfoInComment(comment: Comment): string {
+    return findInfoInComment('beta', comment);
 }
 
 function findInfoInComment(infoName: string, comment: Comment): string {

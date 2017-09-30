@@ -14,6 +14,7 @@ export interface YamlModel {
     source?: Source;
     extends?: NameWithUrl;
     deprecated?: Deprecated;
+    isPreview?: boolean;
 }
 
 export type Types = Array<Type> | Array<string>;
