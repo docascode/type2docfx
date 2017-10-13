@@ -147,14 +147,15 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
                 myself.module = 'Global';
             }
         }
-        if (node.comment) {
-            var deprecated = findDeprecatedInfoInComment(node.comment);
+        if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
+            var comment = node.comment ? node.comment : node.signatures[0].comment;
+            var deprecated = findDeprecatedInfoInComment(comment);
             if (deprecated != null) {
                 myself.deprecated = {
                     content: linkConvertHelper_1.convertLinkToGfm(deprecated)
                 };
             }
-            var inherits = findInheritsInfoInComment(node.comment);
+            var inherits = findInheritsInfoInComment(comment);
             if (inherits != null) {
                 var tokens = linkConvertHelper_1.getTextAndLink(inherits);
                 if (tokens.length === 2) {
@@ -164,11 +165,11 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
                     };
                 }
             }
-            var isPreview = findPreviewInfoInComment(node.comment);
+            var isPreview = findPreviewInfoInComment(comment);
             if (isPreview != null) {
                 myself.isPreview = true;
             }
-            var remarks = findRemarkInfoInComment(node.comment);
+            var remarks = findRemarkInfoInComment(comment);
             if (remarks != null) {
                 myself.remarks = linkConvertHelper_1.convertLinkToGfm(remarks);
             }

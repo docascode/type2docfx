@@ -165,15 +165,16 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             }
         }
 
-        if (node.comment) {
-            let deprecated = findDeprecatedInfoInComment(node.comment);
+        if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
+            let comment = node.comment ? node.comment : node.signatures[0].comment;
+            let deprecated = findDeprecatedInfoInComment(comment);
             if (deprecated != null) {
                 myself.deprecated = {
                     content: convertLinkToGfm(deprecated)
                 };
             }
 
-            let inherits = findInheritsInfoInComment(node.comment);
+            let inherits = findInheritsInfoInComment(comment);
             if (inherits != null) {
                 let tokens = getTextAndLink(inherits);
                 if (tokens.length === 2) {
@@ -184,12 +185,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 }
             }
 
-            let isPreview = findPreviewInfoInComment(node.comment);
+            let isPreview = findPreviewInfoInComment(comment);
             if (isPreview != null) {
                 myself.isPreview = true;
             }
 
-            let remarks = findRemarkInfoInComment(node.comment);
+            let remarks = findRemarkInfoInComment(comment);
             if (remarks != null) {
                 myself.remarks = convertLinkToGfm(remarks);
             }

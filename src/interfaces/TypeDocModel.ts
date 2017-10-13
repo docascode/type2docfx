@@ -43,7 +43,7 @@ export interface Tag {
     param: string;
 }
 
-interface Signature {
+export interface Signature {
     comment: Comment;
     parameters: Parameter[];
     type?: ParameterType;
