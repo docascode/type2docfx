@@ -220,7 +220,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 function extractInformationFromSignature(method: YamlModel, node: Node, signatureIndex: number) {
     method.syntax.parameters = fillParameters(node.signatures[signatureIndex].parameters);
 
-    if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name && node.signatures[signatureIndex].type.name !== 'void') {
+    if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {
             type: extractType(node.signatures[signatureIndex].type)
         };

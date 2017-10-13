@@ -197,7 +197,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
 exports.traverse = traverse;
 function extractInformationFromSignature(method, node, signatureIndex) {
     method.syntax.parameters = fillParameters(node.signatures[signatureIndex].parameters);
-    if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name && node.signatures[signatureIndex].type.name !== 'void') {
+    if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {
             type: extractType(node.signatures[signatureIndex].type)
         };
