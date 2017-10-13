@@ -168,6 +168,10 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             if (isPreview != null) {
                 myself.isPreview = true;
             }
+            var remarks = findRemarkInfoInComment(node.comment);
+            if (remarks != null) {
+                myself.remarks = linkConvertHelper_1.convertLinkToGfm(remarks);
+            }
         }
         if (node.signatures && node.signatures.length > 1) {
             for (var index = 1; index < node.signatures.length; index++) {
@@ -297,6 +301,9 @@ function findDeprecatedInfoInComment(comment) {
 }
 function findPreviewInfoInComment(comment) {
     return findInfoInComment('beta', comment);
+}
+function findRemarkInfoInComment(comment) {
+    return findInfoInComment('remarks', comment);
 }
 function findInfoInComment(infoName, comment) {
     if (comment.tags) {

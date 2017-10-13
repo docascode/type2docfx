@@ -188,6 +188,11 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             if (isPreview != null) {
                 myself.isPreview = true;
             }
+
+            let remarks = findRemarkInfoInComment(node.comment);
+            if (remarks != null) {
+                myself.remarks = convertLinkToGfm(remarks);
+            }
         }
 
         if (node.signatures && node.signatures.length > 1) {
@@ -320,6 +325,10 @@ function findDeprecatedInfoInComment(comment: Comment): string {
 
 function findPreviewInfoInComment(comment: Comment): string {
     return findInfoInComment('beta', comment);
+}
+
+function findRemarkInfoInComment(comment: Comment): string {
+    return findInfoInComment('remarks', comment);
 }
 
 function findInfoInComment(infoName: string, comment: Comment): string {
