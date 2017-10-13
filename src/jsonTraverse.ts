@@ -248,11 +248,37 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
     }
 }
 
+function extractUnionType(type: ParameterType): string {
+    if (!type && !type.types) {
+        return '';
+    }
+    if (!hasCommonPrefix(type.types)) {
+        return type.types.map<string>(t => t.name).join(' | ');
+    }
+    return type.types[0].name.split('.')[0];
+}
+
+function hasCommonPrefix(types: ParameterType[]): boolean {
+    if (types && types.length > 1) {
+        if (types[0].name.indexOf('.') < 0) {
+            return false;
+        }
+        let prefix = types[0].name.split('.')[0];
+        types.forEach(t => {
+            if (t.name.split('.')[0] !== prefix) {
+                return false;
+            }
+        });
+        return true;
+    }
+    return false;
+}
+
 function extractType(type: ParameterType): Type[] {
     let result: Type[] = [];
     if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
         result.push({
-            typeName: type.types[0].name.split('.')[0]
+            typeName: extractUnionType(type)
         });
     } else if (type.type === 'array') {
         let newType = extractType(type.elementType);

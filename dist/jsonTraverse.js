@@ -222,11 +222,35 @@ function extractInformationFromSignature(method, node, signatureIndex) {
         method.type = 'constructor';
     }
 }
+function extractUnionType(type) {
+    if (!type && !type.types) {
+        return '';
+    }
+    if (!hasCommonPrefix(type.types)) {
+        return type.types.map(function (t) { return t.name; }).join(' | ');
+    }
+    return type.types[0].name.split('.')[0];
+}
+function hasCommonPrefix(types) {
+    if (types && types.length > 1) {
+        if (types[0].name.indexOf('.') < 0) {
+            return false;
+        }
+        var prefix_1 = types[0].name.split('.')[0];
+        types.forEach(function (t) {
+            if (t.name.split('.')[0] !== prefix_1) {
+                return false;
+            }
+        });
+        return true;
+    }
+    return false;
+}
 function extractType(type) {
     var result = [];
     if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
         result.push({
-            typeName: type.types[0].name.split('.')[0]
+            typeName: extractUnionType(type)
         });
     }
     else if (type.type === 'array') {
