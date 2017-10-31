@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var linkConvertHelper_1 = require("./helpers/linkConvertHelper");
 var idResolver_1 = require("./idResolver");
 var flags_1 = require("./common/flags");
+var constants_1 = require("./common/constants");
 var _ = require("lodash");
 function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repoConfig) {
     if (node.flags.isPrivate || node.flags.isProtected) {
@@ -149,7 +150,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
                 myself.module = moduleName;
             }
             else {
-                myself.module = 'Global';
+                myself.module = constants_1.globalName;
             }
         }
         if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {

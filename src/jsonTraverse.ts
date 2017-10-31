@@ -5,6 +5,7 @@ import { RepoConfig } from './interfaces/RepoConfig';
 import { convertLinkToGfm, getTextAndLink } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
+import { globalName } from './common/constants';
 import * as _ from 'lodash';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
@@ -165,7 +166,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             if (moduleName) {
                 myself.module = moduleName;
             } else {
-                myself.module = 'Global';
+                myself.module = globalName;
             }
         }
 

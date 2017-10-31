@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var flags_1 = require("./common/flags");
+var constants_1 = require("./common/constants");
 function generateToc(elements, packageUid) {
     var result = [];
     var previousUid = null;
@@ -20,7 +21,8 @@ function generateToc(elements, packageUid) {
             if (flags_1.flags.hasModule) {
                 var secondLevelToc = {
                     uid: element.uid,
-                    name: element.name.split('(')[0]
+                    name: element.name.split('(')[0],
+                    items: getFunctionLevelToc(element)
                 };
                 if (result.length === 0 || result[result.length - 1].name !== element.module) {
                     result.push({
@@ -34,7 +36,8 @@ function generateToc(elements, packageUid) {
             else {
                 result.push({
                     uid: element.uid,
-                    name: element.name.split('(')[0]
+                    name: element.name.split('(')[0],
+                    items: getFunctionLevelToc(element)
                 });
             }
         });
@@ -46,6 +49,22 @@ function generateToc(elements, packageUid) {
         }];
 }
 exports.generateToc = generateToc;
+function getFunctionLevelToc(element) {
+    var result = [];
+    if (flags_1.flags.enableFunctionLevelToc) {
+        var children = element.children;
+        if (element.name === constants_1.globalName && children) {
+            children.forEach(function (child) {
+                var tmp = child.split('.');
+                result.push({
+                    uid: child,
+                    name: tmp[tmp.length - 1].split('(')[0]
+                });
+            });
+        }
+    }
+    return result;
+}
 function sortToc(a, b) {
     if (!a.module && b.module) {
         return 1;

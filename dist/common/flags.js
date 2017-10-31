@@ -2,5 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.flags = {
     hasModule: false,
-    enableAlphabetOrder: true
+    enableAlphabetOrder: true,
+    enableFunctionLevelToc: false
 };

@@ -1,6 +1,7 @@
 import { YamlModel } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
+import { globalName } from './common/constants';
 
 export function generateToc(elements: YamlModel[], packageUid: string): TocItem[] {
     let result: TocItem[] = [];
@@ -22,7 +23,8 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
             if (flags.hasModule) {
                 let secondLevelToc: TocItem = {
                     uid: element.uid,
-                    name: element.name.split('(')[0]
+                    name: element.name.split('(')[0],
+                    items: getFunctionLevelToc(element)
                 };
 
                 if (result.length === 0 || result[result.length - 1].name !== element.module) {
@@ -36,9 +38,11 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
             } else {
                 result.push({
                     uid: element.uid,
-                    name: element.name.split('(')[0]
+                    name: element.name.split('(')[0],
+                    items: getFunctionLevelToc(element)
                 });
             }
+
         });
     }
     return [{
@@ -46,6 +50,24 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
         name: packageUid,
         items: result
     }];
+}
+
+function getFunctionLevelToc(element: YamlModel): TocItem[] {
+    let result: TocItem[] = [];
+    if (flags.enableFunctionLevelToc) {
+        let children = element.children as string[];
+        if (element.name === globalName && children) {
+            children.forEach(child => {
+                let tmp = child.split('.');
+                result.push({
+                    uid: child,
+                    name: tmp[tmp.length - 1].split('(')[0]
+                });
+            });
+        }
+    }
+
+    return result;
 }
 
 function sortToc(a: YamlModel, b: YamlModel) {
