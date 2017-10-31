@@ -15,8 +15,13 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
     if (node.kind === 0) {
         uid = node.name;
     }
-    if (node.kindString === 'Module' && !moduleName) {
-        moduleName = node.name.replace(/"/g, '');
+    if (node.kindString === 'Module') {
+        if (!moduleName) {
+            moduleName = node.name.replace(/"/g, '');
+        }
+        else {
+            moduleName = moduleName + "." + node.name.replace(/"/g, '');
+        }
         uid += '.' + moduleName.replace(/\//g, '.');
         console.log(node.kindString + ": " + uid);
     }

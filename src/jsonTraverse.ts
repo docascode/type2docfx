@@ -22,8 +22,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         uid = node.name;
     }
 
-    if (node.kindString === 'Module' && !moduleName) {
-        moduleName = node.name.replace(/"/g, '');
+    if (node.kindString === 'Module') {
+        if (!moduleName) {
+            moduleName = node.name.replace(/"/g, '');
+        } else {
+            moduleName = `${moduleName}.${node.name.replace(/"/g, '')}`;
+        }
         uid += '.' + moduleName.replace(/\//g, '.');
         console.log(`${node.kindString}: ${uid}`);
     }
