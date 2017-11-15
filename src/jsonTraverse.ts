@@ -393,6 +393,10 @@ function findInfoInComment(infoName: string, comment: Comment): string {
 }
 
 function findDescriptionInComment(comment: Comment): string {
+    if (!comment) {
+        return '';
+    }
+
     if (comment.tags) {
         let text: string = null;
         comment.tags.forEach(tag => {

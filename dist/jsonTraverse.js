@@ -364,6 +364,9 @@ function findInfoInComment(infoName, comment) {
     return null;
 }
 function findDescriptionInComment(comment) {
+    if (!comment) {
+        return '';
+    }
     if (comment.tags) {
         var text_2 = null;
         comment.tags.forEach(function (tag) {
