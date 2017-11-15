@@ -349,7 +349,7 @@ function findRemarkInfoInComment(comment) {
     return findInfoInComment('remarks', comment);
 }
 function findInfoInComment(infoName, comment) {
-    if (comment.tags) {
+    if (comment && comment.tags) {
         var text_1 = null;
         comment.tags.forEach(function (tag) {
             if (tag.tag === infoName) {

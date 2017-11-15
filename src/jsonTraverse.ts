@@ -376,7 +376,7 @@ function findRemarkInfoInComment(comment: Comment): string {
 }
 
 function findInfoInComment(infoName: string, comment: Comment): string {
-    if (comment.tags) {
+    if (comment && comment.tags) {
         let text: string = null;
         comment.tags.forEach(tag => {
             if (tag.tag === infoName) {
