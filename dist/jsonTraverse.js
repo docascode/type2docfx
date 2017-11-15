@@ -23,13 +23,22 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         else {
             moduleName = moduleName + "." + node.name.replace(/"/g, '');
         }
-        uid += '.' + moduleName.replace(/\//g, '.');
+        uid += "." + moduleName.replace(/\//g, '.');
         console.log(node.kindString + ": " + uid);
     }
     var myself = null;
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
-        uid += '.' + node.name;
+        uid += "." + node.name;
         console.log(node.kindString + ": " + uid);
+        var customModuleName = findModuleInfoInComment(node.comment);
+        if (customModuleName) {
+            if (moduleName) {
+                moduleName += "." + customModuleName;
+            }
+            else {
+                moduleName = customModuleName;
+            }
+        }
         myself = {
             uid: uid,
             name: node.name,
@@ -323,6 +332,9 @@ function extractException(exception) {
         };
     }
     return null;
+}
+function findModuleInfoInComment(comment) {
+    return findInfoInComment('module', comment);
 }
 function findInheritsInfoInComment(comment) {
     return findInfoInComment('inherits', comment);

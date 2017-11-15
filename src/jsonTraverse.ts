@@ -29,14 +29,22 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         } else {
             moduleName = `${moduleName}.${node.name.replace(/"/g, '')}`;
         }
-        uid += '.' + moduleName.replace(/\//g, '.');
+        uid += `.${moduleName.replace(/\//g, '.')}`;
         console.log(`${node.kindString}: ${uid}`);
     }
 
     let myself: YamlModel = null;
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
-        uid += '.' + node.name;
+        uid += `.${node.name}`;
         console.log(`${node.kindString}: ${uid}`);
+        let customModuleName = findModuleInfoInComment(node.comment);
+        if (customModuleName) {
+            if (moduleName) {
+                moduleName += `.${customModuleName}`;
+            } else {
+                moduleName = customModuleName;
+            }
+        }
         myself = {
             uid: uid,
             name: node.name,
@@ -345,6 +353,10 @@ function extractException(exception: Tag): Exception {
         };
     }
     return null;
+}
+
+function findModuleInfoInComment(comment: Comment): string {
+    return findInfoInComment('module', comment);
 }
 
 function findInheritsInfoInComment(comment: Comment): string {
