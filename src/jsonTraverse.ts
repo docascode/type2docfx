@@ -132,6 +132,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             langs: ['typeScript'],
             type: node.kindString.toLowerCase(),
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
+            optional: node.flags && node.flags.isOptional,
             syntax: {
                 content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(node.type)[0])} ${node.name}`,
                 return: {

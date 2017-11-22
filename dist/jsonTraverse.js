@@ -119,6 +119,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             langs: ['typeScript'],
             type: node.kindString.toLowerCase(),
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
+            optional: node.flags && node.flags.isOptional,
             syntax: {
                 content: "" + (node.flags && node.flags.isStatic ? 'static ' : '') + idResolver_1.typeToString(extractType(node.type)[0]) + " " + node.name,
                 return: {
