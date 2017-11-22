@@ -266,13 +266,13 @@ function extractUnionType(type: ParameterType): string {
         return '';
     }
     if (!hasCommonPrefix(type.types)) {
-        return type.types.map<string>(t => t.name).join(' | ');
+        return type.types.map<string>(t => t.name ? t.name : `"${t.value}"`).join(' | ');
     }
     return type.types[0].name.split('.')[0];
 }
 
 function hasCommonPrefix(types: ParameterType[]): boolean {
-    if (types && types.length > 1) {
+    if (types && types.length > 1 && types[0].name) {
         if (types[0].name.indexOf('.') < 0) {
             return false;
         }
@@ -289,7 +289,7 @@ function hasCommonPrefix(types: ParameterType[]): boolean {
 
 function extractType(type: ParameterType): Type[] {
     let result: Type[] = [];
-    if (type.type === 'union' && type.types && type.types.length && type.types[0].name) {
+    if (type.type === 'union' && type.types && type.types.length) {
         result.push({
             typeName: extractUnionType(type)
         });

@@ -61,6 +61,7 @@ export interface ParameterType {
     type: string;
     types: ParameterType[];
     name: string;
+    value: string;
     id: number;
     typeArguments: ParameterType[];
     declaration: Node;
