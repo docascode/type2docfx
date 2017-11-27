@@ -254,7 +254,7 @@ function hasCommonPrefix(types) {
         }
         var prefix_1 = types[0].name.split('.')[0];
         types.forEach(function (t) {
-            if (t.name.split('.')[0] !== prefix_1) {
+            if (!t.name || t.name.split('.')[0] !== prefix_1) {
                 return false;
             }
         });

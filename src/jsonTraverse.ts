@@ -279,7 +279,7 @@ function hasCommonPrefix(types: ParameterType[]): boolean {
         }
         let prefix = types[0].name.split('.')[0];
         types.forEach(t => {
-            if (t.name.split('.')[0] !== prefix) {
+            if (!t.name || t.name.split('.')[0] !== prefix) {
                 return false;
             }
         });
