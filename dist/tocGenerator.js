@@ -19,19 +19,21 @@ function generateToc(elements, packageUid) {
             }
             previousUid = element.uid;
             if (flags_1.flags.hasModule) {
+                var dictModuleName = {};
                 var secondLevelToc = {
                     uid: element.uid,
                     name: element.name.split('(')[0],
                     items: getFunctionLevelToc(element)
                 };
-                if (result.length === 0 || result[result.length - 1].name !== element.module) {
-                    result.push({
+                if (!dictModuleName[element.module]) {
+                    dictModuleName[element.module] = {
                         uid: element.package + "." + element.module.replace(/\//g, '.'),
                         name: element.module,
                         items: []
-                    });
+                    };
+                    result.push(dictModuleName[element.module]);
                 }
-                result[result.length - 1].items.push(secondLevelToc);
+                dictModuleName[element.module].items.push(secondLevelToc);
             }
             else {
                 result.push({
