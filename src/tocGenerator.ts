@@ -30,7 +30,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
 
                 if (!dictModuleName[element.module]) {
                     dictModuleName[element.module] = {
-                        uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
+                        // uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
                         name: element.module,
                         items: []
                     };

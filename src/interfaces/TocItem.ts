@@ -1,5 +1,5 @@
 export interface TocItem {
-    uid: string;
+    uid?: string;
     name: string;
     items?: Array<TocItem>;
 }

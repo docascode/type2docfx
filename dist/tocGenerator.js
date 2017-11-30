@@ -27,7 +27,7 @@ function generateToc(elements, packageUid) {
                 };
                 if (!dictModuleName_1[element.module]) {
                     dictModuleName_1[element.module] = {
-                        uid: element.package + "." + element.module.replace(/\//g, '.'),
+                        // uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
                         name: element.module,
                         items: []
                     };
