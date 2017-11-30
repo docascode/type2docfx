@@ -10,6 +10,7 @@ function generateToc(elements, packageUid) {
         if (flags_1.flags.enableAlphabetOrder) {
             tocs = elements.sort(sortToc);
         }
+        var dictModuleName_1 = {};
         tocs.forEach(function (element) {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
@@ -19,21 +20,20 @@ function generateToc(elements, packageUid) {
             }
             previousUid = element.uid;
             if (flags_1.flags.hasModule) {
-                var dictModuleName = {};
                 var secondLevelToc = {
                     uid: element.uid,
                     name: element.name.split('(')[0],
                     items: getFunctionLevelToc(element)
                 };
-                if (!dictModuleName[element.module]) {
-                    dictModuleName[element.module] = {
+                if (!dictModuleName_1[element.module]) {
+                    dictModuleName_1[element.module] = {
                         uid: element.package + "." + element.module.replace(/\//g, '.'),
                         name: element.module,
                         items: []
                     };
-                    result.push(dictModuleName[element.module]);
+                    result.push(dictModuleName_1[element.module]);
                 }
-                dictModuleName[element.module].items.push(secondLevelToc);
+                dictModuleName_1[element.module].items.push(secondLevelToc);
             }
             else {
                 result.push({

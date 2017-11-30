@@ -11,6 +11,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
         if (flags.enableAlphabetOrder) {
             tocs  = elements.sort(sortToc);
         }
+        let dictModuleName: { [key: string]: TocItem } = {};
         tocs.forEach(element => {
             if (element.uid.indexOf('constructor') >= 0) {
                 return;
@@ -21,7 +22,6 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
             previousUid = element.uid;
 
             if (flags.hasModule) {
-                let dictModuleName: { [key: string]: TocItem } = {};
                 let secondLevelToc: TocItem = {
                     uid: element.uid,
                     name: element.name.split('(')[0],
