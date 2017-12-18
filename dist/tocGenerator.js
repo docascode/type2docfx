@@ -43,6 +43,10 @@ function generateToc(elements, packageUid) {
                 });
             }
         });
+        // if only Global module exists, remove Global package
+        if (flags_1.flags.hasModule && result.length === 1 && result[0].name === constants_1.globalName) {
+            result = result[0].items;
+        }
     }
     return [{
             uid: packageUid,

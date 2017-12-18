@@ -44,8 +44,12 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
                     items: getFunctionLevelToc(element)
                 });
             }
-
         });
+
+        // if only Global module exists, remove Global package
+        if (flags.hasModule && result.length === 1 && result[0].name === globalName) {
+            result = result[0].items;
+        }
     }
     return [{
         uid: packageUid,
