@@ -124,6 +124,10 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
+        let isPublic = node.flags && node.flags.isPublic ? 'public ' : '';
+        let isStatic = node.flags && node.flags.isStatic ? 'static ' : '';
+        let isOptional = node.flags && node.flags.isOptional ? '?' : '';
+        let defaultValue = node.defaultValue ? ` = ${node.defaultValue}` : '';
         myself = {
             uid: uid,
             name: node.name,
@@ -134,7 +138,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             optional: node.flags && node.flags.isOptional,
             syntax: {
-                content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(node.type)[0])} ${node.name}`,
+                content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0])}${defaultValue}`,
                 return: {
                     type: extractType(node.type)
                 }

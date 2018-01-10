@@ -111,6 +111,10 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         }
         uid += '.' + node.name;
         console.log(" - " + node.kindString + ": " + uid);
+        var isPublic = node.flags && node.flags.isPublic ? 'public ' : '';
+        var isStatic = node.flags && node.flags.isStatic ? 'static ' : '';
+        var isOptional = node.flags && node.flags.isOptional ? '?' : '';
+        var defaultValue = node.defaultValue ? " = " + node.defaultValue : '';
         myself = {
             uid: uid,
             name: node.name,
@@ -121,7 +125,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             optional: node.flags && node.flags.isOptional,
             syntax: {
-                content: "" + (node.flags && node.flags.isStatic ? 'static ' : '') + idResolver_1.typeToString(extractType(node.type)[0]) + " " + node.name,
+                content: "" + isPublic + isStatic + node.name + isOptional + ": " + idResolver_1.typeToString(extractType(node.type)[0]) + defaultValue,
                 return: {
                     type: extractType(node.type)
                 }
