@@ -83,7 +83,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
             children: [],
             type: '',
             langs: ['typeScript'],
-            summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
+            summary: '',
             syntax: {
                 content: ''
             }
@@ -216,6 +216,9 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
 }
 exports.traverse = traverse;
 function extractInformationFromSignature(method, node, signatureIndex) {
+    if (node.signatures[signatureIndex].comment) {
+        method.summary = findDescriptionInComment(node.signatures[signatureIndex].comment);
+    }
     method.syntax.parameters = fillParameters(node.signatures[signatureIndex].parameters);
     if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {

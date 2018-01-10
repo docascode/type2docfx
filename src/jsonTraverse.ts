@@ -93,7 +93,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             children: [],
             type: '',
             langs: ['typeScript'],
-            summary: node.signatures[0].comment ? findDescriptionInComment(node.signatures[0].comment) : '',
+            summary: '',
             syntax: {
                 content: ''
             }
@@ -236,6 +236,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 }
 
 function extractInformationFromSignature(method: YamlModel, node: Node, signatureIndex: number) {
+    if (node.signatures[signatureIndex].comment) {
+        method.summary = findDescriptionInComment(node.signatures[signatureIndex].comment);
+    }
     method.syntax.parameters = fillParameters(node.signatures[signatureIndex].parameters);
 
     if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name !== 'void') {
