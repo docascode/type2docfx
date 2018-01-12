@@ -75,7 +75,7 @@ function typeToString(type) {
         return typeToString(type.genericType.outter) + "<" + typeToString(type.genericType.inner) + ">";
     }
     else if (type.intersectionType) {
-        return type.intersectionType.types.map(function (t) { return typeToString(t); }).join(' | ');
+        return type.intersectionType.types.map(function (t) { return typeToString(t); }).join(' & ');
     }
     else {
         return typeToString(type.typeName);
