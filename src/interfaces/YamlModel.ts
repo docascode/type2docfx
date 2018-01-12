@@ -19,7 +19,7 @@ export interface YamlModel {
     optional?: boolean;
 }
 
-export type Types = Array<Type> | Array<string>;
+export type Types = Type[] | string[];
 
 interface NameWithUrl {
     name: Type | string;
@@ -73,7 +73,12 @@ export interface Type {
     typeId?: number;
     reflectedType?: ReflectedType;
     genericType?: GenericType;
+    intersectionType?: IntersectionType;
     isArray?: boolean;
+}
+
+export interface IntersectionType {
+    types: Type[] | string[];
 }
 
 export interface GenericType {

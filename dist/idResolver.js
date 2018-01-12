@@ -39,6 +39,9 @@ function restoreType(type, uidMapping) {
         type.genericType.inner = restoreType(type.genericType.inner, uidMapping);
         type.genericType.outter = restoreType(type.genericType.outter, uidMapping);
     }
+    else if (type.intersectionType) {
+        type.intersectionType.types = type.intersectionType.types.map(function (t) { return restoreType(t, uidMapping); });
+    }
     else {
         if (type.typeId && uidMapping[type.typeId]) {
             type.typeName = "@" + uidMapping[type.typeId];
@@ -70,6 +73,9 @@ function typeToString(type) {
     }
     else if (type.genericType) {
         return typeToString(type.genericType.outter) + "<" + typeToString(type.genericType.inner) + ">";
+    }
+    else if (type.intersectionType) {
+        return type.intersectionType.types.join(' | ');
     }
     else {
         return typeToString(type.typeName);

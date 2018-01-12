@@ -281,6 +281,13 @@ function extractType(type) {
         newType[0].isArray = true;
         result.push(newType[0]);
     }
+    else if (type.type === 'intersection' && type.types.length) {
+        result.push({
+            intersectionType: {
+                types: type.types.map(function (t) { return extractType(t)[0]; })
+            }
+        });
+    }
     else if (type.type === 'reflection' && type.declaration) {
         if (type.declaration.indexSignature && type.declaration.indexSignature.length) {
             result.push({
