@@ -78,7 +78,7 @@ export function typeToString(type: Type | string): string {
     } else if (type.genericType) {
         return `${typeToString(type.genericType.outter)}<${typeToString(type.genericType.inner)}>`;
     } else if (type.intersectionType) {
-        return type.intersectionType.types.join(' | ');
+        return (type.intersectionType.types as Type[]).map(t => typeToString(t)).join(' | ');
     } else {
         return typeToString(type.typeName);
     }
