@@ -8,6 +8,7 @@ var jsonTraverse_1 = require("./jsonTraverse");
 var postTransformer_1 = require("./postTransformer");
 var tocGenerator_1 = require("./tocGenerator");
 var packageGenerator_1 = require("./packageGenerator");
+var moduleGenerator_1 = require("./moduleGenerator");
 var idResolver_1 = require("./idResolver");
 var constants_1 = require("./common/constants");
 var flags_1 = require("./common/flags");
@@ -104,12 +105,20 @@ if (rootElements && rootElements.length) {
     flattenElements.forEach(function (element) {
         yamlModels_1.push(element.items[0]);
     });
-    var index = packageGenerator_1.generatePackage(yamlModels_1);
-    index = JSON.parse(JSON.stringify(index));
-    fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(index));
-    console.log('index genrated.');
+    var packageIndex = packageGenerator_1.generatePackage(yamlModels_1);
+    packageIndex = JSON.parse(JSON.stringify(packageIndex));
+    fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(packageIndex));
+    console.log('Package index genrated.');
     var toc = tocGenerator_1.generateToc(yamlModels_1, flattenElements[0].items[0].package);
     toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(outputPath + "/toc.yml", serializer.safeDump(toc));
-    console.log('toc genrated.');
+    console.log('Toc genrated.');
+    if (flags_1.flags.hasModule) {
+        var moduleIndexes = moduleGenerator_1.generateModules(toc[0].items);
+        moduleIndexes.forEach(function (moduleIndex) {
+            moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
+            fs.writeFileSync(outputPath + "/" + moduleIndex.items[0].uid + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(moduleIndex));
+        });
+        console.log('Module indexes generated.');
+    }
 }

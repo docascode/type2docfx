@@ -12,10 +12,7 @@ function generateToc(elements, packageUid) {
         }
         var dictModuleName_1 = {};
         tocs.forEach(function (element) {
-            if (element.uid.indexOf('constructor') >= 0) {
-                return;
-            }
-            if (element.uid === previousUid) {
+            if (element.uid.indexOf('constructor') >= 0 || element.uid === previousUid) {
                 return;
             }
             previousUid = element.uid;
@@ -27,7 +24,7 @@ function generateToc(elements, packageUid) {
                 };
                 if (!dictModuleName_1[element.module]) {
                     dictModuleName_1[element.module] = {
-                        // uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
+                        uid: element.package + "." + element.module.replace(/\//g, '.'),
                         name: element.module,
                         items: []
                     };

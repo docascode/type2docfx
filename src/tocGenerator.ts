@@ -13,10 +13,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
         }
         let dictModuleName: { [key: string]: TocItem } = {};
         tocs.forEach(element => {
-            if (element.uid.indexOf('constructor') >= 0) {
-                return;
-            }
-            if (element.uid === previousUid) {
+            if (element.uid.indexOf('constructor') >= 0 || element.uid === previousUid) {
                 return;
             }
             previousUid = element.uid;
@@ -30,7 +27,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
 
                 if (!dictModuleName[element.module]) {
                     dictModuleName[element.module] = {
-                        // uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
+                        uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
                         name: element.module,
                         items: []
                     };

@@ -7,6 +7,7 @@ import { traverse } from './jsonTraverse';
 import { groupGlobalFunction, postTransform } from './postTransformer';
 import { generateToc } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
+import { generateModules } from './moduleGenerator';
 import { resolveIds } from './idResolver';
 import { YamlModel, Syntax, YamlParameter, Root } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
@@ -122,13 +123,22 @@ if (rootElements && rootElements.length) {
         yamlModels.push(element.items[0]);
     });
 
-    let index = generatePackage(yamlModels);
-    index = JSON.parse(JSON.stringify(index));
-    fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(index)}`);
-    console.log('index genrated.');
+    let packageIndex = generatePackage(yamlModels);
+    packageIndex = JSON.parse(JSON.stringify(packageIndex));
+    fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
+    console.log('Package index genrated.');
 
     let toc = generateToc(yamlModels, flattenElements[0].items[0].package);
     toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
-    console.log('toc genrated.');
+    console.log('Toc genrated.');
+
+    if (flags.hasModule) {
+        let moduleIndexes = generateModules(toc[0].items);
+        moduleIndexes.forEach(moduleIndex => {
+            moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
+            fs.writeFileSync(`${outputPath}/${moduleIndex.items[0].uid}.yml`, `${yamlHeader}\n${serializer.safeDump(moduleIndex)}`);
+        });
+        console.log('Module indexes generated.');
+    }
 }
