@@ -18,16 +18,18 @@ export function generateModules(tocRoots: TocItem[]): Root[] {
             children: []
         };
 
-        tocRoot.items.forEach(item => {
-            (moduleModel.children as string[]).push(item.uid);
-            root.references.push({
-                uid: item.uid,
-                name: item.name
+        if (tocRoot.items && tocRoot.items.length) {
+            tocRoot.items.forEach(item => {
+                (moduleModel.children as string[]).push(item.uid);
+                root.references.push({
+                    uid: item.uid,
+                    name: item.name
+                });
             });
-        });
 
-        root.items.push(moduleModel);
-        result.push(root);
+            root.items.push(moduleModel);
+            result.push(root);
+        }
     });
 
     return result;

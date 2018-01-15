@@ -15,15 +15,17 @@ function generateModules(tocRoots) {
             type: 'module',
             children: []
         };
-        tocRoot.items.forEach(function (item) {
-            moduleModel.children.push(item.uid);
-            root.references.push({
-                uid: item.uid,
-                name: item.name
+        if (tocRoot.items && tocRoot.items.length) {
+            tocRoot.items.forEach(function (item) {
+                moduleModel.children.push(item.uid);
+                root.references.push({
+                    uid: item.uid,
+                    name: item.name
+                });
             });
-        });
-        root.items.push(moduleModel);
-        result.push(root);
+            root.items.push(moduleModel);
+            result.push(root);
+        }
     });
     return result;
 }
