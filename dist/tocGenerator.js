@@ -20,7 +20,7 @@ function generateToc(elements, packageUid) {
                 var secondLevelToc = {
                     uid: element.uid,
                     name: element.name.split('(')[0],
-                    items: getFunctionLevelToc(element)
+                    items: []
                 };
                 if (!dictModuleName_1[element.module]) {
                     dictModuleName_1[element.module] = {
@@ -36,7 +36,7 @@ function generateToc(elements, packageUid) {
                 result.push({
                     uid: element.uid,
                     name: element.name.split('(')[0],
-                    items: getFunctionLevelToc(element)
+                    items: []
                 });
             }
         });
@@ -52,22 +52,6 @@ function generateToc(elements, packageUid) {
         }];
 }
 exports.generateToc = generateToc;
-function getFunctionLevelToc(element) {
-    var result = [];
-    if (flags_1.flags.enableFunctionLevelToc) {
-        var children = element.children;
-        if (element.name === constants_1.globalName && children) {
-            children.forEach(function (child) {
-                var tmp = child.split('.');
-                result.push({
-                    uid: child,
-                    name: tmp[tmp.length - 1].split('(')[0]
-                });
-            });
-        }
-    }
-    return result;
-}
 function sortToc(a, b) {
     if (!a.module && b.module) {
         return 1;

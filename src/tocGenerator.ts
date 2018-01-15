@@ -22,7 +22,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
                 let secondLevelToc: TocItem = {
                     uid: element.uid,
                     name: element.name.split('(')[0],
-                    items: getFunctionLevelToc(element)
+                    items: []
                 };
 
                 if (!dictModuleName[element.module]) {
@@ -38,7 +38,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
                 result.push({
                     uid: element.uid,
                     name: element.name.split('(')[0],
-                    items: getFunctionLevelToc(element)
+                    items: []
                 });
             }
         });
@@ -53,24 +53,6 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
         name: packageUid,
         items: result
     }];
-}
-
-function getFunctionLevelToc(element: YamlModel): TocItem[] {
-    let result: TocItem[] = [];
-    if (flags.enableFunctionLevelToc) {
-        let children = element.children as string[];
-        if (element.name === globalName && children) {
-            children.forEach(child => {
-                let tmp = child.split('.');
-                result.push({
-                    uid: child,
-                    name: tmp[tmp.length - 1].split('(')[0]
-                });
-            });
-        }
-    }
-
-    return result;
 }
 
 function sortToc(a: YamlModel, b: YamlModel) {
