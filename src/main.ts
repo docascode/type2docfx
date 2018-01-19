@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
-import { groupGlobalFunction, postTransform } from './postTransformer';
+import { groupOrphanFunctions, postTransform } from './postTransformer';
 import { generateToc } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
@@ -91,7 +91,7 @@ if (json) {
 if (rootElements && rootElements.length) {
     resolveIds(rootElements, uidMapping);
 
-    groupGlobalFunction(rootElements);
+    let functionsMapping = groupOrphanFunctions(rootElements);
 
     let flattenElements = rootElements.map(rootElement => {
         if (rootElement.uid.indexOf('constructor') >= 0) {
@@ -119,6 +119,9 @@ if (rootElements && rootElements.length) {
     });
 
     let packageIndex = generatePackage(yamlModels);
+    if (packageIndex && functionsMapping['ParentToPackage']) {
+        packageIndex.items[0].children = (packageIndex.items[0].children as YamlModel[]).concat(functionsMapping['ParentToPackage']);
+    }
     packageIndex = JSON.parse(JSON.stringify(packageIndex));
     fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
     console.log('Package index genrated.');
@@ -131,8 +134,14 @@ if (rootElements && rootElements.length) {
     if (flags.hasModule) {
         let moduleIndexes = generateModules(toc[0].items);
         moduleIndexes.forEach(moduleIndex => {
-            moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
-            fs.writeFileSync(`${outputPath}/${moduleIndex.items[0].uid}.yml`, `${yamlHeader}\n${serializer.safeDump(moduleIndex)}`);
+            if (moduleIndex.items && moduleIndex.items.length) {
+                if (functionsMapping[moduleIndex.items[0].name]) {
+                    moduleIndex.items[0].children = (moduleIndex.items[0].children as YamlModel[]).concat(functionsMapping[moduleIndex.items[0].name]);
+                }
+                moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
+                fs.writeFileSync(`${outputPath}/${moduleIndex.items[0].uid}.yml`, `${yamlHeader}\n${serializer.safeDump(moduleIndex)}`);
+            }
+
         });
         console.log('Module indexes generated.');
     }

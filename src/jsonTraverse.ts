@@ -5,7 +5,6 @@ import { RepoConfig } from './interfaces/RepoConfig';
 import { convertLinkToGfm, getTextAndLink } from './helpers/linkConvertHelper';
 import { typeToString } from './idResolver';
 import { flags } from './common/flags';
-import { globalName } from './common/constants';
 import * as _ from 'lodash';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
@@ -175,12 +174,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
 
-        if (flags.hasModule) {
-            if (moduleName) {
-                myself.module = moduleName;
-            } else {
-                myself.module = globalName;
-            }
+        if (flags.hasModule && moduleName) {
+            myself.module = moduleName;
         }
 
         if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {

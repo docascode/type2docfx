@@ -79,7 +79,7 @@ if (json) {
 }
 if (rootElements && rootElements.length) {
     idResolver_1.resolveIds(rootElements, uidMapping);
-    postTransformer_1.groupGlobalFunction(rootElements);
+    var functionsMapping_1 = postTransformer_1.groupOrphanFunctions(rootElements);
     var flattenElements = rootElements.map(function (rootElement) {
         if (rootElement.uid.indexOf('constructor') >= 0) {
             return [];
@@ -102,6 +102,9 @@ if (rootElements && rootElements.length) {
         yamlModels_1.push(element.items[0]);
     });
     var packageIndex = packageGenerator_1.generatePackage(yamlModels_1);
+    if (packageIndex && functionsMapping_1['ParentToPackage']) {
+        packageIndex.items[0].children = packageIndex.items[0].children.concat(functionsMapping_1['ParentToPackage']);
+    }
     packageIndex = JSON.parse(JSON.stringify(packageIndex));
     fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(packageIndex));
     console.log('Package index genrated.');
@@ -112,8 +115,13 @@ if (rootElements && rootElements.length) {
     if (flags_1.flags.hasModule) {
         var moduleIndexes = moduleGenerator_1.generateModules(toc[0].items);
         moduleIndexes.forEach(function (moduleIndex) {
-            moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
-            fs.writeFileSync(outputPath + "/" + moduleIndex.items[0].uid + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(moduleIndex));
+            if (moduleIndex.items && moduleIndex.items.length) {
+                if (functionsMapping_1[moduleIndex.items[0].name]) {
+                    moduleIndex.items[0].children = moduleIndex.items[0].children.concat(functionsMapping_1[moduleIndex.items[0].name]);
+                }
+                moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
+                fs.writeFileSync(outputPath + "/" + moduleIndex.items[0].uid + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(moduleIndex));
+            }
         });
         console.log('Module indexes generated.');
     }

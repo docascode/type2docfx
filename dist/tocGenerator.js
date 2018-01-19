@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var flags_1 = require("./common/flags");
-var constants_1 = require("./common/constants");
 function generateToc(elements, packageUid) {
     var result = [];
     var previousUid = null;
@@ -22,15 +21,20 @@ function generateToc(elements, packageUid) {
                     name: element.name.split('(')[0],
                     items: []
                 };
-                if (!dictModuleName_1[element.module]) {
-                    dictModuleName_1[element.module] = {
-                        uid: element.package + "." + element.module.replace(/\//g, '.'),
-                        name: element.module,
-                        items: []
-                    };
-                    result.push(dictModuleName_1[element.module]);
+                if (element.module) {
+                    if (!dictModuleName_1[element.module]) {
+                        dictModuleName_1[element.module] = {
+                            uid: element.package + "." + element.module.replace(/\//g, '.'),
+                            name: element.module,
+                            items: []
+                        };
+                        result.push(dictModuleName_1[element.module]);
+                    }
+                    dictModuleName_1[element.module].items.push(secondLevelToc);
                 }
-                dictModuleName_1[element.module].items.push(secondLevelToc);
+                else {
+                    result.push(element);
+                }
             }
             else {
                 result.push({
@@ -40,10 +44,6 @@ function generateToc(elements, packageUid) {
                 });
             }
         });
-        // if only Global module exists, remove Global package
-        if (flags_1.flags.hasModule && result.length === 1 && result[0].name === constants_1.globalName) {
-            result = result[0].items;
-        }
     }
     return [{
             uid: packageUid,

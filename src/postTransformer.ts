@@ -1,13 +1,13 @@
 import { YamlModel, Root } from './interfaces/YamlModel';
-import { globalUid, constructorName } from './common/constants';
+import { constructorName } from './common/constants';
 import { flags } from './common/flags';
 
-export function groupGlobalFunction(elements: YamlModel[]): void {
+export function groupOrphanFunctions(elements: YamlModel[]): { [key: string]: YamlModel[] } {
   if (elements && elements.length) {
     let mapping: { [key: string]: YamlModel[] } = {};
     for (let i = 0; i < elements.length; i++) {
       if (elements[i].type === 'function') {
-        let key = elements[i].module ? elements[i].module : 'Global';
+        let key = elements[i].module ? elements[i].module : 'ParentToPackage';
         if (!mapping[key]) {
           mapping[key] = [];
         }
@@ -16,20 +16,7 @@ export function groupGlobalFunction(elements: YamlModel[]): void {
         i--;
       }
     }
-    for (let key in mapping) {
-        let first = mapping[key][0];
-        elements.push({
-          uid: first.uid.replace(`.${first.name}`, '') + '.Global',
-          package: first.uid.split('.')[0],
-          name: 'Global',
-          module: first.module,
-          children: mapping[key],
-          type: 'package',
-          langs: [
-            'typeScript'
-          ]
-        });
-    }
+    return mapping;
   }
 }
 
@@ -70,11 +57,11 @@ function sortYamlModel(a: YamlModel, b: YamlModel): number {
         return a.numericValue - b.numericValue;
       }
 
-      // sort classes alphabetically, but GLOBAL at last, contructor first
-      if (a.uid === globalUid || b.name === constructorName) {
+      // sort classes alphabetically, contructor first
+      if (b.name === constructorName) {
         return 1;
       }
-      if (b.uid === globalUid || a.name === constructorName) {
+      if (a.name === constructorName) {
         return -1;
       }
 

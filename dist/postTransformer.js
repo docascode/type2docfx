@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = require("./common/constants");
 var flags_1 = require("./common/flags");
-function groupGlobalFunction(elements) {
+function groupOrphanFunctions(elements) {
     if (elements && elements.length) {
         var mapping = {};
         for (var i = 0; i < elements.length; i++) {
             if (elements[i].type === 'function') {
-                var key = elements[i].module ? elements[i].module : 'Global';
+                var key = elements[i].module ? elements[i].module : 'ParentToPackage';
                 if (!mapping[key]) {
                     mapping[key] = [];
                 }
@@ -16,23 +16,10 @@ function groupGlobalFunction(elements) {
                 i--;
             }
         }
-        for (var key in mapping) {
-            var first = mapping[key][0];
-            elements.push({
-                uid: first.uid.replace("." + first.name, '') + '.Global',
-                package: first.uid.split('.')[0],
-                name: 'Global',
-                module: first.module,
-                children: mapping[key],
-                type: 'package',
-                langs: [
-                    'typeScript'
-                ]
-            });
-        }
+        return mapping;
     }
 }
-exports.groupGlobalFunction = groupGlobalFunction;
+exports.groupOrphanFunctions = groupOrphanFunctions;
 function postTransform(element) {
     return flattening(element);
 }
@@ -68,11 +55,11 @@ function sortYamlModel(a, b) {
     if (a.numericValue !== undefined && b.numericValue !== undefined) {
         return a.numericValue - b.numericValue;
     }
-    // sort classes alphabetically, but GLOBAL at last, contructor first
-    if (a.uid === constants_1.globalUid || b.name === constants_1.constructorName) {
+    // sort classes alphabetically, contructor first
+    if (b.name === constants_1.constructorName) {
         return 1;
     }
-    if (b.uid === constants_1.globalUid || a.name === constants_1.constructorName) {
+    if (a.name === constants_1.constructorName) {
         return -1;
     }
     var nameA = a.name.toUpperCase();

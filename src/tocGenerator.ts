@@ -1,7 +1,6 @@
 import { YamlModel } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
-import { globalName } from './common/constants';
 
 export function generateToc(elements: YamlModel[], packageUid: string): TocItem[] {
     let result: TocItem[] = [];
@@ -24,16 +23,19 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
                     name: element.name.split('(')[0],
                     items: []
                 };
-
-                if (!dictModuleName[element.module]) {
-                    dictModuleName[element.module] = {
-                        uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
-                        name: element.module,
-                        items: []
-                    };
-                    result.push(dictModuleName[element.module]);
+                if (element.module) {
+                    if (!dictModuleName[element.module]) {
+                        dictModuleName[element.module] = {
+                            uid: `${element.package}.${element.module.replace(/\//g, '.')}`,
+                            name: element.module,
+                            items: []
+                        };
+                        result.push(dictModuleName[element.module]);
+                    }
+                    dictModuleName[element.module].items.push(secondLevelToc);
+                } else {
+                    result.push(element);
                 }
-                dictModuleName[element.module].items.push(secondLevelToc);
             } else {
                 result.push({
                     uid: element.uid,
@@ -42,11 +44,6 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
                 });
             }
         });
-
-        // if only Global module exists, remove Global package
-        if (flags.hasModule && result.length === 1 && result[0].name === globalName) {
-            result = result[0].items;
-        }
     }
     return [{
         uid: packageUid,
