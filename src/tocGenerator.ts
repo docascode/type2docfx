@@ -34,7 +34,7 @@ export function generateToc(elements: YamlModel[], packageUid: string): TocItem[
                     }
                     dictModuleName[element.module].items.push(secondLevelToc);
                 } else {
-                    result.push(element);
+                    result.push(secondLevelToc);
                 }
             } else {
                 result.push({

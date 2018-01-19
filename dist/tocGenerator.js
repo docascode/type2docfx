@@ -33,7 +33,7 @@ function generateToc(elements, packageUid) {
                     dictModuleName_1[element.module].items.push(secondLevelToc);
                 }
                 else {
-                    result.push(element);
+                    result.push(secondLevelToc);
                 }
             }
             else {
