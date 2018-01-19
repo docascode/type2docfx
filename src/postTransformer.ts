@@ -20,6 +20,13 @@ export function groupOrphanFunctions(elements: YamlModel[]): { [key: string]: Ya
   }
 }
 
+export function insertFunctionToIndex(index: Root, functions: YamlModel[]) {
+  if (index && functions) {
+    index.items[0].children = (index.items[0].children as string[]).concat(functions.map(f => f.uid));
+    index.items = index.items.concat(functions);
+  }
+}
+
 export function postTransform(element: YamlModel): Root[] {
     return flattening(element);
 }

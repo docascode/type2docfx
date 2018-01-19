@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
-import { groupOrphanFunctions, postTransform } from './postTransformer';
+import { groupOrphanFunctions, insertFunctionToIndex, postTransform } from './postTransformer';
 import { generateToc } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
@@ -119,9 +119,7 @@ if (rootElements && rootElements.length) {
     });
 
     let packageIndex = generatePackage(yamlModels);
-    if (packageIndex && functionsMapping['ParentToPackage']) {
-        packageIndex.items[0].children = (packageIndex.items[0].children as YamlModel[]).concat(functionsMapping['ParentToPackage']);
-    }
+    insertFunctionToIndex(packageIndex, functionsMapping['ParentToPackage']);
     packageIndex = JSON.parse(JSON.stringify(packageIndex));
     fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
     console.log('Package index genrated.');
@@ -135,9 +133,7 @@ if (rootElements && rootElements.length) {
         let moduleIndexes = generateModules(toc[0].items);
         moduleIndexes.forEach(moduleIndex => {
             if (moduleIndex.items && moduleIndex.items.length) {
-                if (functionsMapping[moduleIndex.items[0].name]) {
-                    moduleIndex.items[0].children = (moduleIndex.items[0].children as YamlModel[]).concat(functionsMapping[moduleIndex.items[0].name]);
-                }
+                insertFunctionToIndex(moduleIndex, functionsMapping[moduleIndex.items[0].name]);
                 moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
                 fs.writeFileSync(`${outputPath}/${moduleIndex.items[0].uid}.yml`, `${yamlHeader}\n${serializer.safeDump(moduleIndex)}`);
             }

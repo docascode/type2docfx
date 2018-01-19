@@ -102,9 +102,7 @@ if (rootElements && rootElements.length) {
         yamlModels_1.push(element.items[0]);
     });
     var packageIndex = packageGenerator_1.generatePackage(yamlModels_1);
-    if (packageIndex && functionsMapping_1['ParentToPackage']) {
-        packageIndex.items[0].children = packageIndex.items[0].children.concat(functionsMapping_1['ParentToPackage']);
-    }
+    postTransformer_1.insertFunctionToIndex(packageIndex, functionsMapping_1['ParentToPackage']);
     packageIndex = JSON.parse(JSON.stringify(packageIndex));
     fs.writeFileSync(outputPath + "/index.yml", constants_1.yamlHeader + "\n" + serializer.safeDump(packageIndex));
     console.log('Package index genrated.');
@@ -116,9 +114,7 @@ if (rootElements && rootElements.length) {
         var moduleIndexes = moduleGenerator_1.generateModules(toc[0].items);
         moduleIndexes.forEach(function (moduleIndex) {
             if (moduleIndex.items && moduleIndex.items.length) {
-                if (functionsMapping_1[moduleIndex.items[0].name]) {
-                    moduleIndex.items[0].children = moduleIndex.items[0].children.concat(functionsMapping_1[moduleIndex.items[0].name]);
-                }
+                postTransformer_1.insertFunctionToIndex(moduleIndex, functionsMapping_1[moduleIndex.items[0].name]);
                 moduleIndex = JSON.parse(JSON.stringify(moduleIndex));
                 fs.writeFileSync(outputPath + "/" + moduleIndex.items[0].uid + ".yml", constants_1.yamlHeader + "\n" + serializer.safeDump(moduleIndex));
             }

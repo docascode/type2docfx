@@ -20,6 +20,13 @@ function groupOrphanFunctions(elements) {
     }
 }
 exports.groupOrphanFunctions = groupOrphanFunctions;
+function insertFunctionToIndex(index, functions) {
+    if (index && functions) {
+        index.items[0].children = index.items[0].children.concat(functions.map(function (f) { return f.uid; }));
+        index.items = index.items.concat(functions);
+    }
+}
+exports.insertFunctionToIndex = insertFunctionToIndex;
 function postTransform(element) {
     return flattening(element);
 }
