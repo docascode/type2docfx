@@ -7,7 +7,16 @@ function groupOrphanFunctions(elements) {
         var mapping = {};
         for (var i = 0; i < elements.length; i++) {
             if (elements[i].type === 'function') {
-                var key = elements[i].module ? elements[i].module : 'ParentToPackage';
+                var key = void 0;
+                if (elements[i].module) {
+                    key = elements[i].module;
+                }
+                else {
+                    key = 'ParentToPackage';
+                    var tmp = elements[i].uid.split('.');
+                    tmp.splice(tmp.length - 1, 0, 'global');
+                    elements[i].uid = tmp.join('.');
+                }
                 if (!mapping[key]) {
                     mapping[key] = [];
                 }
