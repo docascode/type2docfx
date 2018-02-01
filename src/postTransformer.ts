@@ -7,15 +7,7 @@ export function groupOrphanFunctions(elements: YamlModel[]): { [key: string]: Ya
     let mapping: { [key: string]: YamlModel[] } = {};
     for (let i = 0; i < elements.length; i++) {
       if (elements[i].type === 'function') {
-        let key;
-        if (elements[i].module) {
-          key = elements[i].module;
-        } else {
-          key = 'ParentToPackage';
-          let tmp = elements[i].uid.split('.');
-          tmp.splice(tmp.length - 1, 0, 'global');
-          elements[i].uid = tmp.join('.');
-        }
+        let key = elements[i].module ? elements[i].module : 'ParentToPackage';
         if (!mapping[key]) {
           mapping[key] = [];
         }
