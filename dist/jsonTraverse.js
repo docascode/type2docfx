@@ -329,6 +329,11 @@ function extractType(type) {
             typeId: type.id
         });
     }
+    else if (type.value) {
+        result.push({
+            typeName: "\"" + type.value + "\""
+        });
+    }
     else {
         result.push({
             typeName: 'function'

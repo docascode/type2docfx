@@ -348,6 +348,10 @@ function extractType(type: ParameterType): Type[] {
             typeName: type.name,
             typeId: type.id
         });
+    } else if (type.value) {
+        result.push({
+            typeName: `"${type.value}"`
+        });
     } else {
         result.push({
             typeName: 'function'
