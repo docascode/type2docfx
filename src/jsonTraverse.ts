@@ -33,7 +33,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     let myself: YamlModel = null;
-    if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
+    if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
         uid += `.${node.name}`;
         console.log(`${node.kindString}: ${uid}`);
         let customModuleName = findModuleInfoInComment(node.comment);
@@ -55,6 +55,10 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         };
         if (myself.type === 'enumeration') {
             myself.type = 'enum';
+        }
+        if (myself.type === 'type alias') {
+            myself.type = 'class';
+            myself.summary += `\n${generateTypeAliasInformation(node)}`;
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
@@ -464,4 +468,12 @@ function getGenericType(typeParameters: ParameterType[]): string {
         return `<${typeParameters[0].name}>`;
     }
     return '';
+}
+
+function generateTypeAliasInformation(node: Node) {
+    if (!node || !node.type || !node.type.types || node.type.type.length < 2) {
+        return '';
+    }
+    let typeAliases = node.type.types.map(t => typeToString(extractType(t)[0]));
+    return `"${node.name}" is a type alias. It refers to ${_.take(typeAliases, typeAliases.length - 1).join(', ')} and ${_.last(typeAliases)}.`;
 }

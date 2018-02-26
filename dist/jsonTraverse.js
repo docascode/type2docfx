@@ -26,7 +26,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         console.log(node.kindString + ": " + uid);
     }
     var myself = null;
-    if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration') && node.name) {
+    if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
         uid += "." + node.name;
         console.log(node.kindString + ": " + uid);
         var customModuleName = findModuleInfoInComment(node.comment);
@@ -49,6 +49,10 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         };
         if (myself.type === 'enumeration') {
             myself.type = 'enum';
+        }
+        if (myself.type === 'type alias') {
+            myself.type = 'class';
+            myself.summary += "\n" + generateTypeAliasInformation(node);
         }
         if (node.extendedTypes && node.extendedTypes.length) {
             myself.extends = {
@@ -427,4 +431,11 @@ function getGenericType(typeParameters) {
         return "<" + typeParameters[0].name + ">";
     }
     return '';
+}
+function generateTypeAliasInformation(node) {
+    if (!node || !node.type || !node.type.types || node.type.type.length < 2) {
+        return '';
+    }
+    var typeAliases = node.type.types.map(function (t) { return idResolver_1.typeToString(extractType(t)[0]); });
+    return "\"" + node.name + "\" is a type alias. It refers to " + _.take(typeAliases, typeAliases.length - 1).join(', ') + " and " + _.last(typeAliases) + ".";
 }
