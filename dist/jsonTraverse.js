@@ -117,7 +117,7 @@ function traverse(node, parentUid, parentContainer, moduleName, uidMapping, repo
         var isPublic = node.flags && node.flags.isPublic ? 'public ' : '';
         var isStatic = node.flags && node.flags.isStatic ? 'static ' : '';
         var isOptional = node.flags && node.flags.isOptional ? '?' : '';
-        var defaultValue = node.defaultValue ? " = " + node.defaultValue : '';
+        var defaultValue = node.defaultValue ? " = " + _.trim(node.defaultValue) : '';
         myself = {
             uid: uid,
             name: node.name,

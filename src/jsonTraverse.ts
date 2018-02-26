@@ -130,7 +130,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         let isPublic = node.flags && node.flags.isPublic ? 'public ' : '';
         let isStatic = node.flags && node.flags.isStatic ? 'static ' : '';
         let isOptional = node.flags && node.flags.isOptional ? '?' : '';
-        let defaultValue = node.defaultValue ? ` = ${node.defaultValue}` : '';
+        let defaultValue = node.defaultValue ? ` = ${_.trim(node.defaultValue)}` : '';
         myself = {
             uid: uid,
             name: node.name,
