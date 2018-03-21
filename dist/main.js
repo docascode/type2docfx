@@ -89,6 +89,7 @@ if (rootElements && rootElements.length) {
         return a.concat(b);
     }, []);
     console.log('Yaml dump start.');
+    fs.ensureDir(outputPath);
     flattenElements.forEach(function (transfomredClass) {
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         var filename = transfomredClass.items[0].uid.replace(transfomredClass.items[0].package + ".", '');
