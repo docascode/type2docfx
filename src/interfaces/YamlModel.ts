@@ -74,7 +74,7 @@ export interface Type {
     reflectedType?: ReflectedType;
     genericType?: GenericType;
     intersectionType?: IntersectionType;
-    isArray?: boolean;
+    arrayType?: Type | string;
 }
 
 export interface IntersectionType {

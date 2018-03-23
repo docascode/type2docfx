@@ -302,8 +302,9 @@ function extractType(type: ParameterType): Type[] {
         });
     } else if (type.type === 'array') {
         let newType = extractType(type.elementType);
-        newType[0].isArray = true;
-        result.push(newType[0]);
+        result.push({
+            arrayType: newType[0]
+        });
     } else if (type.type === 'intersection' && type.types.length) {
         result.push({
             intersectionType: {
