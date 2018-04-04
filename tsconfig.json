@@ -9,6 +9,7 @@
         "src/idResolver.ts",
         "src/common/constants.ts",
         "src/common/flags.ts",
+        "src/common/regex.ts",
         "src/helpers/linkConvertHelper.js"        
     ],
     "compilerOptions": {

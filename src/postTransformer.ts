@@ -1,6 +1,8 @@
-import { YamlModel, Root } from './interfaces/YamlModel';
+import { YamlModel, Root, Reference } from './interfaces/YamlModel';
 import { constructorName } from './common/constants';
+import { uidRegex } from './common/regex';
 import { flags } from './common/flags';
+import { ReferenceMapping } from './interfaces/ReferenceMapping';
 
 export function groupOrphanFunctions(elements: YamlModel[]): { [key: string]: YamlModel[] } {
   if (elements && elements.length) {
@@ -27,8 +29,51 @@ export function insertFunctionToIndex(index: Root, functions: YamlModel[]) {
   }
 }
 
-export function postTransform(element: YamlModel): Root[] {
-    return flattening(element);
+export function postTransform(element: YamlModel, references: ReferenceMapping): Root[] {
+    let roots = flattening(element);
+    roots.forEach(root => {
+      insertReferences(root, references);
+    });
+
+    return roots;
+}
+
+function insertReferences(root: Root, references: ReferenceMapping): void {
+  root.references = [];
+  for (let key in references) {
+    let reference: Reference = {
+      uid: key,
+      'spec.typeScript': []
+    };
+
+    let match;
+    let lastIndex = 0;
+    while ((match = uidRegex.exec(references[key])) !== null) {
+      if (uidRegex.lastIndex < match.index) {
+        reference['spec.typeScript'].push({
+          fullName: references[key].substring(uidRegex.lastIndex, match.index)
+        });
+      }
+      lastIndex = match.index + match[0].length;
+      reference['spec.typeScript'].push({
+        uid: match[1],
+        name: getItemName(match[1])
+      });
+    }
+
+    if (lastIndex < references[key].length) {
+      reference['spec.typeScript'].push({
+        fullName: references[key].substring(lastIndex)
+      });
+    }
+
+    root.references.push(reference);
+  }
+}
+
+function getItemName(uid: string): string {
+  let tmp = uid.split('.');
+  return tmp[tmp.length - 1];
 }
 
 function flattening(element: YamlModel): Root[] {

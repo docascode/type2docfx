@@ -42,8 +42,10 @@ interface Remote {
 }
 
 export interface Reference {
-    uid: string;
-    name: string;
+    uid?: string;
+    name?: string;
+    fullName?: string;
+    'spec.typeScript'?: Reference[];
 }
 
 export interface Syntax {

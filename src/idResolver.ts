@@ -1,26 +1,47 @@
 import { YamlModel, Type, Types, GenericType, ReflectedType } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
+import { ReferenceMapping } from './interfaces/ReferenceMapping';
+import { uidRegex } from './common/regex';
 
-export function resolveIds(elements: YamlModel[], uidMapping: UidMapping): void {
-    if (elements) {
-        elements.forEach(element => {
-            if (element.syntax) {
-                if (element.syntax.parameters) {
-                    element.syntax.parameters.forEach(p => {
-                        p.type = restoreTypes(p.type, uidMapping);
-                    });
-                }
+export function resolveIds(element: YamlModel, uidMapping: UidMapping, referenceMapping: ReferenceMapping): void {
+    if (element.syntax) {
+        if (element.syntax.parameters) {
+            element.syntax.parameters.forEach(p => {
+                p.type = restoreReferences(p.type, uidMapping, referenceMapping);
+            });
+        }
 
-                if (element.syntax.return) {
-                    element.syntax.return.type = restoreTypes(element.syntax.return.type, uidMapping);
-                }
-            }
-            if (element.extends) {
-                element.extends.name = restoreTypes([element.extends.name as Type], uidMapping)[0];
-            }
-            resolveIds(element.children as YamlModel[], uidMapping);
-        });
+        if (element.syntax.return) {
+            element.syntax.return.type = restoreReferences(element.syntax.return.type, uidMapping, referenceMapping);
+        }
     }
+    if (element.extends) {
+        element.extends.name = restoreReferences([element.extends.name as Type], uidMapping, referenceMapping)[0];
+    }
+    (element.children as YamlModel[]).forEach(child => {
+        resolveIds(child, uidMapping, referenceMapping);
+    });
+}
+
+function restoreReferences(types: Types, uidMapping: UidMapping, referenceMapping: ReferenceMapping): string[] {
+    let restoredTypes = restoreTypes(types, uidMapping);
+    return restoredTypes.map<string>(restoreType => {
+        if (restoreType) {
+            let hasUid = false;
+            let restoreTypeTrim = restoreType.replace(uidRegex, (match, uid) => {
+                if (uid) {
+                    hasUid = true;
+                    return uid;
+                }
+                return match;
+            });
+            if (hasUid && referenceMapping[restoreTypeTrim] !== null) {
+                referenceMapping[restoreTypeTrim] = restoreType;
+            }
+            return restoreTypeTrim;
+        }
+        return restoreType;
+    });
 }
 
 function restoreTypes(types: Types, uidMapping: UidMapping): string[] {
@@ -47,7 +68,7 @@ function restoreType(type: Type | string, uidMapping: UidMapping): string {
         type.arrayType = restoreType(type.arrayType, uidMapping);
     } else {
         if (type.typeId && uidMapping[type.typeId]) {
-            type.typeName = `@${uidMapping[type.typeId]}`;
+            type.typeName = `@uid:${uidMapping[type.typeId]}!@`;
         }
     }
 

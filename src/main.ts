@@ -15,6 +15,7 @@ import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
 import { yamlHeader } from './common/constants';
 import { flags } from './common/flags';
+import { ReferenceMapping } from './interfaces/ReferenceMapping';
 
 let pjson = require('../package.json');
 
@@ -84,21 +85,26 @@ if (fs.existsSync(path)) {
 
 let rootElements: YamlModel[] = [];
 let uidMapping: UidMapping = {};
+let referenceMappings: ReferenceMapping[] = [];
 if (json) {
     traverse(json, '', rootElements, null, uidMapping, repoConfig);
 }
 
 if (rootElements && rootElements.length) {
-    resolveIds(rootElements, uidMapping);
+    rootElements.forEach(rootElement => {
+        let referenceMapping = {};
+        resolveIds(rootElement, uidMapping, referenceMapping);
+        referenceMappings.push(referenceMapping);
+    });
 
     let functionsMapping = groupOrphanFunctions(rootElements);
 
-    let flattenElements = rootElements.map(rootElement => {
+    let flattenElements = rootElements.map((rootElement, index) => {
         if (rootElement.uid.indexOf('constructor') >= 0) {
             return [];
         }
 
-        return postTransform(rootElement);
+        return postTransform(rootElement, referenceMappings[index]);
     }).reduce(function(a, b) {
         return a.concat(b);
     }, []);
