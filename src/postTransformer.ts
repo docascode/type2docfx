@@ -53,8 +53,8 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
     let match;
     let lastIndex = 0;
     while ((match = uidRegex.exec(references[key])) !== null) {
-      if (uidRegex.lastIndex < match.index) {
-        reference['spec.typeScript'].push(getReference(references[key].substring(uidRegex.lastIndex, match.index)));
+      if (lastIndex < match.index) {
+        reference['spec.typeScript'].push(getReference(references[key].substring(lastIndex, match.index)));
       }
       lastIndex = match.index + match[0].length;
       reference['spec.typeScript'].push(getReference(getItemName(match[1]), match[1]));
