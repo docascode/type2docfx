@@ -85,7 +85,7 @@ export interface IntersectionType {
 
 export interface GenericType {
     outter: Type | string;
-    inner: Type | string;
+    inner: Type[] | string[];
 }
 
 export interface ReflectedType {

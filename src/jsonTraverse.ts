@@ -341,7 +341,7 @@ function extractType(type: ParameterType): Type[] {
                     typeName: type.name,
                     typeId: type.id
                 },
-                inner: extractType(type.typeArguments[0])[0]
+                inner: type.typeArguments.map(t => extractType(t)[0])
             }
         });
     } else if (type.name) {

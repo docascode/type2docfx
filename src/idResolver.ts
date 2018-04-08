@@ -60,7 +60,7 @@ function restoreType(type: Type | string, uidMapping: UidMapping): string {
         type.reflectedType.key = restoreType(type.reflectedType.key, uidMapping);
         type.reflectedType.value = restoreType(type.reflectedType.value, uidMapping);
     } else if (type.genericType) {
-        type.genericType.inner = restoreType(type.genericType.inner, uidMapping);
+        type.genericType.inner = (type.genericType.inner as Type[]).map(t => restoreType(t, uidMapping));
         type.genericType.outter = restoreType(type.genericType.outter, uidMapping);
     } else if (type.intersectionType) {
         type.intersectionType.types = (type.intersectionType.types as Type[]).map(t => restoreType(t, uidMapping));
@@ -92,7 +92,7 @@ export function typeToString(type: Type | string): string {
     if (type.reflectedType) {
         return `[key: ${typeToString(type.reflectedType.key)}]: ${typeToString(type.reflectedType.value)}`;
     } else if (type.genericType) {
-        return `${typeToString(type.genericType.outter)}<${typeToString(type.genericType.inner)}>`;
+        return `${typeToString(type.genericType.outter)}<${((type.genericType.inner as Type[]).map(t => typeToString(t)).join(', '))}>`;
     } else if (type.intersectionType) {
         return (type.intersectionType.types as Type[]).map(t => typeToString(t)).join(' & ');
     } else if (type.arrayType) {
