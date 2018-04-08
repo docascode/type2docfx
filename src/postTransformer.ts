@@ -39,7 +39,7 @@ export function postTransform(element: YamlModel, references: ReferenceMapping):
 }
 
 function insertReferences(root: Root, references: ReferenceMapping): void {
-  if (!references || references.key.length === 0) {
+  if (!references || Object.keys(references).length === 0) {
     return;
   }
 
@@ -54,25 +54,31 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
     let lastIndex = 0;
     while ((match = uidRegex.exec(references[key])) !== null) {
       if (uidRegex.lastIndex < match.index) {
-        reference['spec.typeScript'].push({
-          fullName: references[key].substring(uidRegex.lastIndex, match.index)
-        });
+        reference['spec.typeScript'].push(getReference(references[key].substring(uidRegex.lastIndex, match.index)));
       }
       lastIndex = match.index + match[0].length;
-      reference['spec.typeScript'].push({
-        uid: match[1],
-        name: getItemName(match[1])
-      });
+      reference['spec.typeScript'].push(getReference(getItemName(match[1]), match[1]));
     }
 
     if (lastIndex < references[key].length) {
-      reference['spec.typeScript'].push({
-        fullName: references[key].substring(lastIndex)
-      });
+      reference['spec.typeScript'].push(getReference(references[key].substring(lastIndex)));
     }
 
     root.references.push(reference);
   }
+}
+
+function getReference(name: string, uid?: string): Reference {
+  let reference: Reference = {
+    name: name,
+    fullName: name
+  };
+
+  if (uid) {
+    reference.uid = uid;
+  }
+
+  return reference;
 }
 
 function getItemName(uid: string): string {
