@@ -39,6 +39,10 @@ export function postTransform(element: YamlModel, references: ReferenceMapping):
 }
 
 function insertReferences(root: Root, references: ReferenceMapping): void {
+  if (!references || references.key.length === 0) {
+    return;
+  }
+
   root.references = [];
   for (let key in references) {
     let reference: Reference = {
