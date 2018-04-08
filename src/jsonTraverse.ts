@@ -1,4 +1,4 @@
-import { YamlModel, YamlParameter, Exception, Type } from './interfaces/YamlModel';
+import { YamlModel, YamlParameter, Exception, Type, UnionType } from './interfaces/YamlModel';
 import { Node, Tag, Parameter, Comment, ParameterType } from './interfaces/TypeDocModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
@@ -268,16 +268,6 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
     }
 }
 
-function extractUnionType(type: ParameterType): string {
-    if (!type && !type.types) {
-        return '';
-    }
-    if (!hasCommonPrefix(type.types)) {
-        return type.types.map<string>(t => t.name ? t.name : `"${t.value}"`).join(' | ');
-    }
-    return type.types[0].name.split('.')[0];
-}
-
 function hasCommonPrefix(types: ParameterType[]): boolean {
     if (types && types.length > 1 && types[0].name) {
         if (types[0].name.indexOf('.') < 0) {
@@ -297,9 +287,17 @@ function hasCommonPrefix(types: ParameterType[]): boolean {
 function extractType(type: ParameterType): Type[] {
     let result: Type[] = [];
     if (type.type === 'union' && type.types && type.types.length) {
-        result.push({
-            typeName: extractUnionType(type)
-        });
+        if (hasCommonPrefix(type.types)) {
+            result.push({
+                typeName: type.types[0].name.split('.')[0]
+            });
+        } else {
+            result.push({
+                unionType: {
+                    types: type.types.map(t => extractType(t)[0])
+                }
+            });
+        }
     } else if (type.type === 'array') {
         let newType = extractType(type.elementType);
         result.push({

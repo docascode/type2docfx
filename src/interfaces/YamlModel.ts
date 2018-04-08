@@ -76,7 +76,12 @@ export interface Type {
     reflectedType?: ReflectedType;
     genericType?: GenericType;
     intersectionType?: IntersectionType;
+    unionType?: UnionType;
     arrayType?: Type | string;
+}
+
+export interface UnionType {
+    types: Type[] | string[];
 }
 
 export interface IntersectionType {
