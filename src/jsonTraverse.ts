@@ -155,7 +155,23 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
-        let signatureType = node.getSignature ? node.getSignature[0].type : node.setSignature[0].type;
+        //let signatureType = node.getSignature ? node.getSignature[0].type : node.setSignature[0].type;
+        
+        let signatureType;
+        if (node.getSignature) {
+            if (Array.isArray(node.getSignature)) {
+                signatureType = node.getSignature[0].type;
+            } else {
+                signatureType = node.getSignature.type;
+            }
+        } else if (node.setSignature) {
+            if (Array.isArray(node.setSignature)) {
+                signatureType = node.setSignature[0].type;
+            } else {
+                signatureType = node.setSignature.type;
+            }
+        }
+
         myself = {
             uid: uid,
             name: node.name,
@@ -286,6 +302,9 @@ function hasCommonPrefix(types: ParameterType[]): boolean {
 
 function extractType(type: ParameterType): Type[] {
     let result: Type[] = [];
+    if (type === undefined) {
+        return result;
+    }
     if (type.type === 'union' && type.types && type.types.length) {
         if (hasCommonPrefix(type.types)) {
             result.push({
