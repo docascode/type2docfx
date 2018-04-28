@@ -15,8 +15,8 @@ export interface Node {
     inheritedFrom: ParameterType;
     sources: Source[];
     typeParameter: ParameterType[];
-    getSignature: Node[];
-    setSignature: Node[];
+    getSignature: Node[] | Node;
+    setSignature: Node[] | Node;
 }
 
 interface Source {
