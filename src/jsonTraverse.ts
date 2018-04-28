@@ -155,7 +155,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
-        //let signatureType = node.getSignature ? node.getSignature[0].type : node.setSignature[0].type;
         
         let signatureType;
         if (node.getSignature) {
