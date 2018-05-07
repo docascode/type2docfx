@@ -8,7 +8,12 @@ import { flags } from './common/flags';
 import * as _ from 'lodash';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
+   
     if (node.flags.isPrivate || node.flags.isProtected) {
+        return;
+    }
+
+    if (parentUid.length > 0 && node.flags.isExported === undefined) {
         return;
     }
 
