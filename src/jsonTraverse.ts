@@ -8,19 +8,17 @@ import { flags } from './common/flags';
 import * as _ from 'lodash';
 
 export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
-   
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
-
-    if (parentUid.length && !node.flags.isExported) {
-        return;
+    if(parentUid.length){
+        if(!node.flags.isExported || (!node.sources && !node.sources[0].fileName.match("/^.*\.d\.ts$/"))){
+            return;
+        }
     }
-
     if (node.name && node.name[0] === '_') {
         return;
     }
-
     let uid = parentUid;
 
     if (node.kind === 0) {
@@ -160,7 +158,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
-        
         let signatureType;
         if (node.getSignature) {
             if (Array.isArray(node.getSignature)) {
