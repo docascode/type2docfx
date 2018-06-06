@@ -11,8 +11,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
-    if(parentUid.length){
-        if(!node.flags.isExported || (!node.sources && !node.sources[0].fileName.match("/^.*\.d\.ts$/"))){
+    if (parentUid.length) {
+        let pattern = /^.+d\.ts$/;
+        if (!node.flags.isExported && !pattern.test(node.sources[0].fileName)) {
             return;
         }
     }
@@ -66,7 +67,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
         if (node.extendedTypes && node.extendedTypes.length) {
             myself.extends = {
-                name : extractType(node.extendedTypes[0])[0]
+                name: extractType(node.extendedTypes[0])[0]
             };
         }
 
@@ -87,7 +88,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         myself.package = tokens[0];
     }
 
-    if ((node.kindString === 'Method'  || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
+    if ((node.kindString === 'Method' || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
         if (!node.signatures || node.inheritedFrom) {
             return;
         }
@@ -416,7 +417,7 @@ function findInfoInComment(infoName: string, comment: Comment): string {
         let text: string = null;
         comment.tags.forEach(tag => {
             if (tag.tag === infoName) {
-                text =  tag.text;
+                text = tag.text;
                 return;
             }
         });
@@ -437,7 +438,7 @@ function findDescriptionInComment(comment: Comment): string {
         let text: string = null;
         comment.tags.forEach(tag => {
             if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
-                text =  tag.text;
+                text = tag.text;
                 return;
             }
         });
