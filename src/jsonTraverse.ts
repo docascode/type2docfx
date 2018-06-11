@@ -21,7 +21,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         return;
     }
     let uid = parentUid;
-
     if (node.kind === 0) {
         uid = node.name;
     }
