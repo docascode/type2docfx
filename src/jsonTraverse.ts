@@ -12,8 +12,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         return;
     }
     if (parentUid.length) {
-        let pattern = /^.+d\.ts$/;
-        if (!node.flags.isExported && !pattern.test(node.sources[0].fileName)) {
+        if (!node.flags.isExported && !node.sources[0].fileName.toLowerCase().endsWith('.d.ts')) {
             return;
         }
     }
