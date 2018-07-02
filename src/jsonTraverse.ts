@@ -24,6 +24,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         uid = node.name;
     }
 
+    let myself: YamlModel = null;
     if (node.kindString === 'Module') {
         if (!moduleName) {
             moduleName = node.name.replace(/"/g, '');
@@ -31,10 +32,33 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             moduleName = `${moduleName}.${node.name.replace(/"/g, '')}`;
         }
         uid += `.${moduleName.replace(/\//g, '.')}`;
+        myself = {
+            uid: uid,
+            name: node.name,
+            fullName: node.name + getGenericType(node.typeParameter),
+            children: [],
+            langs: ['typeScript'],
+            type: node.kindString.toLowerCase(),
+            summary: node.comment ? findDescriptionInComment(node.comment) : ''
+        };
+        if (repoConfig && node.sources && node.sources.length) {
+            myself.source = {
+                path: node.sources[0].fileName,
+                // shift one line up as systematic off for TypeDoc
+                startLine: node.sources[0].line,
+                remote: {
+                    path: `${repoConfig.basePath}\\${node.sources[0].fileName}`,
+                    repo: repoConfig.repo,
+                    branch: repoConfig.branch
+                }
+            };
+        }
+
+        let tokens = parentUid.split('.');
+        myself.package = tokens[0];
         console.log(`${node.kindString}: ${uid}`);
     }
 
-    let myself: YamlModel = null;
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
         uid += `.${node.name}`;
         console.log(`${node.kindString}: ${uid}`);
