@@ -167,7 +167,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             optional: node.flags && node.flags.isOptional,
             syntax: {
-                content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0])}${defaultValue}`,
+                content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0], node.kindString)}${defaultValue}`,
                 return: {
                     type: extractType(node.type)
                 }
