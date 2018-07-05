@@ -258,6 +258,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 let newMethod = _.cloneDeep(myself);
                 newMethod.uid = `${newMethod.uid}_${index}`;
                 extractInformationFromSignature(newMethod, node, index);
+                newMethod.summary = convertLinkToGfm(newMethod.summary);
                 parentContainer.push(newMethod);
             }
         }
