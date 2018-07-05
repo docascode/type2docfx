@@ -5,7 +5,7 @@ import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
 import { groupOrphanFunctions, insertFunctionToIndex, postTransform } from './postTransformer';
-import { generateToc } from './tocGenerator';
+import { generateTOC } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
 import { resolveIds } from './idResolver';
@@ -80,6 +80,7 @@ if (fs.existsSync(path)) {
 }
 
 let rootElements: YamlModel[] = [];
+let rootElementsForTOC: YamlModel[] = [];
 let uidMapping: UidMapping = {};
 let referenceMappings: ReferenceMapping[] = [];
 if (json) {
@@ -92,6 +93,8 @@ if (rootElements && rootElements.length) {
         resolveIds(rootElement, uidMapping, referenceMapping);
         referenceMappings.push(referenceMapping);
     });
+
+    rootElementsForTOC = JSON.parse(JSON.stringify(rootElements));
 
     let flattenElements = rootElements.map((rootElement, index) => {
         if (rootElement.uid.indexOf('constructor') >= 0) {
@@ -124,7 +127,7 @@ if (rootElements && rootElements.length) {
     fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
     console.log('Package index genrated.');
 
-    let toc = generateToc(yamlModels, flattenElements[0].items[0].package);
+    let toc = generateTOC(rootElementsForTOC, flattenElements[0].items[0].package);
     toc = JSON.parse(JSON.stringify(toc));
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
     console.log('Toc genrated.');

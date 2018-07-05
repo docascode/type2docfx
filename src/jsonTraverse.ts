@@ -285,7 +285,8 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
             type: extractType(node.signatures[signatureIndex].type)
         };
     }
-
+    // comment the exception handling for now as template doesn't support it, so CI will not be blocked.
+    /*
     let exceptions;
     if (node.signatures[signatureIndex].comment && node.signatures[signatureIndex].comment.tags) {
         exceptions = node.signatures[signatureIndex].comment.tags.filter(tag => tag.tag === 'throws');
@@ -294,7 +295,7 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
     if (exceptions && exceptions.length) {
         method.exceptions = exceptions.map(e => extractException(e));
     }
-
+    */
     if (node.kindString === 'Method' || node.kindString === 'Function') {
         method.name = node.name;
         let functionBody = generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
