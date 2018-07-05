@@ -112,6 +112,7 @@ if (rootElements && rootElements.length) {
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
         filename = filename.split('(')[0];
+        filename = filename.replace(/\//g, '.');
         console.log(`Dump ${outputPath}/${filename}.yml`);
         fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
     });
