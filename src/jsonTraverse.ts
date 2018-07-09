@@ -53,9 +53,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 }
             };
         }
-
-        let tokens = parentUid.split('.');
-        myself.package = tokens[0];
         console.log(`${node.kindString}: ${uid}`);
     }
 
@@ -106,8 +103,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             };
         }
 
-        let tokens = parentUid.split('.');
-        myself.package = tokens[0];
     }
 
     if ((node.kindString === 'Method' || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
@@ -214,6 +209,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if (myself) {
+        let tokens = parentUid.split('.');
+        myself.package = tokens[0];
         myself.summary = convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
