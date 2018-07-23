@@ -19,6 +19,15 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if (node.name && node.name[0] === '_') {
         return;
     }
+
+    if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
+        let comment = node.comment ? node.comment : node.signatures[0].comment;
+        let findInternal = findInternalInComment(comment);
+        if (findInternal) {
+            return;
+        }
+    }
+
     let uid = parentUid;
     if (node.kind === 0) {
         uid = node.name;
@@ -448,6 +457,19 @@ function findInfoInComment(infoName: string, comment: Comment): string {
     }
 
     return null;
+}
+
+function findInternalInComment(comment: Comment): boolean {
+    let find = false;
+    if (comment && comment.tags) {
+        comment.tags.forEach(tag => {
+            if (tag.tag === 'internal') {
+                find = true;
+                return;
+            }
+        });
+    }
+    return find;
 }
 
 function findDescriptionInComment(comment: Comment): string {
