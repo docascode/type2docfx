@@ -77,7 +77,7 @@ function restoreType(type: Type | string, uidMapping: UidMapping): string {
     return typeToString(type);
 }
 
-export function typeToString(type: Type | string): string {
+export function typeToString(type: Type | string, kind?: string): string {
     if (!type) {
         return 'function';
     }
@@ -85,9 +85,11 @@ export function typeToString(type: Type | string): string {
     if (typeof(type) === 'string') {
         if (type[0] === '@') {
             return type;
-        } else {
+        } else if (kind && kind !== 'Property') {
             let t = type.split('.');
             return t[t.length - 1];
+        } else {
+            return type;
         }
     }
 
