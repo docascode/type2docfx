@@ -19,11 +19,21 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if (node.name && node.name[0] === '_') {
         return;
     }
+
+    if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
+        let comment = node.comment ? node.comment : node.signatures[0].comment;
+        let findInternal = findInternalInComment(comment);
+        if (findInternal) {
+            return;
+        }
+    }
+
     let uid = parentUid;
     if (node.kind === 0) {
         uid = node.name;
     }
 
+    let myself: YamlModel = null;
     if (node.kindString === 'Module') {
         if (!moduleName) {
             moduleName = node.name.replace(/"/g, '');
@@ -31,10 +41,30 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             moduleName = `${moduleName}.${node.name.replace(/"/g, '')}`;
         }
         uid += `.${moduleName.replace(/\//g, '.')}`;
+        myself = {
+            uid: uid,
+            name: node.name,
+            fullName: node.name + getGenericType(node.typeParameter),
+            children: [],
+            langs: ['typeScript'],
+            type: node.kindString.toLowerCase(),
+            summary: node.comment ? findDescriptionInComment(node.comment) : ''
+        };
+        if (repoConfig && node.sources && node.sources.length) {
+            myself.source = {
+                path: node.sources[0].fileName,
+                // shift one line up as systematic off for TypeDoc
+                startLine: node.sources[0].line,
+                remote: {
+                    path: `${repoConfig.basePath}\\${node.sources[0].fileName}`,
+                    repo: repoConfig.repo,
+                    branch: repoConfig.branch
+                }
+            };
+        }
         console.log(`${node.kindString}: ${uid}`);
     }
 
-    let myself: YamlModel = null;
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
         uid += `.${node.name}`;
         console.log(`${node.kindString}: ${uid}`);
@@ -82,8 +112,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             };
         }
 
-        let tokens = parentUid.split('.');
-        myself.package = tokens[0];
     }
 
     if ((node.kindString === 'Method' || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
@@ -143,7 +171,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             summary: node.comment ? findDescriptionInComment(node.comment) : '',
             optional: node.flags && node.flags.isOptional,
             syntax: {
-                content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0])}${defaultValue}`,
+                content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0], node.kindString)}${defaultValue}`,
                 return: {
                     type: extractType(node.type)
                 }
@@ -190,6 +218,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if (myself) {
+        let tokens = parentUid.split('.');
+        myself.package = tokens[0];
         myself.summary = convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
@@ -262,7 +292,8 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
             type: extractType(node.signatures[signatureIndex].type)
         };
     }
-
+    // comment the exception handling for now as template doesn't support it, so CI will not be blocked.
+    /*
     let exceptions;
     if (node.signatures[signatureIndex].comment && node.signatures[signatureIndex].comment.tags) {
         exceptions = node.signatures[signatureIndex].comment.tags.filter(tag => tag.tag === 'throws');
@@ -271,7 +302,7 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
     if (exceptions && exceptions.length) {
         method.exceptions = exceptions.map(e => extractException(e));
     }
-
+    */
     if (node.kindString === 'Method' || node.kindString === 'Function') {
         method.name = node.name;
         let functionBody = generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
@@ -426,6 +457,19 @@ function findInfoInComment(infoName: string, comment: Comment): string {
     }
 
     return null;
+}
+
+function findInternalInComment(comment: Comment): boolean {
+    let find = false;
+    if (comment && comment.tags) {
+        comment.tags.forEach(tag => {
+            if (tag.tag === 'internal') {
+                find = true;
+                return;
+            }
+        });
+    }
+    return find;
 }
 
 function findDescriptionInComment(comment: Comment): string {
