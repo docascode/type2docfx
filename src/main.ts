@@ -107,7 +107,7 @@ if (rootElements && rootElements.length) {
     }, []);
 
     console.log('Yaml dump start.');
-    fs.ensureDir(outputPath);
+    fs.ensureDirSync(outputPath);
     flattenElements.forEach(transfomredClass => {
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
