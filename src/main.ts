@@ -84,7 +84,7 @@ let rootElementsForTOC: YamlModel[] = [];
 let uidMapping: UidMapping = {};
 let referenceMappings: ReferenceMapping[] = [];
 if (json) {
-    traverse(json, '', rootElements, null, uidMapping, repoConfig);
+    traverse(json, '', rootElements, uidMapping, repoConfig);
 }
 
 if (rootElements && rootElements.length) {
