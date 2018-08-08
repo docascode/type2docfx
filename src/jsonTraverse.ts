@@ -241,6 +241,11 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             if (remarks != null) {
                 myself.remarks = convertLinkToGfm(remarks);
             }
+
+            let customModuleName = findModuleInfoInComment(node.comment);
+            if (customModuleName) {
+                myself.module = customModuleName;
+            }
         }
 
         if (node.signatures && node.signatures.length > 1) {
