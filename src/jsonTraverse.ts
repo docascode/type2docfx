@@ -7,7 +7,7 @@ import { typeToString } from './idResolver';
 import { flags } from './common/flags';
 import * as _ from 'lodash';
 
-export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], moduleName: string, uidMapping: UidMapping, repoConfig: RepoConfig): void {
+export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], uidMapping: UidMapping, repoConfig: RepoConfig): void {
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
@@ -35,12 +35,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
     let myself: YamlModel = null;
     if (node.kindString === 'Module') {
-        if (!moduleName) {
-            moduleName = node.name.replace(/"/g, '');
-        } else {
-            moduleName = `${moduleName}.${node.name.replace(/"/g, '')}`;
-        }
-        uid += `.${moduleName.replace(/\//g, '.')}`;
+        node.name = node.name.replace(/"/g, '');
+        node.name = node.name.replace(/\//g, '.');
+        uid += `.${node.name}`;
         myself = {
             uid: uid,
             name: node.name,
@@ -68,14 +65,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
         uid += `.${node.name}`;
         console.log(`${node.kindString}: ${uid}`);
-        let customModuleName = findModuleInfoInComment(node.comment);
-        if (customModuleName) {
-            if (moduleName) {
-                moduleName += `.${customModuleName}`;
-            } else {
-                moduleName = customModuleName;
-            }
-        }
         myself = {
             uid: uid,
             name: node.name,
@@ -223,11 +212,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         myself.summary = convertLinkToGfm(myself.summary);
         uidMapping[node.id] = myself.uid;
         parentContainer.push(myself);
-
-        if (flags.hasModule && moduleName) {
-            myself.module = moduleName;
-        }
-
         if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
             let comment = node.comment ? node.comment : node.signatures[0].comment;
             let deprecated = findDeprecatedInfoInComment(comment);
@@ -257,6 +241,11 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             if (remarks != null) {
                 myself.remarks = convertLinkToGfm(remarks);
             }
+
+            let customModuleName = findModuleInfoInComment(node.comment);
+            if (customModuleName) {
+                myself.module = customModuleName;
+            }
         }
 
         if (node.signatures && node.signatures.length > 1) {
@@ -273,9 +262,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children as YamlModel[], moduleName, uidMapping, repoConfig);
+                traverse(subNode, uid, myself.children as YamlModel[], uidMapping, repoConfig);
             } else {
-                traverse(subNode, uid, parentContainer, moduleName, uidMapping, repoConfig);
+                traverse(subNode, uid, parentContainer, uidMapping, repoConfig);
             }
         });
     }
