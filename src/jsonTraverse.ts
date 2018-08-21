@@ -350,26 +350,44 @@ function extractType(type: ParameterType): Type[] {
             }
         });
     } else if (type.type === 'reflection' && type.declaration) {
-        if (type.declaration.indexSignature && type.declaration.indexSignature.length) {
-            result.push({
-                reflectedType: {
-                    key: {
-                        typeName: type.declaration.indexSignature[0].parameters[0].type.name,
-                        typeId: type.declaration.indexSignature[0].parameters[0].type.id
-                    },
-                    value: {
-                        typeName: type.declaration.indexSignature[0].type.name,
-                        typeId: type.declaration.indexSignature[0].type.id
+        if (type.declaration.indexSignature) {
+            let indexSignature = type.declaration.indexSignature;
+            if (Array.isArray(indexSignature)) {
+                let signatures = indexSignature as Node[];
+                result.push({
+                    reflectedType: {
+                        key: {
+                            typeName: signatures[0].parameters[0].type.name,
+                            typeId: signatures[0].parameters[0].type.id
+                        },
+                        value: {
+                            typeName: signatures[0].type.name,
+                            typeId: signatures[0].type.id
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                let signatures = indexSignature as Node;
+                result.push({
+                    reflectedType: {
+                        key: {
+                            typeName: signatures.parameters[0].type.name,
+                            typeId: signatures.parameters[0].type.id
+                        },
+                        value: {
+                            typeName: signatures.type.name,
+                            typeId: signatures.type.id
+                        }
+                    }
+                });
+            }
         } else if (type.declaration.signatures && type.declaration.signatures.length) {
             result.push({
                 typeName: `${generateCallFunction('', fillParameters(type.declaration.signatures[0].parameters))} => ${typeToString(extractType(type.declaration.signatures[0].type)[0])}`
             });
         } else {
             result.push({
-                typeName: 'function'
+                typeName: 'Object'
             });
         }
     } else if (type.typeArguments && type.typeArguments.length) {
@@ -393,7 +411,7 @@ function extractType(type: ParameterType): Type[] {
         });
     } else {
         result.push({
-            typeName: 'function'
+            typeName: 'Object'
         });
     }
 
@@ -469,8 +487,8 @@ function findDescriptionInComment(comment: Comment): string {
     if (comment.tags) {
         let text: string = null;
         comment.tags.forEach(tag => {
-            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
-                text = tag.text;
+            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi' || tag.tag === 'property') {
+                text = tag.text.trim();
                 return;
             }
         });
