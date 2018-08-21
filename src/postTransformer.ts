@@ -45,8 +45,10 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
 
   root.references = [];
   for (let key in references) {
+    let names = key.split('.');
     let reference: Reference = {
       uid: key,
+      name: names[names.length - 1],
       'spec.typeScript': []
     };
 
@@ -66,6 +68,33 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
 
     root.references.push(reference);
   }
+}
+
+// to add this function due to classes under modules need to be cross reference
+export function insertClassReferenceForModule(flattenElements: Root[]) {
+  flattenElements.forEach(function (element) {
+    if (element.items[0].type === 'module') {
+      let references = element.references;
+      let children = element.items[0].children as string[];
+      children.forEach(function (child) {
+        let find = false;
+        references.forEach(function (ref) {
+          if (ref.uid === child) {
+            find = true;
+            return;
+          }
+        });
+        if (!find) {
+          let names = child.split('.');
+          let reference: Reference = {
+            uid: child,
+            name: names[names.length - 1]
+          };
+          references.push(reference);
+        }
+      });
+    }
+  });
 }
 
 function getReference(name: string, uid?: string): Reference {
@@ -101,14 +130,16 @@ function flattening(element: YamlModel): Root[] {
       children = children.sort(sortYamlModel);
     }
     children.forEach(child => {
-        if (child.children && child.children.length > 0) {
-          result = result.concat(flattening(child));
-        } else {
-          childrenUid.push(child.uid);
+      if (child.children && child.children.length > 0) {
+        result = result.concat(flattening(child));
+      }
+      if (child.type !== 'module') {
+        childrenUid.push(child.uid);
+        if (!child.children || child.children.length === 0) {
           result[0].items.push(child);
         }
+      }
     });
-
     element.children = childrenUid;
     return result;
   }
