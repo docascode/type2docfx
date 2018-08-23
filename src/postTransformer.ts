@@ -103,6 +103,13 @@ function flattening(element: YamlModel): Root[] {
     children.forEach(child => {
         if (child.children && child.children.length > 0) {
           result = result.concat(flattening(child));
+        } else if (child.type === 'class' || child.type === 'interface' || child.type === 'module') {
+          let resultWithoutChild: Root[] = [];
+          resultWithoutChild.push({
+            items: [child]
+          });
+          result = result.concat(resultWithoutChild);
+          childrenUid.push(child.uid);
         } else {
           childrenUid.push(child.uid);
           result[0].items.push(child);

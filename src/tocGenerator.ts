@@ -3,34 +3,33 @@ import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
 
 export function generateItems(element: YamlModel): TocItem {
-    if (!element.children || element.children.length === 0) {
-        return null;
-    }
     let result: TocItem;
     let itemsDetails: TocItem[] = [];
-    if (element.children && element.children.length > 0) {
-        let children = element.children as YamlModel[];
-        if (children.length > 1) {
-            if (flags.enableAlphabetOrder) {
-                children = children.sort(sortTOC);
-            }
-        }
-        children.forEach(child => {
-            let items = generateItems(child);
-            if (items !== null) {
-                itemsDetails.push(items);
-            }
-        });
-
-    }
     result = {
         uid: element.uid,
         name: element.name.split('(')[0],
         items: itemsDetails
     };
+    if (!element.children || element.children.length === 0) {
+        if (element.type === 'class' || element.type === 'interface' || element.type === 'module') {
+            return result;
 
+        }
+        return null;
+    }
+    let children = element.children as YamlModel[];
+    if (children.length > 1) {
+        if (flags.enableAlphabetOrder) {
+            children = children.sort(sortTOC);
+        }
+    }
+    children.forEach(child => {
+        let items = generateItems(child);
+        if (items !== null) {
+            itemsDetails.push(items);
+        }
+    });
     return result;
-
 }
 
 export function generateTOC(elements: YamlModel[], packageUid: string): TocItem[] {
