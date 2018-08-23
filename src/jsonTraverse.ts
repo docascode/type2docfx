@@ -351,36 +351,19 @@ function extractType(type: ParameterType): Type[] {
         });
     } else if (type.type === 'reflection' && type.declaration) {
         if (type.declaration.indexSignature) {
-            let indexSignature = type.declaration.indexSignature;
-            if (Array.isArray(indexSignature)) {
-                let signatures = indexSignature as Node[];
-                result.push({
-                    reflectedType: {
-                        key: {
-                            typeName: signatures[0].parameters[0].type.name,
-                            typeId: signatures[0].parameters[0].type.id
-                        },
-                        value: {
-                            typeName: signatures[0].type.name,
-                            typeId: signatures[0].type.id
-                        }
+            let signatures = type.declaration.indexSignature;
+            result.push({
+                reflectedType: {
+                    key: {
+                        typeName: signatures.parameters[0].type.name,
+                        typeId: signatures.parameters[0].type.id
+                    },
+                    value: {
+                        typeName: signatures.type.name,
+                        typeId: signatures.type.id
                     }
-                });
-            } else {
-                let signatures = indexSignature as Node;
-                result.push({
-                    reflectedType: {
-                        key: {
-                            typeName: signatures.parameters[0].type.name,
-                            typeId: signatures.parameters[0].type.id
-                        },
-                        value: {
-                            typeName: signatures.type.name,
-                            typeId: signatures.type.id
-                        }
-                    }
-                });
-            }
+                }
+            });
         } else if (type.declaration.signatures && type.declaration.signatures.length) {
             result.push({
                 typeName: `${generateCallFunction('', fillParameters(type.declaration.signatures[0].parameters))} => ${typeToString(extractType(type.declaration.signatures[0].type)[0])}`
