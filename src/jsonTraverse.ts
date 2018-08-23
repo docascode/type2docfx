@@ -350,16 +350,17 @@ function extractType(type: ParameterType): Type[] {
             }
         });
     } else if (type.type === 'reflection' && type.declaration) {
-        if (type.declaration.indexSignature && type.declaration.indexSignature.length) {
+        if (type.declaration.indexSignature) {
+            let signatures = type.declaration.indexSignature;
             result.push({
                 reflectedType: {
                     key: {
-                        typeName: type.declaration.indexSignature[0].parameters[0].type.name,
-                        typeId: type.declaration.indexSignature[0].parameters[0].type.id
+                        typeName: signatures.parameters[0].type.name,
+                        typeId: signatures.parameters[0].type.id
                     },
                     value: {
-                        typeName: type.declaration.indexSignature[0].type.name,
-                        typeId: type.declaration.indexSignature[0].type.id
+                        typeName: signatures.type.name,
+                        typeId: signatures.type.id
                     }
                 }
             });
@@ -369,7 +370,7 @@ function extractType(type: ParameterType): Type[] {
             });
         } else {
             result.push({
-                typeName: 'function'
+                typeName: 'Object'
             });
         }
     } else if (type.typeArguments && type.typeArguments.length) {
@@ -393,7 +394,7 @@ function extractType(type: ParameterType): Type[] {
         });
     } else {
         result.push({
-            typeName: 'function'
+            typeName: 'Object'
         });
     }
 
@@ -469,8 +470,8 @@ function findDescriptionInComment(comment: Comment): string {
     if (comment.tags) {
         let text: string = null;
         comment.tags.forEach(tag => {
-            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi') {
-                text = tag.text;
+            if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi' || tag.tag === 'property') {
+                text = tag.text.trim();
                 return;
             }
         });
