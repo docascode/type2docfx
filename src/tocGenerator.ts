@@ -1,4 +1,5 @@
 import { YamlModel } from './interfaces/YamlModel';
+import { topLevelItems } from './common/constants';
 import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
 
@@ -11,7 +12,7 @@ export function generateItems(element: YamlModel): TocItem {
         items: itemsDetails
     };
     if (!element.children || element.children.length === 0) {
-        if (element.type === 'class' || element.type === 'interface' || element.type === 'module') {
+        if (element.type === topLevelItems.CLASS || element.type === topLevelItems.INTERFACE || element.type === topLevelItems.MODULE) {
             return result;
 
         }
