@@ -1,5 +1,5 @@
 import { YamlModel } from './interfaces/YamlModel';
-import { topLevelItems } from './common/constants';
+import { setOfTopLevelItems } from './common/constants';
 import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
 
@@ -12,9 +12,8 @@ export function generateItems(element: YamlModel): TocItem {
         items: itemsDetails
     };
     if (!element.children || element.children.length === 0) {
-        if (element.type === topLevelItems.CLASS || element.type === topLevelItems.INTERFACE || element.type === topLevelItems.MODULE) {
+        if (setOfTopLevelItems.has(element.type)) {
             return result;
-
         }
         return null;
     }
@@ -26,7 +25,7 @@ export function generateItems(element: YamlModel): TocItem {
     }
     children.forEach(child => {
         let items = generateItems(child);
-        if (items !== null) {
+        if (items) {
             itemsDetails.push(items);
         }
     });
@@ -43,7 +42,7 @@ export function generateTOC(elements: YamlModel[], packageUid: string): TocItem[
         }
         elements.forEach(element => {
             let items = generateItems(element);
-            if (items !== null) {
+            if (items) {
                 itemsDetails.push(items);
             }
         });

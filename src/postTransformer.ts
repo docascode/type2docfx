@@ -1,5 +1,5 @@
 import { YamlModel, Root, Reference } from './interfaces/YamlModel';
-import { constructorName, topLevelItems } from './common/constants';
+import { constructorName, setOfTopLevelItems } from './common/constants';
 import { uidRegex } from './common/regex';
 import { flags } from './common/flags';
 import { ReferenceMapping } from './interfaces/ReferenceMapping';
@@ -132,7 +132,7 @@ function flattening(element: YamlModel): Root[] {
     children.forEach(child => {
       if (child.children && child.children.length > 0) {
         result = result.concat(flattening(child));
-      } else if (child.type === topLevelItems.CLASS || child.type === topLevelItems.INTERFACE || child.type === topLevelItems.MODULE) {
+      } else if (setOfTopLevelItems.has(child.type)) {
         let resultWithoutChild: Root[] = [];
         resultWithoutChild.push({
           items: [child]
