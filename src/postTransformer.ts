@@ -132,20 +132,18 @@ function flattening(element: YamlModel): Root[] {
     children.forEach(child => {
       if (child.children && child.children.length > 0) {
         result = result.concat(flattening(child));
-        if(child.type !== 'module'){
-          childrenUid.push(child.uid);
-        } 
       } else if (child.type === topLevelItems.CLASS || child.type === topLevelItems.INTERFACE || child.type === topLevelItems.MODULE) {
         let resultWithoutChild: Root[] = [];
         resultWithoutChild.push({
           items: [child]
         });
         result = result.concat(resultWithoutChild);
-        childrenUid.push(child.uid);
-      }else{
+      } else {
         result[0].items.push(child);
       }
-     
+      if (child.type !== 'module') {
+        childrenUid.push(child.uid);
+      }
     });
     element.children = childrenUid;
     return result;
