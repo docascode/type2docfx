@@ -9,7 +9,7 @@ import { generateTOC } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
 import { resolveIds } from './idResolver';
-import { YamlModel, Syntax, YamlParameter, Root } from './interfaces/YamlModel';
+import { YamlModel, Syntax, YamlParameter, Root, Reference } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
@@ -83,8 +83,9 @@ let rootElements: YamlModel[] = [];
 let rootElementsForTOC: YamlModel[] = [];
 let uidMapping: UidMapping = {};
 let referenceMappings: ReferenceMapping[] = [];
+let innerClassReferenceMapping = new Map<string, string[]>();
 if (json) {
-    traverse(json, '', rootElements, uidMapping, repoConfig);
+    traverse(json, '', rootElements, uidMapping, repoConfig, '', innerClassReferenceMapping);
 }
 
 if (rootElements && rootElements.length) {
@@ -107,10 +108,22 @@ if (rootElements && rootElements.length) {
     }, []);
 
     insertClassReferenceForModule(flattenElements);
-
     console.log('Yaml dump start.');
     fs.ensureDirSync(outputPath);
     flattenElements.forEach(transfomredClass => {
+        // to add this to handle duplicate class and module under the same hirachy
+        if (transfomredClass.items[0].type === 'class' && innerClassReferenceMapping.has(transfomredClass.items[0].uid)) {
+            let reference = transfomredClass.references;
+            let referencedClass = innerClassReferenceMapping.get(transfomredClass.items[0].uid);
+            referencedClass.forEach(function (item) {
+              let names = item.split('.');
+              let ref: Reference = {
+                uid: item,
+                name: names[names.length - 1]
+              };
+              reference.push(ref);
+            });
+          }
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
         filename = filename.split('(')[0];

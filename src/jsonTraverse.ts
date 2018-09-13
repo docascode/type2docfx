@@ -7,7 +7,7 @@ import { typeToString } from './idResolver';
 import { flags } from './common/flags';
 import * as _ from 'lodash';
 
-export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], uidMapping: UidMapping, repoConfig: RepoConfig): void {
+export function traverse(node: Node, parentUid: string, parentContainer: YamlModel[], uidMapping: UidMapping, repoConfig: RepoConfig, parentType: string, innerClassReferenceMap: Map<string, string[]>): void {
     if (node.flags.isPrivate || node.flags.isProtected) {
         return;
     }
@@ -63,6 +63,18 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
+        // to add this to handle duplicate class and module under the same hirachy
+        if (node.kindString === 'Class' || node.kindString === 'Interface') {
+            if (parentType === 'Class' || parentType === 'Interface') {
+                let currentUID = uid + `.${node.name}`;
+                let mapping: string[] = [];
+                if (innerClassReferenceMap.has(uid)) {
+                    mapping = innerClassReferenceMap.get(uid);               
+                } 
+                mapping.push(currentUID);
+                innerClassReferenceMap.set(uid, mapping);
+            }
+        }
         uid += `.${node.name}`;
         console.log(`${node.kindString}: ${uid}`);
         myself = {
@@ -262,9 +274,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     if (node.children && node.children.length > 0) {
         node.children.forEach(subNode => {
             if (myself) {
-                traverse(subNode, uid, myself.children as YamlModel[], uidMapping, repoConfig);
+                traverse(subNode, uid, myself.children as YamlModel[], uidMapping, repoConfig, node.kindString, innerClassReferenceMap);
             } else {
-                traverse(subNode, uid, parentContainer, uidMapping, repoConfig);
+                traverse(subNode, uid, parentContainer, uidMapping, repoConfig, node.kindString, innerClassReferenceMap);
             }
         });
     }
