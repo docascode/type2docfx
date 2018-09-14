@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
-import { postTransform, insertClassReferenceForModule } from './postTransformer';
+import { postTransform, insertClassReferenceForModule, insertInnerClassReference } from './postTransformer';
 import { generateTOC } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
@@ -111,19 +111,8 @@ if (rootElements && rootElements.length) {
     console.log('Yaml dump start.');
     fs.ensureDirSync(outputPath);
     flattenElements.forEach(transfomredClass => {
-        // to add this to handle duplicate class and module under the same hirachy
-        if (transfomredClass.items[0].type === 'class' && innerClassReferenceMapping.has(transfomredClass.items[0].uid)) {
-            let reference = transfomredClass.references;
-            let referencedClass = innerClassReferenceMapping.get(transfomredClass.items[0].uid);
-            referencedClass.forEach(function (item) {
-              let names = item.split('.');
-              let ref: Reference = {
-                uid: item,
-                name: names[names.length - 1]
-              };
-              reference.push(ref);
-            });
-          }
+        // to add this to handle duplicate class and module under the same hierachy
+        insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
         filename = filename.split('(')[0];

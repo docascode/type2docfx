@@ -69,8 +69,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 let currentUID = uid + `.${node.name}`;
                 let mapping: string[] = [];
                 if (innerClassReferenceMap.has(uid)) {
-                    mapping = innerClassReferenceMap.get(uid);               
-                } 
+                    mapping = innerClassReferenceMap.get(uid);
+                }
                 mapping.push(currentUID);
                 innerClassReferenceMap.set(uid, mapping);
             }
