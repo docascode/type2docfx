@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
-import { groupOrphanFunctions, insertFunctionToIndex, postTransform } from './postTransformer';
+import { postTransform, insertClassReferenceForModule } from './postTransformer';
 import { generateTOC } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
@@ -105,6 +105,8 @@ if (rootElements && rootElements.length) {
     }).reduce(function (a, b) {
         return a.concat(b);
     }, []);
+
+    insertClassReferenceForModule(flattenElements);
 
     console.log('Yaml dump start.');
     fs.ensureDirSync(outputPath);
