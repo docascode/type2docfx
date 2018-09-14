@@ -4,12 +4,12 @@ import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
 import { traverse } from './jsonTraverse';
-import { postTransform, insertClassReferenceForModule } from './postTransformer';
+import { postTransform, insertClassReferenceForModule, insertInnerClassReference } from './postTransformer';
 import { generateTOC } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
 import { generateModules } from './moduleGenerator';
 import { resolveIds } from './idResolver';
-import { YamlModel, Syntax, YamlParameter, Root } from './interfaces/YamlModel';
+import { YamlModel, Syntax, YamlParameter, Root, Reference } from './interfaces/YamlModel';
 import { TocItem } from './interfaces/TocItem';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
@@ -83,8 +83,9 @@ let rootElements: YamlModel[] = [];
 let rootElementsForTOC: YamlModel[] = [];
 let uidMapping: UidMapping = {};
 let referenceMappings: ReferenceMapping[] = [];
+let innerClassReferenceMapping = new Map<string, string[]>();
 if (json) {
-    traverse(json, '', rootElements, uidMapping, repoConfig);
+    traverse(json, '', rootElements, uidMapping, repoConfig, '', innerClassReferenceMapping);
 }
 
 if (rootElements && rootElements.length) {
@@ -107,10 +108,11 @@ if (rootElements && rootElements.length) {
     }, []);
 
     insertClassReferenceForModule(flattenElements);
-
     console.log('Yaml dump start.');
     fs.ensureDirSync(outputPath);
     flattenElements.forEach(transfomredClass => {
+        // to add this to handle duplicate class and module under the same hierachy
+        insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
         transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
         let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
         filename = filename.split('(')[0];
