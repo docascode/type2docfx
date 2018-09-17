@@ -64,7 +64,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
 
     if ((node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Enumeration' || node.kindString === 'Type alias') && node.name) {
         // to add this to handle duplicate class and module under the same hirachy
-        if (node.kindString === 'Class' || node.kindString === 'Interface') {
+        if (node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Type alias') {
             if (parentType === 'Class' || parentType === 'Interface') {
                 let currentUID = uid + `.${node.name}`;
                 let mapping: string[] = [];
