@@ -97,6 +97,24 @@ export function insertClassReferenceForModule(flattenElements: Root[]) {
   });
 }
 
+export function insertInnerClassReference(innerClassReferenceMapping: Map<string, string[]>, transfomredClass: Root) {
+  if ((transfomredClass.items[0].type === 'class' || transfomredClass.items[0].type === 'interface') && innerClassReferenceMapping.has(transfomredClass.items[0].uid)) {
+    let reference = transfomredClass.references;
+    if (!reference) {
+      reference = [];
+    }
+    let referencedClass = innerClassReferenceMapping.get(transfomredClass.items[0].uid);
+    referencedClass.forEach(function (item) {
+      let names = item.split('.');
+      let ref: Reference = {
+        uid: item,
+        name: names[names.length - 1]
+      };
+      reference.push(ref);
+    });
+  }
+}
+
 function getReference(name: string, uid?: string): Reference {
   let reference: Reference = {
     name: name,
