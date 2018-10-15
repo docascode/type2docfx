@@ -89,9 +89,10 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         if (myself.type === 'enumeration') {
             myself.type = 'enum';
         }
+
         if (myself.type === 'type alias') {
-            myself.type = 'class';
-            myself.summary += `\n${generateTypeAliasInformation(node)}`;
+            myself.syntax = { content: '' };
+            myself.syntax.content = 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type);
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
@@ -280,6 +281,124 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             }
         });
     }
+}
+
+function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
+    switch (typeInfo.type) {
+        case 'union':
+            return parseUnionType(typeInfo);
+        case 'tuple':
+            return parseTupleType(typeInfo);
+        case 'reflection':
+            if (typeInfo.declaration) {
+                if (typeInfo.declaration.signatures && typeInfo.declaration.signatures.length) {
+                    return parseFunctionType(typeInfo);
+                }
+                if (typeInfo.declaration.children) {
+                    return parseUserDefinedType(typeInfo);
+                }
+                return 'Object';
+            }
+            break;
+        case 'intersection':
+            return parseIntersection(typeInfo);
+        default:
+            let content = 'Object';
+            if (typeInfo.name) {
+                content = typeInfo.name;
+            } else if (typeInfo.value) {
+                content = typeInfo.value;
+            }
+            return content;
+    }
+
+}
+
+function parseUnionType(typeInfo: ParameterType): string {
+    let content = '';
+    if (typeInfo.types && typeInfo.types.length) {
+        content = parseCommonTypeInfo(typeInfo, 'union', ' | ');
+    }
+    return content;
+
+}
+
+function parseTupleType(typeInfo: ParameterType): string {
+    let content = '';
+    if (typeInfo.elements && typeInfo.elements.length) {
+        content = parseCommonTypeInfo(typeInfo, 'tuple', ', ');
+    }
+    content = '[ ' + content + ' ]';
+    return content;
+}
+
+function parseIntersection(typeInfo: ParameterType): string {
+    if (typeInfo.types && typeInfo.types.length) {
+        return parseCommonTypeInfo(typeInfo, 'intersection', ' & ');
+    }
+    return '';
+
+}
+
+function parseCommonTypeInfo(typeInfo: ParameterType, type: string, seperator: string): string {
+    let typeDeclaration;
+    if (type === 'tuple') {
+        typeDeclaration = typeInfo.elements;
+    } else {
+        typeDeclaration = typeInfo.types;
+    }
+    let content = typeDeclaration.map(item => {
+        if (item.name) {
+            // for generic
+            if (item.typeArguments && item.typeArguments.length) {
+                return item.name + '<' + item.typeArguments[0].name + '>';
+            } else {
+                return item.name;
+            }
+        } else if (item.value) {
+            return `"${item.value}"`;
+        } else {
+            return 'Object';
+        }
+    }).join(seperator);
+    return content;
+}
+
+function parseFunctionType(typeInfo: ParameterType): string {
+    let typeResult = extractType(typeInfo);
+    let content = '';
+    if (typeResult.length) {
+        content = typeResult[0].typeName;
+    }
+    return content;
+
+}
+
+function parseUserDefinedType(typeInfo: ParameterType): string {
+    let content = typeInfo.declaration.children.map(child => {
+        let type = '';
+        if (child.kindString === 'Variable') {
+            if (child.type.name) {
+                let typeName = '';
+                if (child.type.typeArguments && child.type.typeArguments.length) {
+                    typeName = child.type.name + '<' + child.type.typeArguments[0].name + '>';
+                } else {
+                    typeName = child.type.name;
+                }
+                type = child.name + ':' + typeName;
+            } else if (child.type.value) {
+                type = child.name + ':' + `"${child.type.value}"`;
+            } else {
+                type = child.name + ':' + 'Object';
+            }
+        } else if (child.kindString === 'Function') {
+            type = `${generateCallFunction(child.name, fillParameters(child.signatures[0].parameters))} => ${typeToString(extractType(child.signatures[0].type)[0])}`;
+        }
+        return type;
+
+    }).join(', ');
+    content = '{ ' + content + ' }';
+    return content;
 }
 
 function extractInformationFromSignature(method: YamlModel, node: Node, signatureIndex: number) {
