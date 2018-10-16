@@ -91,8 +91,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
 
         if (myself.type === 'type alias') {
-            myself.syntax = { content: '' };
-            myself.syntax.content = 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type);
+            myself.syntax = { content: 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
