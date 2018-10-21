@@ -2,6 +2,7 @@ var gulp = require("gulp");
 var ts = require("gulp-typescript");
 var tslint = require("gulp-tslint");
 var tsProject = ts.createProject("tsconfig.json");
+var sourcemaps = require('gulp-sourcemaps');
 
 gulp.task("default", function () {
     return tsProject.src()
@@ -12,6 +13,9 @@ gulp.task("default", function () {
             formatter: "verbose"
         }))
         .pipe(tslint.report())
-        .pipe(tsProject())
-        .js.pipe(gulp.dest("dist"));
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())        
+        .js
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest("dist"));
 });

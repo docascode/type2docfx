@@ -74,6 +74,9 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
 export function insertClassReferenceForModule(flattenElements: Root[]) {
   flattenElements.forEach(function (element) {
     if (element.items[0].type === 'module') {
+      if (!element.references) {
+        element.references = [];
+       }
       let references = element.references;
       let children = element.items[0].children as string[];
       children.forEach(function (child) {

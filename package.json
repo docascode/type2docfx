@@ -24,6 +24,7 @@
   "homepage": "https://github.com/wuhanyumsft/type2docfx#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-sourcemap": "^1.0.1",
     "gulp-tslint": "^8.1.2",
     "gulp-typescript": "^3.2.2",
     "tslint": "^5.6.0",

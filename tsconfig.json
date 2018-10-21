@@ -16,6 +16,7 @@
         "noImplicitAny": true,
         "target": "es5",
         "lib": ["es6"],
-        "allowJs": true
+        "allowJs": true,
+        "sourceMap": true
     }
 }
