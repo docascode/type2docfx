@@ -310,7 +310,6 @@ function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
             }
             return content;
     }
-
 }
 
 function parseUnionType(typeInfo: ParameterType): string {
@@ -319,7 +318,6 @@ function parseUnionType(typeInfo: ParameterType): string {
         content = parseCommonTypeInfo(typeInfo, 'union', ' | ');
     }
     return content;
-
 }
 
 function parseTupleType(typeInfo: ParameterType): string {
@@ -336,7 +334,6 @@ function parseIntersection(typeInfo: ParameterType): string {
         return parseCommonTypeInfo(typeInfo, 'intersection', ' & ');
     }
     return '';
-
 }
 
 function parseCommonTypeInfo(typeInfo: ParameterType, type: string, seperator: string): string {
@@ -370,7 +367,6 @@ function parseFunctionType(typeInfo: ParameterType): string {
         content = typeResult[0].typeName;
     }
     return content;
-
 }
 
 function parseUserDefinedType(typeInfo: ParameterType): string {
