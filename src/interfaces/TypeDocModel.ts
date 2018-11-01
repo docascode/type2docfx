@@ -68,6 +68,7 @@ export interface ParameterType {
     typeArguments: ParameterType[];
     declaration: Node;
     elementType: ParameterType;
+    elements: ParameterType[];
 }
 
 interface ParameterFlag {
