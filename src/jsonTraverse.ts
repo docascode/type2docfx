@@ -134,6 +134,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         };
 
         extractInformationFromSignature(myself, node, 0);
+        myself.name = composeMethodNameFromSignature(myself);
     }
 
     if (node.kindString === 'Enumeration member' && node.name) {
@@ -266,6 +267,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
                 newMethod.uid = `${newMethod.uid}_${index}`;
                 extractInformationFromSignature(newMethod, node, index);
                 newMethod.summary = convertLinkToGfm(newMethod.summary);
+                newMethod.name = composeMethodNameFromSignature(newMethod);
                 parentContainer.push(newMethod);
             }
         }
@@ -280,6 +282,13 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             }
         });
     }
+}
+
+function composeMethodNameFromSignature(method: YamlModel): string {
+    let parameterType = method.syntax.parameters.map(p => {
+        return typeToString(p.type[0]);
+    }).join(', ');
+    return method.name + '(' + parameterType + ')';
 }
 
 function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
