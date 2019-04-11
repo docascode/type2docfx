@@ -75,7 +75,7 @@ export function insertClassReferenceForModule(flattenElements: Root[]) {
   flattenElements.forEach(function (element) {
     if (element.items[0].type === 'module') {
       let references = element.references;
-      if(!references){
+      if (!references) {
         return;
       }
       let children = element.items[0].children as string[];
