@@ -116,7 +116,7 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if ((node.kindString === 'Method' || node.kindString === 'Function' || node.kindString === 'Constructor') && node.name) {
-        if (!node.signatures || node.inheritedFrom) {
+        if (!node.signatures) {
             return;
         }
         uid += '.' + node.name;
@@ -154,9 +154,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if (node.kindString === 'Property' && node.name) {
-        if (node.inheritedFrom) {
-            return;
-        }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
         let isPublic = node.flags && node.flags.isPublic ? 'public ' : '';
@@ -182,9 +179,6 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
     }
 
     if (node.kindString === 'Accessor' && node.name) {
-        if (node.inheritedFrom) {
-            return;
-        }
         uid += '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
         let signatureType;
