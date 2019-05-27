@@ -411,9 +411,9 @@ function parseUserDefinedType(typeInfo: ParameterType): string {
                 }
                 type = child.name + ':' + typeName;
             } else if (child.type.value) {
-                type = child.name + ':' + `"${child.type.value}"`;
+                type = `${child.name}: ${child.type.value}`;
             } else {
-                type = child.name + ':' + 'Object';
+                type = `${child.name}: Object`;
             }
         } else if (child.kindString === 'Function') {
             type = `${generateCallFunction(child.name, fillParameters(child.signatures[0].parameters))} => ${typeToString(extractType(child.signatures[0].type)[0])}`;
