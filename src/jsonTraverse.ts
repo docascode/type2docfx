@@ -91,7 +91,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
 
         if (myself.type === 'type alias') {
-            myself.syntax = { content: 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
+            let typeArgumentsContent = parseTypeArgumentsForTypeAlias(node);
+            if (typeArgumentsContent) {
+                myself.syntax = { content: 'type ' + myself.name + typeArgumentsContent + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
+            } else {
+                myself.syntax = { content: 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
+            }
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
@@ -285,6 +290,24 @@ function composeMethodNameFromSignature(method: YamlModel): string {
     return method.name + '(' + parameterType + ')';
 }
 
+function parseTypeArgumentsForTypeAlias(node: Node | ParameterType): string
+{
+    let typeParameter;
+    if ((<Node>node).typeParameter) {
+        typeParameter = (<Node>node).typeParameter;
+    } else if ((<ParameterType>node).typeArguments) {
+        typeParameter = (<ParameterType>node).typeArguments;
+    }
+    if (typeParameter && typeParameter.length) {
+        let typeArgumentsList = typeParameter.map(item => {
+            return item.name;
+        }).join(',');
+        typeArgumentsList = '<' + typeArgumentsList + '>';
+        return typeArgumentsList;
+    }
+    return '';
+}
+
 function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
     switch (typeInfo.type) {
         case 'union':
@@ -310,6 +333,9 @@ function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
                 content = typeInfo.name;
             } else if (typeInfo.value) {
                 content = typeInfo.value;
+            }
+            if(typeInfo.typeArguments && typeInfo.typeArguments.length){
+                content += parseTypeArgumentsForTypeAlias(typeInfo);
             }
             return content;
     }
@@ -357,7 +383,7 @@ function parseCommonTypeInfo(typeInfo: ParameterType, type: string, seperator: s
         } else if (item.value) {
             return `"${item.value}"`;
         } else {
-            return 'Object';
+            return parseUserDefinedType(item);
         }
     }).join(seperator);
     return content;
