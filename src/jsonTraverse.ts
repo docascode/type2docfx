@@ -409,7 +409,7 @@ function parseUserDefinedType(typeInfo: ParameterType): string {
                 } else {
                     typeName = child.type.name;
                 }
-                type = child.name + ':' + typeName;
+                type = `${child.name}: ${typeName}`;
             } else if (child.type.value) {
                 type = `${child.name}: ${child.type.value}`;
             } else {
