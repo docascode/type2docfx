@@ -382,7 +382,10 @@ function parseCommonTypeInfo(typeInfo: ParameterType, type: string, seperator: s
             }
         } else if (item.value) {
             return `"${item.value}"`;
-        } else {
+        } else if (item.type === 'array' && item.elementType) {
+            return `${item.elementType.name}[]`;
+        }
+        else {
             return parseUserDefinedType(item);
         }
     }).join(seperator);
@@ -399,6 +402,9 @@ function parseFunctionType(typeInfo: ParameterType): string {
 }
 
 function parseUserDefinedType(typeInfo: ParameterType): string {
+    if (!typeInfo.declaration || !typeInfo.declaration.children) {
+        return '';
+    }
     let content = typeInfo.declaration.children.map(child => {
         let type = '';
         if (child.kindString === 'Variable') {
