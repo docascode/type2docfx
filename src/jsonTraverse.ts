@@ -402,7 +402,7 @@ function parseFunctionType(typeInfo: ParameterType): string {
 }
 
 function parseUserDefinedType(typeInfo: ParameterType): string {
-    if(!typeInfo.declaration || !typeInfo.declaration.children){
+    if (!typeInfo.declaration || !typeInfo.declaration.children) {
         return '';
     }
     let content = typeInfo.declaration.children.map(child => {
