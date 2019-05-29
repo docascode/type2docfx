@@ -91,7 +91,12 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
         }
 
         if (myself.type === 'type alias') {
-            myself.syntax = { content: 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
+            let typeArgumentsContent = parseTypeArgumentsForTypeAlias(node);
+            if (typeArgumentsContent) {
+                myself.syntax = { content: 'type ' + myself.name + typeArgumentsContent + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
+            } else {
+                myself.syntax = { content: 'type ' + myself.name + ' = ' + parseTypeDeclarationForTypeAlias(node.type) };
+            }
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
@@ -285,6 +290,24 @@ function composeMethodNameFromSignature(method: YamlModel): string {
     return method.name + '(' + parameterType + ')';
 }
 
+function parseTypeArgumentsForTypeAlias(node: Node | ParameterType): string
+{
+    let typeParameter;
+    if ((<Node>node).typeParameter) {
+        typeParameter = (<Node>node).typeParameter;
+    } else if ((<ParameterType>node).typeArguments) {
+        typeParameter = (<ParameterType>node).typeArguments;
+    }
+    if (typeParameter && typeParameter.length) {
+        let typeArgumentsList = typeParameter.map(item => {
+            return item.name;
+        }).join(',');
+        typeArgumentsList = '<' + typeArgumentsList + '>';
+        return typeArgumentsList;
+    }
+    return '';
+}
+
 function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
     switch (typeInfo.type) {
         case 'union':
@@ -310,6 +333,9 @@ function parseTypeDeclarationForTypeAlias(typeInfo: ParameterType): string {
                 content = typeInfo.name;
             } else if (typeInfo.value) {
                 content = typeInfo.value;
+            }
+            if(typeInfo.typeArguments && typeInfo.typeArguments.length){
+                content += parseTypeArgumentsForTypeAlias(typeInfo);
             }
             return content;
     }
@@ -356,8 +382,11 @@ function parseCommonTypeInfo(typeInfo: ParameterType, type: string, seperator: s
             }
         } else if (item.value) {
             return `"${item.value}"`;
-        } else {
-            return 'Object';
+        } else if (item.type === 'array' && item.elementType) {
+            return `${item.elementType.name}[]`;
+        }
+        else {
+            return parseUserDefinedType(item);
         }
     }).join(seperator);
     return content;
@@ -373,6 +402,9 @@ function parseFunctionType(typeInfo: ParameterType): string {
 }
 
 function parseUserDefinedType(typeInfo: ParameterType): string {
+    if (!typeInfo.declaration || !typeInfo.declaration.children) {
+        return '';
+    }
     let content = typeInfo.declaration.children.map(child => {
         let type = '';
         if (child.kindString === 'Variable') {
@@ -383,11 +415,11 @@ function parseUserDefinedType(typeInfo: ParameterType): string {
                 } else {
                     typeName = child.type.name;
                 }
-                type = child.name + ':' + typeName;
+                type = `${child.name}: ${typeName}`;
             } else if (child.type.value) {
-                type = child.name + ':' + `"${child.type.value}"`;
+                type = `${child.name}: ${child.type.value}`;
             } else {
-                type = child.name + ':' + 'Object';
+                type = `${child.name}: Object`;
             }
         } else if (child.kindString === 'Function') {
             type = `${generateCallFunction(child.name, fillParameters(child.signatures[0].parameters))} => ${typeToString(extractType(child.signatures[0].type)[0])}`;
