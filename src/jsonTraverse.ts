@@ -402,6 +402,9 @@ function parseFunctionType(typeInfo: ParameterType): string {
 }
 
 function parseUserDefinedType(typeInfo: ParameterType): string {
+    if(!typeInfo.declaration || !typeInfo.declaration.children){
+        return '';
+    }
     let content = typeInfo.declaration.children.map(child => {
         let type = '';
         if (child.kindString === 'Variable') {
