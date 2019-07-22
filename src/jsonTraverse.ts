@@ -513,17 +513,19 @@ function extractType(type: ParameterType): Type[] {
     } else if (type.type === 'reflection' && type.declaration) {
         if (type.declaration.indexSignature) {
             let signatures = type.declaration.indexSignature;
-            result.push({
-                reflectedType: {
-                    key: {
-                        typeName: signatures.parameters[0].type.name,
-                        typeId: signatures.parameters[0].type.id
-                    },
-                    value: {
-                        typeName: signatures.type.name,
-                        typeId: signatures.type.id
+            signatures.forEach(signature => {
+                result.push({
+                    reflectedType: {
+                        key: {
+                            typeName: signature.parameters[0].type.name,
+                            typeId: signature.parameters[0].type.id
+                        },
+                        value: {
+                            typeName: signature.type.name,
+                            typeId: signature.type.id
+                        }
                     }
-                }
+                });
             });
         } else if (type.declaration.signatures && type.declaration.signatures.length) {
             result.push({

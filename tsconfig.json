@@ -10,12 +10,13 @@
         "src/common/constants.ts",
         "src/common/flags.ts",
         "src/common/regex.ts",
-        "src/helpers/linkConvertHelper.js"        
+        "src/helpers/linkConvertHelper.js"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
         "target": "es5",
         "lib": ["es6"],
-        "allowJs": true
+        "allowJs": true,
+        "outDir": "dist"
     }
 }
