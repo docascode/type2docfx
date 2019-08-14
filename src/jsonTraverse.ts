@@ -442,7 +442,8 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
 
     if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {
-            type: extractType(node.signatures[signatureIndex].type)
+            type: extractType(node.signatures[signatureIndex].type),
+            description: ""
         };
     }
     // comment the exception handling for now as template doesn't support it, so CI will not be blocked.
