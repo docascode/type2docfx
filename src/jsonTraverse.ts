@@ -177,7 +177,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             syntax: {
                 content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0], node.kindString)}${defaultValue}`,
                 return: {
-                    type: extractType(node.type)
+                    type: extractType(node.type),
+                    description: findTagInComment(node.comment, "returns")
                 }
             }
         };
@@ -212,7 +213,9 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             syntax: {
                 content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(signatureType)[0])} ${node.name}`,
                 return: {
-                    type: extractType(signatureType)
+                    type: extractType(signatureType),
+                    description: findTagInComment(node.comment, "returns")
+
                 }
             }
         };
@@ -621,6 +624,28 @@ function findInternalInComment(comment: Comment): boolean {
         });
     }
     return find;
+}
+
+function findTagInComment(comment: Comment, tagName: string): string {
+    
+    if (!comment) {
+        return '';
+    }
+
+    if (comment.tags) {
+        let text: string = null;
+        comment.tags.forEach(tag => {
+            if (tag.tag === tagName) {
+                text = tag.text.trim();
+            }
+        });
+
+        if (text) {
+            return text.trim();
+        }
+    }
+
+    return '';
 }
 
 function findDescriptionInComment(comment: Comment): string {
