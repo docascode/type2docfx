@@ -61,4 +61,8 @@ typings/
 .vscode
 test/data
 test/out
+src
 
+appveyor.yml
+gulpfile.js
+tslint.json
