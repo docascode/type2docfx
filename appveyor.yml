@@ -3,13 +3,11 @@
     only:
       - release
   environment:
-    nodejs_version: "6"
     NPM_TOKEN:
       secure: nqiPMrQUkUXSgsw0xgsEPIGVlgN5gAI2fhfvj8RHcLmcafuuFc+EEqYy11ah0Bna
 
   skip_branch_with_pr: true
   before_build:
-    - ps: Install-Product node $env:nodejs_version
     - npm install
 
   build_script:
@@ -20,11 +18,7 @@
   branches:
     only:
       - master
-  environment:
-    nodejs_version: "6"
-
   before_build:
-    - ps: Install-Product node $env:nodejs_version
     - npm install
 
   build_script:
