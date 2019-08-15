@@ -1,22 +1,16 @@
 {
-    "files": [
-        "src/main.ts",
-        "src/jsonTraverse.ts",
-        "src/postTransformer.ts",
-        "src/packageGenerator.ts",
-        "src/moduleGenerator.ts",
-        "src/tocGenerator.ts",
-        "src/idResolver.ts",
-        "src/common/constants.ts",
-        "src/common/flags.ts",
-        "src/common/regex.ts",
-        "src/helpers/linkConvertHelper.js"
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
+        "sourceMap": true,
+        "outDir": "dist",
         "target": "es5",
         "lib": ["es6"],
-        "allowJs": true,
-        "outDir": "dist"
+        "allowJs": true
     }
 }
