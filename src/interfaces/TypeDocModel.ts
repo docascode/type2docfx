@@ -36,6 +36,7 @@ interface Flags {
 export interface Comment {
     text?: string;
     shortText?: string;
+    returns?: string;
     tags?: Tag[];
 }
 

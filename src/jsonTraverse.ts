@@ -177,7 +177,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             syntax: {
                 content: `${isPublic}${isStatic}${node.name}${isOptional}: ${typeToString(extractType(node.type)[0], node.kindString)}${defaultValue}`,
                 return: {
-                    type: extractType(node.type)
+                    type: extractType(node.type),
+                    description: extractReturnComment(node.comment)
                 }
             }
         };
@@ -212,7 +213,8 @@ export function traverse(node: Node, parentUid: string, parentContainer: YamlMod
             syntax: {
                 content: `${node.flags && node.flags.isStatic ? 'static ' : ''}${typeToString(extractType(signatureType)[0])} ${node.name}`,
                 return: {
-                    type: extractType(signatureType)
+                    type: extractType(signatureType),
+                    description: extractReturnComment(node.comment)
                 }
             }
         };
@@ -439,7 +441,8 @@ function extractInformationFromSignature(method: YamlModel, node: Node, signatur
 
     if (node.signatures[signatureIndex].type && node.kindString !== 'Constructor' && node.signatures[signatureIndex].type.name !== 'void') {
         method.syntax.return = {
-            type: extractType(node.signatures[signatureIndex].type)
+            type: extractType(node.signatures[signatureIndex].type),
+            description: extractReturnComment(node.signatures[signatureIndex].comment)
         };
     }
     // comment the exception handling for now as template doesn't support it, so CI will not be blocked.
@@ -562,6 +565,14 @@ function extractType(type: ParameterType): Type[] {
     }
 
     return result;
+}
+
+function extractReturnComment(comment: Comment): string {
+    if (comment == null || comment.returns == null) {
+        return '';
+    }
+
+    return comment.returns.trim();
 }
 
 function extractException(exception: Tag): Exception {
