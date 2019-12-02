@@ -56,6 +56,7 @@ export interface Syntax {
 
 interface Return {
     type: Types;
+    description: string;
 }
 
 export interface YamlParameter {
