@@ -16,6 +16,8 @@ import { RepoConfig } from './interfaces/RepoConfig';
 import { yamlHeader } from './common/constants';
 import { flags } from './common/flags';
 import { ReferenceMapping } from './interfaces/ReferenceMapping';
+import { Context } from './converters/context';
+import { Node } from './interfaces/TypeDocModel';
 
 let pjson = require('../package.json');
 
@@ -73,7 +75,7 @@ if (program.disableAlphabetOrder) {
 let json = null;
 if (fs.existsSync(path)) {
     let dataStr = fs.readFileSync(path).toString();
-    json = JSON.parse(dataStr);
+    json = JSON.parse(dataStr) as Node;
 } else {
     console.error('Api doc file ' + path + ' doesn\'t exist.');
     program.help();
@@ -85,7 +87,8 @@ let uidMapping: UidMapping = {};
 let referenceMappings: ReferenceMapping[] = [];
 let innerClassReferenceMapping = new Map<string, string[]>();
 if (json) {
-    traverse(json, '', rootElements, uidMapping, repoConfig, '', innerClassReferenceMapping);
+    const context = new Context(repoConfig, '', '', json.name, new Map<string, string[]>());
+    traverse(json, rootElements, uidMapping, context);
 }
 
 if (rootElements && rootElements.length) {
