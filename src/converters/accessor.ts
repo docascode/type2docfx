@@ -5,7 +5,7 @@ import { typeToString } from '../idResolver';
 import { Context } from './context';
 
 export class AccessorConverter extends AbstractConverter {
-    public convert(node: Node, context: Context): Array<YamlModel> {
+    protected generate(node: Node, context: Context): Array<YamlModel> {
         const uid = context.ParentUid + '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
         let signatureType;

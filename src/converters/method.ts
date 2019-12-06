@@ -4,9 +4,10 @@ import { AbstractConverter } from './base';
 import * as _ from 'lodash';
 import { Context } from './context';
 import { convertLinkToGfm } from '../helpers/linkConvertHelper';
+import { langs } from '../common/constants';
 
 export class MethodConverter extends AbstractConverter {
-    public convert(node: Node, context: Context): Array<YamlModel> {
+    protected generate(node: Node, context: Context): Array<YamlModel> {
         if (!node.signatures) {
             return;
         }
@@ -24,7 +25,7 @@ export class MethodConverter extends AbstractConverter {
                 name: node.name,
                 children: [],
                 type: '',
-                langs: ['typeScript'],
+                langs: langs,
                 summary: '',
                 syntax: {
                     content: ''

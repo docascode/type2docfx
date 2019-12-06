@@ -3,9 +3,10 @@ import { Node } from '../interfaces/TypeDocModel';
 import { AbstractConverter } from './base';
 import * as _ from 'lodash';
 import { Context } from './context';
+import { langs } from '../common/constants';
 
 export class TypeConverter extends AbstractConverter {
-    public convert(node: Node, context: Context): Array<YamlModel> {
+    protected generate(node: Node, context: Context): Array<YamlModel> {
         // to add this to handle duplicate class and module under the same hirachy
         if (node.kindString === 'Class' || node.kindString === 'Interface' || node.kindString === 'Type alias') {
             if (context.ParentKind === 'Class' || context.ParentKind === 'Interface') {
@@ -26,7 +27,7 @@ export class TypeConverter extends AbstractConverter {
             name: node.name,
             fullName: node.name + this.getGenericType(node.typeParameter),
             children: [],
-            langs: ['typeScript'],
+            langs: langs,
             type: node.kindString.toLowerCase(),
             summary: node.comment ? this.findDescriptionInComment(node.comment) : ''
         };

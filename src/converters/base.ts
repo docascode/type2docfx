@@ -1,32 +1,108 @@
 import { YamlModel, YamlParameter, Type } from '../interfaces/YamlModel';
 import { Node, Parameter, Comment, ParameterType } from '../interfaces/TypeDocModel';
-import { RepoConfig } from '../interfaces/RepoConfig';
 import { typeToString } from '../idResolver';
-import { convertLinkToGfm } from '../helpers/linkConvertHelper';
+import { convertLinkToGfm, getTextAndLink } from '../helpers/linkConvertHelper';
 import { Context } from './context';
 
 export abstract class AbstractConverter {
     protected references: Map<string, string[]>;
 
-    public abstract convert(node: Node, context: Context): Array<YamlModel>;
-
     public constructor(references: Map<string, string[]>) {
         this.references = references;
     }
 
-    protected setSourceInfo(model: YamlModel,node: Node, repoConfig: RepoConfig) {
-        if (repoConfig && node.sources && node.sources.length) {
+    public convert(node: Node, context: Context): Array<YamlModel> {
+        var models = this.generate(node, context) || [];
+        for (const model of models) {
+            model.summary = convertLinkToGfm(model.summary);
+            model.package = context.PackageName;
+
+            this.setSource(model, node, context);
+
+            if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
+                this.setCustomModuleName(model, node.comment);
+
+                const comment = node.comment ? node.comment : node.signatures[0].comment;
+                this.setDeprecated(model, comment);
+                this.setIsPreview(model, comment);
+                this.setRemarks(model, comment);
+                this.setInherits(model, comment);
+            }
+        }
+
+        return models;
+    }
+
+    protected abstract generate(node: Node, context: Context): Array<YamlModel>;
+
+    private setSource(model: YamlModel, node: Node, context: Context) {
+        if (context.Repo && node.sources && node.sources.length) {
             model.source = {
                 path: node.sources[0].fileName,
                 // shift one line up as systematic off for TypeDoc
                 startLine: node.sources[0].line,
                 remote: {
-                    path: `${repoConfig.basePath}\\${node.sources[0].fileName}`,
-                    repo: repoConfig.repo,
-                    branch: repoConfig.branch
+                    path: `${context.Repo.basePath}\\${node.sources[0].fileName}`,
+                    repo: context.Repo.repo,
+                    branch: context.Repo.branch
                 }
             };
         }
+    }
+
+    private setDeprecated(model: YamlModel, comment: Comment) {
+        const deprecated = this.extractTextFromComment('deprecated', comment);
+        if (deprecated != null) {
+            model.deprecated = {
+                content: convertLinkToGfm(deprecated)
+            };
+        }
+    }
+
+    private setIsPreview(model: YamlModel, comment: Comment) {
+        const isPreview = this.extractTextFromComment('beta', comment);
+        if (isPreview != null) {
+            model.isPreview = true;
+        }
+    }
+
+    private setRemarks(model: YamlModel, comment: Comment) {
+        const remarks = this.extractTextFromComment('remarks', comment);
+        if (remarks != null) {
+            model.remarks = convertLinkToGfm(remarks);
+        }
+    }
+
+    private setCustomModuleName(model: YamlModel, comment: Comment) {
+        const customModuleName = this.extractTextFromComment('module', comment);
+        if (customModuleName) {
+            model.module = customModuleName;
+        }
+    }
+
+    private setInherits(model: YamlModel, comment: Comment) {
+        const inherits = this.extractTextFromComment('inherits', comment);
+        if (inherits != null) {
+            const tokens = getTextAndLink(inherits);
+            if (tokens.length === 2) {
+                model.extends = {
+                    name: tokens[0],
+                    href: tokens[1]
+                };
+            }
+        }
+    }
+
+    private extractTextFromComment(infoName: string, comment: Comment): string {
+        if (comment && comment.tags) {
+            for (const tag of comment.tags) {
+                if (tag.tag === infoName) {
+                    return tag.text.trim();
+                }
+            }
+        }
+
+        return null;
     }
 
     protected getGenericType(typeParameters: ParameterType[]): string {
@@ -44,7 +120,10 @@ export abstract class AbstractConverter {
         if (comment.tags) {
             let text: string = null;
             comment.tags.forEach(tag => {
-                if (tag.tag === 'classdesc' || tag.tag === 'description' || tag.tag === 'exemptedapi' || tag.tag === 'property') {
+                if (tag.tag === 'classdesc'
+                    || tag.tag === 'description'
+                    || tag.tag === 'exemptedapi'
+                    || tag.tag === 'property') {
                     text = tag.text.trim();
                     return;
                 }

@@ -4,9 +4,10 @@ import { AbstractConverter } from './base';
 import { typeToString } from '../idResolver';
 import * as _ from 'lodash';
 import { Context } from './context';
+import { langs } from '../common/constants';
 
 export class PropertyConverter extends AbstractConverter {
-    public convert(node: Node, context: Context): Array<YamlModel> {
+    protected generate(node: Node, context: Context): Array<YamlModel> {
         const uid = context.ParentUid + '.' + node.name;
         console.log(` - ${node.kindString}: ${uid}`);
         let isPublic = node.flags && node.flags.isPublic ? 'public ' : '';
@@ -18,7 +19,7 @@ export class PropertyConverter extends AbstractConverter {
             name: node.name,
             fullName: node.name,
             children: [],
-            langs: ['typeScript'],
+            langs: langs,
             type: node.kindString.toLowerCase(),
             summary: node.comment ? this.findDescriptionInComment(node.comment) : '',
             optional: node.flags && node.flags.isOptional,

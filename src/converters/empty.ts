@@ -4,7 +4,7 @@ import { AbstractConverter } from './base';
 import { Context } from './context';
 
 export class EmptyConverter extends AbstractConverter {
-    public convert(node: Node, context: Context): Array<YamlModel> {
+    protected generate(node: Node, context: Context): Array<YamlModel> {
         return [];
     }
 }
