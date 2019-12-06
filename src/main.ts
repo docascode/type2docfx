@@ -3,14 +3,12 @@
 import * as fs from 'fs-extra';
 import * as serializer from 'js-yaml';
 import * as program from 'commander';
-import { traverse } from './jsonTraverse';
+import { Parser } from './parser';
 import { postTransform, insertClassReferenceForModule, insertInnerClassReference } from './postTransformer';
 import { generateTOC } from './tocGenerator';
 import { generatePackage } from './packageGenerator';
-import { generateModules } from './moduleGenerator';
 import { resolveIds } from './idResolver';
-import { YamlModel, Syntax, YamlParameter, Root, Reference } from './interfaces/YamlModel';
-import { TocItem } from './interfaces/TocItem';
+import { YamlModel } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
 import { yamlHeader } from './common/constants';
@@ -81,26 +79,25 @@ if (fs.existsSync(path)) {
     program.help();
 }
 
-let rootElements: YamlModel[] = [];
-let rootElementsForTOC: YamlModel[] = [];
-let uidMapping: UidMapping = {};
-let referenceMappings: ReferenceMapping[] = [];
-let innerClassReferenceMapping = new Map<string, string[]>();
+const uidMapping: UidMapping = {};
+const referenceMappings: ReferenceMapping[] = [];
+const innerClassReferenceMapping = new Map<string, string[]>();
+
+let collection: YamlModel[] = [];
 if (json) {
     const context = new Context(repoConfig, '', '', json.name, new Map<string, string[]>());
-    traverse(json, rootElements, uidMapping, context);
+    collection = new Parser().traverse(json, uidMapping, context);
 }
 
-if (rootElements && rootElements.length) {
-    rootElements.forEach(rootElement => {
+if (collection && collection.length) {
+    collection.forEach(rootElement => {
         let referenceMapping = {};
         resolveIds(rootElement, uidMapping, referenceMapping);
         referenceMappings.push(referenceMapping);
     });
 
-    rootElementsForTOC = JSON.parse(JSON.stringify(rootElements));
-
-    let flattenElements = rootElements.map((rootElement, index) => {
+    const rootElementsForTOC = JSON.parse(JSON.stringify(collection));
+    const flattenElements = collection.map((rootElement, index) => {
         if (rootElement.uid.indexOf('constructor') >= 0) {
             return [];
         }
@@ -125,19 +122,17 @@ if (rootElements && rootElements.length) {
     });
     console.log('Yaml dump end.');
 
-    let yamlModels: YamlModel[] = [];
+    const yamlModels: YamlModel[] = [];
     flattenElements.forEach(element => {
         yamlModels.push(element.items[0]);
     });
 
-    let packageIndex = generatePackage(yamlModels);
-    packageIndex = JSON.parse(JSON.stringify(packageIndex));
+    const packageIndex = generatePackage(yamlModels);
     fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
-    console.log('Package index genrated.');
+    console.log('Package index generated.');
 
-    let toc = generateTOC(rootElementsForTOC, flattenElements[0].items[0].package);
-    toc = JSON.parse(JSON.stringify(toc));
+    const toc = generateTOC(rootElementsForTOC, flattenElements[0].items[0].package);
     fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
-    console.log('Toc genrated.');
+    console.log('Toc generated.');
 
 }
