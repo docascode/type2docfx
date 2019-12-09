@@ -1,0 +1,57 @@
+- uid: type2docfx.DefaultExportedClass
+  name: DefaultExportedClass
+  fullName: DefaultExportedClass
+  children:
+    - uid: type2docfx.DefaultExportedClass.constructor
+      name: DefaultExportedClass()
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: This is the constructor of the default exported class.
+      syntax:
+        content: new DefaultExportedClass()
+        parameters: []
+      package: type2docfx
+    - uid: type2docfx.DefaultExportedClass.exportedProperty
+      name: exportedProperty
+      fullName: exportedProperty
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: Property of default exported class.
+      optional: false
+      syntax:
+        content: 'public exportedProperty: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.DefaultExportedClass.getExportedProperty
+      name: getExportedProperty()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: Method of default exported class.
+      syntax:
+        content: function getExportedProperty()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: |
+    This class is exported via es6 export syntax.
+    ```
+    export default class DefaultExportedClass
+    ```
+  package: type2docfx

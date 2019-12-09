@@ -1,0 +1,57 @@
+- uid: type2docfx.SingleExportedClass
+  name: SingleExportedClass
+  fullName: SingleExportedClass
+  children:
+    - uid: type2docfx.SingleExportedClass.constructor
+      name: SingleExportedClass()
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: This is the constructor of the exported class.
+      syntax:
+        content: new SingleExportedClass()
+        parameters: []
+      package: type2docfx
+    - uid: type2docfx.SingleExportedClass.exportedProperty
+      name: exportedProperty
+      fullName: exportedProperty
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: Property of exported class.
+      optional: false
+      syntax:
+        content: 'public exportedProperty: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SingleExportedClass.getExportedProperty
+      name: getExportedProperty()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: Method of exported class.
+      syntax:
+        content: function getExportedProperty()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: |
+    This class is exported by being assigned to ´export´.
+    ~~~
+    export = SingleExportedClass;
+    ~~~
+  package: type2docfx

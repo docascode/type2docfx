@@ -1,0 +1,242 @@
+- uid: type2docfx.moduleFunction
+  name: moduleFunction
+  langs:
+    - typeScript
+  fullName: moduleFunction
+  children: []
+  type: module
+  summary: This is the module extending the function moduleFunction().
+  package: type2docfx
+- uid: type2docfx.createSomething
+  name: createSomething()
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: |-
+    A function that returns an object.
+    Also no type information is given, the object should be correctly reflected.
+  syntax:
+    content: function createSomething()
+    parameters: []
+    return:
+      type:
+        - typeName: Object
+      description: ''
+  package: type2docfx
+- uid: type2docfx.exportedFunction
+  name: exportedFunction()
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is a simple exported function.
+  syntax:
+    content: function exportedFunction()
+    parameters: []
+  package: type2docfx
+- uid: type2docfx.functionWithArguments
+  name: 'functionWithArguments(string, any, INameInterface)'
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is a function with multiple arguments and a return value.
+  syntax:
+    content: >-
+      function functionWithArguments(paramZ: string, paramG: any, paramA:
+      INameInterface)
+    parameters:
+      - id: paramZ
+        type:
+          - typeName: string
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: This is a string parameter.
+        optional: false
+      - id: paramG
+        type:
+          - typeName: any
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: |
+          This is a parameter flagged with any.
+              This sentence is placed in the next line.
+        optional: false
+      - id: paramA
+        type:
+          - typeName: INameInterface
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: |+
+
+          This is a **parameter** pointing to an interface.
+
+          ~~~
+          var value:BaseClass = new BaseClass('test');
+          functionWithArguments('arg', 0, value);
+          ~~~
+
+        optional: false
+    return:
+      type:
+        - typeName: number
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+      description: ''
+  package: type2docfx
+- uid: type2docfx.functionWithDefaults
+  name: 'functionWithDefaults(string, number, number, boolean, boolean)'
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is a function with a parameter that has a default value.
+  syntax:
+    content: >-
+      function functionWithDefaults(valueA: string, valueB: number, valueC:
+      number, valueD: boolean, valueE: boolean)
+    parameters:
+      - id: valueA
+        type:
+          - typeName: string
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: ''
+        optional: false
+      - id: valueB
+        type:
+          - typeName: number
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: ''
+        optional: false
+      - id: valueC
+        type:
+          - typeName: number
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: ''
+        optional: false
+      - id: valueD
+        type:
+          - typeName: boolean
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: ''
+        optional: false
+      - id: valueE
+        type:
+          - typeName: boolean
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: ''
+        optional: false
+    return:
+      type:
+        - typeName: string
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+      description: The input value or the default value.
+  package: type2docfx
+- uid: type2docfx.functionWithDocLink
+  name: functionWithDocLink()
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: >
+    See <code><xref:INameInterface></code> and [INameInterface's name
+    property](xref:INameInterface.name).
+
+    Also, check out [Google](https://www.google.com) and
+
+    [GitHub](https://github.com).
+
+    Taken from http://usejsdoc.org/tags-inline-link.html.
+  syntax:
+    content: function functionWithDocLink()
+    parameters: []
+  package: type2docfx
+- uid: type2docfx.functionWithOptionalValue
+  name: 'functionWithOptionalValue(string, string)'
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is a function with a parameter that is optional.
+  syntax:
+    content: >-
+      function functionWithOptionalValue(requiredParam: string, optionalParam?:
+      string)
+    parameters:
+      - id: requiredParam
+        type:
+          - typeName: string
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: A normal parameter.
+        optional: false
+      - id: optionalParam
+        type:
+          - typeName: string
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: |
+          An optional parameter.
+        optional: true
+  package: type2docfx
+- uid: type2docfx.genericFunction
+  name: genericFunction(T)
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is a generic function.
+  syntax:
+    content: 'function genericFunction(value: T)'
+    parameters:
+      - id: value
+        type:
+          - typeName: T
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: The typed value.
+        optional: false
+    return:
+      type:
+        - typeName: T
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+      description: Returns the typed value.
+  package: type2docfx
+- uid: type2docfx.multipleSignatures
+  name: multipleSignatures(string)
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is the first signature of a function with multiple signatures.
+  syntax:
+    content: 'function multipleSignatures(value: string)'
+    parameters:
+      - id: value
+        type:
+          - typeName: string
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+        description: |
+          The name value.
+        optional: false
+    return:
+      type:
+        - typeName: string
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+      description: ''
+  package: type2docfx
+- uid: type2docfx.multipleSignatures_1
+  name: multipleSignatures(Object)
+  children: []
+  type: function
+  langs:
+    - typeScript
+  summary: This is the second signature of a function with multiple signatures.
+  syntax:
+    content: 'function multipleSignatures(value: Object)'
+    parameters:
+      - id: value
+        type:
+          - typeName: Object
+        description: An object containing the name value.
+        optional: false
+    return:
+      type:
+        - typeName: string
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+      description: ''
+  package: type2docfx

@@ -1,0 +1,1282 @@
+- uid: type2docfx.BaseClass
+  name: BaseClass
+  fullName: BaseClass
+  children:
+    - uid: type2docfx.BaseClass.constructor
+      name: BaseClass(string)
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'new BaseClass(name: string)'
+        parameters:
+          - id: name
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.BaseClass.constructor_1
+      name: BaseClass(BaseClass)
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'new BaseClass(source: BaseClass)'
+        parameters:
+          - id: source
+            type:
+              - typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.BaseClass.name
+      name: name
+      fullName: name
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: This is a simple public member.
+      optional: false
+      syntax:
+        content: 'public name: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.BaseClass.instance
+      name: instance
+      fullName: instance
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: |
+        This is a static member.
+        Static members should not be inherited.
+      optional: false
+      syntax:
+        content: 'static instance: BaseClass'
+        return:
+          type:
+            - typeName: BaseClass
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.BaseClass.instances
+      name: instances
+      fullName: instances
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'static instances: BaseClass[]'
+        return:
+          type:
+            - arrayType:
+                typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.BaseClass.abstractMethod
+      name: abstractMethod()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: function abstractMethod()
+        parameters: []
+      package: type2docfx
+    - uid: type2docfx.BaseClass.arrowFunction
+      name: 'arrowFunction(string, number)'
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: This is a simple fat arrow function.
+      syntax:
+        content: 'function arrowFunction(param2: string, param1: number)'
+        parameters:
+          - id: param2
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The second parameter needed by this function.
+            optional: false
+          - id: param1
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The first parameter needed by this function.
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.BaseClass.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple member function.
+        It should be inherited by all subclasses. This class has a static
+        member with the same name, both should be documented.
+      syntax:
+        content: function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: Return the name.
+      package: type2docfx
+    - uid: type2docfx.BaseClass.setName
+      name: setName(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple member function.
+        It should be inherited by all subclasses.
+      syntax:
+        content: 'function setName(name: string)'
+        parameters:
+          - id: name
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              The new name.
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.BaseClass.caTest
+      name: 'caTest(BaseClass, any, string[], string[])'
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: >-
+          static function caTest(originalValues: BaseClass, newRecord: any,
+          fieldNames: string[], mandatoryFields: string[])
+        parameters:
+          - id: originalValues
+            type:
+              - typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: newRecord
+            type:
+              - typeName: any
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: fieldNames
+            type:
+              - arrayType:
+                  typeName: string
+                  typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: mandatoryFields
+            type:
+              - arrayType:
+                  typeName: string
+                  typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.BaseClass.getInstance
+      name: getInstance()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a static function.
+        Static functions should not be inherited.
+      syntax:
+        content: static function getInstance()
+        parameters: []
+        return:
+          type:
+            - typeName: BaseClass
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: An instance of BaseClass.
+      package: type2docfx
+    - uid: type2docfx.BaseClass.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple static member function.
+        Static functions should not be inherited. This class has a
+        member with the same name, both should be documented.
+      syntax:
+        content: static function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: Return the name.
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: |
+    This is a simple base class.
+    [[include:class-example.md]]
+  package: type2docfx
+- uid: type2docfx.GenericClass
+  name: GenericClass
+  fullName: GenericClass
+  children:
+    - uid: type2docfx.GenericClass.constructor
+      name: 'GenericClass(any, T, number, number, string)'
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: Constructor short text.
+      syntax:
+        content: 'new GenericClass(p1: any, p2: T, p3: number, p4: number, p5: string)'
+        parameters:
+          - id: p1
+            type:
+              - typeName: any
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Constructor param
+            optional: false
+          - id: p2
+            type:
+              - typeName: T
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Private string property
+            optional: false
+          - id: p3
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Public number property
+            optional: false
+          - id: p4
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Public implicit any property
+            optional: false
+          - id: p5
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              Readonly property
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.GenericClass.p3
+      name: p3
+      fullName: p3
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: Public number property
+      optional: false
+      syntax:
+        content: 'public p3: number'
+        return:
+          type:
+            - typeName: number
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.GenericClass.p5
+      name: p5
+      fullName: p5
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: Readonly property
+      optional: false
+      syntax:
+        content: 'p5: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.GenericClass.value
+      name: value
+      fullName: value
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'public value: T'
+        return:
+          type:
+            - typeName: T
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.GenericClass.getValue
+      name: getValue()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: function getValue()
+        parameters: []
+        return:
+          type:
+            - typeName: T
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.GenericClass.setValue
+      name: setValue(T)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'function setValue(value: T)'
+        parameters:
+          - id: value
+            type:
+              - typeName: T
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              [[getValue]] is the counterpart.
+            optional: false
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: This is a generic class.
+  package: type2docfx
+- uid: type2docfx.NonGenericClass
+  name: NonGenericClass
+  fullName: NonGenericClass
+  children:
+    - uid: type2docfx.NonGenericClass.constructor
+      name: 'NonGenericClass(any, SubClassB, number, number, string)'
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: Constructor short text.
+      syntax:
+        content: >-
+          new NonGenericClass(p1: any, p2: SubClassB, p3: number, p4: number,
+          p5: string)
+        parameters:
+          - id: p1
+            type:
+              - typeName: any
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Constructor param
+            optional: false
+          - id: p2
+            type:
+              - typeName: SubClassB
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Private string property
+            optional: false
+          - id: p3
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Public number property
+            optional: false
+          - id: p4
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: Public implicit any property
+            optional: false
+          - id: p5
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              Readonly property
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.NonGenericClass.p3
+      name: p3
+      fullName: p3
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: Public number property
+      optional: false
+      syntax:
+        content: 'public p3: number'
+        return:
+          type:
+            - typeName: number
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.NonGenericClass.p5
+      name: p5
+      fullName: p5
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: Readonly property
+      optional: false
+      syntax:
+        content: 'p5: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.NonGenericClass.value
+      name: value
+      fullName: value
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'public value: SubClassB'
+        return:
+          type:
+            - typeName: SubClassB
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.NonGenericClass.getValue
+      name: getValue()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: function getValue()
+        parameters: []
+        return:
+          type:
+            - typeName: SubClassB
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.NonGenericClass.setValue
+      name: setValue(SubClassB)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'function setValue(value: SubClassB)'
+        parameters:
+          - id: value
+            type:
+              - typeName: SubClassB
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              [[getValue]] is the counterpart.
+            optional: false
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: 'This a non generic class derived from a [[GenericClass|generic class]].'
+  extends:
+    name:
+      genericType:
+        outter:
+          typeName: GenericClass
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+        inner:
+          - typeName: SubClassB
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+  package: type2docfx
+- uid: type2docfx.SubClassA
+  name: SubClassA
+  fullName: SubClassA
+  children:
+    - uid: type2docfx.SubClassA.constructor
+      name: SubClassA(string)
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'new SubClassA(name: string)'
+        parameters:
+          - id: name
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassA.constructor_1
+      name: SubClassA(BaseClass)
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'new SubClassA(source: BaseClass)'
+        parameters:
+          - id: source
+            type:
+              - typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassA.name
+      name: name
+      fullName: name
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'public name: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassA.instance
+      name: instance
+      fullName: instance
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: |
+        This is a static member.
+        Static members should not be inherited.
+      optional: false
+      syntax:
+        content: 'static instance: BaseClass'
+        return:
+          type:
+            - typeName: BaseClass
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassA.instances
+      name: instances
+      fullName: instances
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'static instances: BaseClass[]'
+        return:
+          type:
+            - arrayType:
+                typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassA.nameProperty
+      name: nameProperty
+      fullName: nameProperty
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: |-
+        Returns the name. See [[BaseClass.name]].
+        Sets the name. See [[BaseClass.name]].
+      syntax:
+        content: string nameProperty
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: The return value.
+      package: type2docfx
+    - uid: type2docfx.SubClassA.readOnlyNameProperty
+      name: readOnlyNameProperty
+      fullName: readOnlyNameProperty
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: 'Returns the name. See [[BaseClass.name]].'
+      syntax:
+        content: string readOnlyNameProperty
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: The return value.
+      package: type2docfx
+    - uid: type2docfx.SubClassA.writeOnlyNameProperty
+      name: writeOnlyNameProperty
+      fullName: writeOnlyNameProperty
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: 'Sets the name. See [[BaseClass.name]].'
+      syntax:
+        content: void writeOnlyNameProperty
+        return:
+          type:
+            - typeName: void
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: The return value.
+      package: type2docfx
+    - uid: type2docfx.SubClassA.abstractMethod
+      name: abstractMethod()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: function abstractMethod()
+        parameters: []
+      package: type2docfx
+    - uid: type2docfx.SubClassA.arrowFunction
+      name: 'arrowFunction(string, number)'
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: This is a simple fat arrow function.
+      syntax:
+        content: 'function arrowFunction(param2: string, param1: number)'
+        parameters:
+          - id: param2
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The second parameter needed by this function.
+            optional: false
+          - id: param1
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The first parameter needed by this function.
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassA.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple member function.
+        It should be inherited by all subclasses. This class has a static
+        member with the same name, both should be documented.
+      syntax:
+        content: function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: Return the name.
+      package: type2docfx
+    - uid: type2docfx.SubClassA.print
+      name: print(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: This is a simple interface function.
+      syntax:
+        content: 'function print(value: string)'
+        parameters:
+          - id: value
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassA.printName
+      name: printName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: This is a interface function of IPrintNameInterface
+      syntax:
+        content: function printName()
+        parameters: []
+      package: type2docfx
+    - uid: type2docfx.SubClassA.setName
+      name: setName(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple member function.
+        It should be inherited by all subclasses.
+      syntax:
+        content: 'function setName(name: string)'
+        parameters:
+          - id: name
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              The new name.
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassA.caTest
+      name: 'caTest(BaseClass, any, string[], string[])'
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: >-
+          static function caTest(originalValues: BaseClass, newRecord: any,
+          fieldNames: string[], mandatoryFields: string[])
+        parameters:
+          - id: originalValues
+            type:
+              - typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: newRecord
+            type:
+              - typeName: any
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: fieldNames
+            type:
+              - arrayType:
+                  typeName: string
+                  typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: mandatoryFields
+            type:
+              - arrayType:
+                  typeName: string
+                  typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassA.getInstance
+      name: getInstance()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a static function.
+        Static functions should not be inherited.
+      syntax:
+        content: static function getInstance()
+        parameters: []
+        return:
+          type:
+            - typeName: BaseClass
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: An instance of BaseClass.
+      package: type2docfx
+    - uid: type2docfx.SubClassA.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple static member function.
+        Static functions should not be inherited. This class has a
+        member with the same name, both should be documented.
+      syntax:
+        content: static function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: Return the name.
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: |
+    This is a class that extends another class.
+    This class has no own constructor, so its constructor should be inherited
+    from BaseClass.
+  extends:
+    name:
+      typeName: BaseClass
+      typeId: !<tag:yaml.org,2002:js/undefined> ''
+  package: type2docfx
+- uid: type2docfx.SubClassB
+  name: SubClassB
+  fullName: SubClassB
+  children:
+    - uid: type2docfx.SubClassB.constructor
+      name: SubClassB(string)
+      children: []
+      type: constructor
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'new SubClassB(name: string)'
+        parameters:
+          - id: name
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassB.name
+      name: name
+      fullName: name
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'public name: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassB.instance
+      name: instance
+      fullName: instance
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: |
+        This is a static member.
+        Static members should not be inherited.
+      optional: false
+      syntax:
+        content: 'static instance: BaseClass'
+        return:
+          type:
+            - typeName: BaseClass
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassB.instances
+      name: instances
+      fullName: instances
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: ''
+      optional: false
+      syntax:
+        content: 'static instances: BaseClass[]'
+        return:
+          type:
+            - arrayType:
+                typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassB.abstractMethod
+      name: abstractMethod()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: function abstractMethod()
+        parameters: []
+      package: type2docfx
+    - uid: type2docfx.SubClassB.arrowFunction
+      name: 'arrowFunction(string, number)'
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: This is a simple fat arrow function.
+      syntax:
+        content: 'function arrowFunction(param2: string, param1: number)'
+        parameters:
+          - id: param2
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The second parameter needed by this function.
+            optional: false
+          - id: param1
+            type:
+              - typeName: number
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The first parameter needed by this function.
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassB.doSomething
+      name: doSomething(Object)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: 'function doSomething(value: Object)'
+        parameters:
+          - id: value
+            type:
+              - typeName: Object
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassB.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple member function.
+        It should be inherited by all subclasses. This class has a static
+        member with the same name, both should be documented.
+      syntax:
+        content: function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: Return the name.
+      package: type2docfx
+    - uid: type2docfx.SubClassB.setName
+      name: setName(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple member function.
+        It should be inherited by all subclasses.
+      syntax:
+        content: 'function setName(name: string)'
+        parameters:
+          - id: name
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              The new name.
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.SubClassB.caTest
+      name: 'caTest(BaseClass, any, string[], string[])'
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: >-
+          static function caTest(originalValues: BaseClass, newRecord: any,
+          fieldNames: string[], mandatoryFields: string[])
+        parameters:
+          - id: originalValues
+            type:
+              - typeName: BaseClass
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: newRecord
+            type:
+              - typeName: any
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: fieldNames
+            type:
+              - arrayType:
+                  typeName: string
+                  typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+          - id: mandatoryFields
+            type:
+              - arrayType:
+                  typeName: string
+                  typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.SubClassB.getInstance
+      name: getInstance()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a static function.
+        Static functions should not be inherited.
+      syntax:
+        content: static function getInstance()
+        parameters: []
+        return:
+          type:
+            - typeName: BaseClass
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: An instance of BaseClass.
+      package: type2docfx
+    - uid: type2docfx.SubClassB.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a simple static member function.
+        Static functions should not be inherited. This class has a
+        member with the same name, both should be documented.
+      syntax:
+        content: static function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: Return the name.
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: |
+    This is a class that extends another class.
+    The constructor of the original class should be overwritten.
+  extends:
+    name:
+      typeName: BaseClass
+      typeId: !<tag:yaml.org,2002:js/undefined> ''
+  package: type2docfx
+- uid: type2docfx.INameInterface
+  name: INameInterface
+  fullName: INameInterface
+  children:
+    - uid: type2docfx.INameInterface.name
+      name: name
+      fullName: name
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: |
+        This is a interface member of INameInterface.
+        It should be inherited by all subinterfaces.
+      optional: false
+      syntax:
+        content: 'name: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.INameInterface.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a interface function of INameInterface.
+        It should be inherited by all subinterfaces.
+      syntax:
+        content: function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+  langs:
+    - typeScript
+  type: interface
+  summary: This is a simple interface.
+  package: type2docfx
+- uid: type2docfx.IPrintInterface
+  name: IPrintInterface
+  fullName: IPrintInterface
+  children:
+    - uid: type2docfx.IPrintInterface.print
+      name: print(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a interface function of IPrintInterface
+        It should be inherited by all subinterfaces.
+      syntax:
+        content: 'function print(value: string)'
+        parameters:
+          - id: value
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+  langs:
+    - typeScript
+  type: interface
+  summary: This is a simple interface.
+  package: type2docfx
+- uid: type2docfx.IPrintNameInterface
+  name: IPrintNameInterface
+  fullName: IPrintNameInterface
+  children:
+    - uid: type2docfx.IPrintNameInterface.name
+      name: name
+      fullName: name
+      children: []
+      langs:
+        - typeScript
+      type: property
+      summary: |
+        This is a interface member of INameInterface.
+        It should be inherited by all subinterfaces.
+      optional: false
+      syntax:
+        content: 'name: string'
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.IPrintNameInterface.getName
+      name: getName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a interface function of INameInterface.
+        It should be inherited by all subinterfaces.
+      syntax:
+        content: function getName()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: ''
+      package: type2docfx
+    - uid: type2docfx.IPrintNameInterface.print
+      name: print(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: |
+        This is a interface function of IPrintInterface
+        It should be inherited by all subinterfaces.
+      syntax:
+        content: 'function print(value: string)'
+        parameters:
+          - id: value
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+    - uid: type2docfx.IPrintNameInterface.printName
+      name: printName()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: This is a interface function of IPrintNameInterface
+      syntax:
+        content: function printName()
+        parameters: []
+      package: type2docfx
+  langs:
+    - typeScript
+  type: interface
+  summary: This is a interface inheriting from two other interfaces.
+  extends:
+    name:
+      typeName: INameInterface
+      typeId: !<tag:yaml.org,2002:js/undefined> ''
+  package: type2docfx

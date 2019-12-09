@@ -1,0 +1,35 @@
+- uid: type2docfx.MyModule
+  name: MyModule
+  langs:
+    - typeScript
+  fullName: MyModule
+  children:
+    - uid: type2docfx.MyModule.MySubmodule
+      name: MySubmodule
+      langs:
+        - typeScript
+      fullName: MySubmodule
+      children: []
+      type: module
+      summary: This is a submodule with the preferred comment.
+      package: type2docfx
+    - uid: type2docfx.print
+      name: print(string)
+      children: []
+      type: function
+      langs:
+        - typeScript
+      summary: An object literal function.
+      syntax:
+        content: 'function print(value: string)'
+        parameters:
+          - id: value
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: ''
+            optional: false
+      package: type2docfx
+  type: module
+  summary: This is a module.
+  package: type2docfx

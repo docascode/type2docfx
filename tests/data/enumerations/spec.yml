@@ -1,0 +1,117 @@
+- uid: type2docfx.Directions
+  name: Directions
+  fullName: Directions
+  children:
+    - uid: type2docfx.Directions.Bottom
+      name: Bottom
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Directions.Left
+      name: Left
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Directions.Right
+      name: Right
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Directions.Top
+      name: Top
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Directions.TopLeft
+      name: TopLeft
+      children: []
+      langs:
+        - typeScript
+      summary: A composite enum member.
+      type: field
+      numericValue: .nan
+      package: type2docfx
+    - uid: type2docfx.Directions.TopRight
+      name: TopRight
+      children: []
+      langs:
+        - typeScript
+      summary: A composite enum member.
+      type: field
+      numericValue: .nan
+      package: type2docfx
+  langs:
+    - typeScript
+  type: enum
+  summary: This is a simple Enumeration.
+  package: type2docfx
+- uid: type2docfx.Size
+  name: Size
+  fullName: Size
+  children:
+    - uid: type2docfx.Size.Large
+      name: Large
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Size.Medium
+      name: Medium
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Size.Small
+      name: Small
+      children: []
+      langs:
+        - typeScript
+      summary: A simple enum member.
+      type: field
+      package: type2docfx
+    - uid: type2docfx.Size.isSmall
+      name: isSmall(Size)
+      children: []
+      type: function
+      langs:
+        - typeScript
+      summary: A function that is attached to an enumeration.
+      syntax:
+        content: 'function isSmall(value: Size)'
+        parameters:
+          - id: value
+            type:
+              - typeName: Size
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: The value that should be tested.
+            optional: false
+        return:
+          type:
+            - typeName: boolean
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: TRUE when the given value equals Size.Small.
+      package: type2docfx
+  langs:
+    - typeScript
+  type: enum
+  summary: |
+    This is a enumeration extended by a module.
+    This comment is ignored, as the enumeration is already defined.
+    You should see both the enum members and the module members.
+  package: type2docfx
