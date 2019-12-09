@@ -61,7 +61,7 @@ interface AB<T> extends A<T>, B<T, boolean> {}
 /**
  * An interface extending a generic interface and setting its type parameter.
  */
-interface ABString extends AB<string> {}
+export interface ABString extends AB<string> {}
 
 
 /**

@@ -1,1 +1,68 @@
-[]
+- uid: type2docfx.ABString
+  name: ABString
+  fullName: ABString
+  children:
+    - uid: type2docfx.ABString.getC
+      name: getC()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: A generic member function.
+      syntax:
+        content: function getC()
+        parameters: []
+        return:
+          type:
+            - typeName: boolean
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: A generic return value.
+      package: type2docfx
+    - uid: type2docfx.ABString.getT
+      name: getT()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: A generic member function.
+      syntax:
+        content: function getT()
+        parameters: []
+        return:
+          type:
+            - typeName: string
+              typeId: !<tag:yaml.org,2002:js/undefined> ''
+          description: A generic return value.
+      package: type2docfx
+    - uid: type2docfx.ABString.setT
+      name: setT(string)
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: A generic member function.
+      syntax:
+        content: 'function setT(value: string)'
+        parameters:
+          - id: value
+            type:
+              - typeName: string
+                typeId: !<tag:yaml.org,2002:js/undefined> ''
+            description: |
+              A generic parameter.
+            optional: false
+      package: type2docfx
+  langs:
+    - typeScript
+  type: interface
+  summary: An interface extending a generic interface and setting its type parameter.
+  extends:
+    name:
+      genericType:
+        outter:
+          typeName: AB
+          typeId: !<tag:yaml.org,2002:js/undefined> ''
+        inner:
+          - typeName: string
+            typeId: !<tag:yaml.org,2002:js/undefined> ''
+  package: type2docfx
