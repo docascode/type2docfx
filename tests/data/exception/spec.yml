@@ -1,0 +1,20 @@
+- uid: type2docfx.Foo
+  name: Foo
+  fullName: Foo
+  children:
+    - uid: type2docfx.Foo.bar
+      name: bar()
+      children: []
+      type: method
+      langs:
+        - typeScript
+      summary: ''
+      syntax:
+        content: function bar()
+        parameters: []
+      package: type2docfx
+  langs:
+    - typeScript
+  type: class
+  summary: ''
+  package: type2docfx
