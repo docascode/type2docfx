@@ -57,9 +57,4 @@ typings/
 # dotenv environment variables file
 .env
 
-# vscode folder
-.vscode
-test/data
-test/out
 dist/
-
