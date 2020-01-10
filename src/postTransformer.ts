@@ -73,8 +73,12 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
 // to add this function due to classes under modules need to be cross reference
 export function insertClassReferenceForModule(flattenElements: Root[]) {
   for (const element of flattenElements) {
-    if (element.items[0].type !== 'module' || element.references === []) {
+    if (element.items[0].type !== 'module') {
       continue;
+    }
+
+    if (!element.references) {
+      element.references = []
     }
 
     let children = element.items[0].children as string[];
