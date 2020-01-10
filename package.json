@@ -1,6 +1,6 @@
 {
   "name": "type2docfx",
-  "version": "0.10.0-preview.1",
+  "version": "0.10.2",
   "description": "A tool to convert json format output from TypeDoc to universal reference model for DocFx to consume.",
   "main": "./dist/main.js",
   "bin": "./dist/main.js",
