@@ -30,12 +30,12 @@ export function insertFunctionToIndex(index: Root, functions: YamlModel[]) {
 }
 
 export function postTransform(element: YamlModel, references: ReferenceMapping): Root[] {
-    let roots = flattening(element);
-    roots.forEach(root => {
-      insertReferences(root, references);
-    });
+  let roots = flattening(element);
+  for (const root of roots) {
+    insertReferences(root, references);
+  }
 
-    return roots;
+  return roots;
 }
 
 function insertReferences(root: Root, references: ReferenceMapping): void {
@@ -72,32 +72,31 @@ function insertReferences(root: Root, references: ReferenceMapping): void {
 
 // to add this function due to classes under modules need to be cross reference
 export function insertClassReferenceForModule(flattenElements: Root[]) {
-  flattenElements.forEach(function (element) {
-    if (element.items[0].type === 'module') {
-      let references = element.references;
-      if (!references) {
-        return;
-      }
-      let children = element.items[0].children as string[];
-      children.forEach(function (child) {
-        let find = false;
-        references.forEach(function (ref) {
-          if (ref.uid === child) {
-            find = true;
-            return;
-          }
-        });
-        if (!find) {
-          let names = child.split('.');
-          let reference: Reference = {
-            uid: child,
-            name: names[names.length - 1]
-          };
-          references.push(reference);
-        }
-      });
+  for (const element of flattenElements) {
+    if (element.items[0].type !== 'module' || element.references === []) {
+      continue;
     }
-  });
+
+    let children = element.items[0].children as string[];
+    for (const child of children) {
+      let find = false;
+      for (const ref of element.references) {
+        if (ref.uid === child) {
+          find = true;
+          break;
+        }
+      }
+
+      if (!find) {
+        const names = child.split('.');
+        const reference: Reference = {
+          uid: child,
+          name: names[names.length - 1]
+        };
+        element.references.push(reference);
+      }
+    }
+  }
 }
 
 export function insertInnerClassReference(innerClassReferenceMapping: Map<string, string[]>, transfomredClass: Root) {
@@ -137,17 +136,20 @@ function flattening(element: YamlModel): Root[] {
   if (!element) {
     return [];
   }
+
   let result: Root[] = [];
   result.push({
     items: [element]
   });
+
   if (element.children) {
-    let childrenUid: string[] = [];
+    const childrenUid: string[] = [];
     let children = element.children as YamlModel[];
     if (flags.enableAlphabetOrder) {
       children = children.sort(sortYamlModel);
     }
-    children.forEach(child => {
+
+    for (const child of children) {
       if (child.children && child.children.length > 0) {
         result = result.concat(flattening(child));
       } else if (setOfTopLevelItems.has(child.type)) {
@@ -162,33 +164,34 @@ function flattening(element: YamlModel): Root[] {
       if (child.type !== 'module') {
         childrenUid.push(child.uid);
       }
-    });
+    }
+
     element.children = childrenUid;
     return result;
   }
 }
 
 function sortYamlModel(a: YamlModel, b: YamlModel): number {
-      if (a.numericValue !== undefined && b.numericValue !== undefined) {
-        return a.numericValue - b.numericValue;
-      }
+  if (a.numericValue !== undefined && b.numericValue !== undefined) {
+    return a.numericValue - b.numericValue;
+  }
 
-      // sort classes alphabetically, contructor first
-      if (b.name === constructorName) {
-        return 1;
-      }
-      if (a.name === constructorName) {
-        return -1;
-      }
+  // sort classes alphabetically, contructor first
+  if (b.name === constructorName) {
+    return 1;
+  }
+  if (a.name === constructorName) {
+    return -1;
+  }
 
-      let nameA = a.name.toUpperCase();
-      let nameB = b.name.toUpperCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
+  let nameA = a.name.toUpperCase();
+  let nameB = b.name.toUpperCase();
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
 
-      return 0;
+  return 0;
 }

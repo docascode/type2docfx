@@ -1,4 +1,4 @@
-import { YamlModel, Type, Types, GenericType, ReflectedType } from './interfaces/YamlModel';
+import { YamlModel, Type, Types } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { ReferenceMapping } from './interfaces/ReferenceMapping';
 import { uidRegex } from './common/regex';
@@ -6,21 +6,23 @@ import { uidRegex } from './common/regex';
 export function resolveIds(element: YamlModel, uidMapping: UidMapping, referenceMapping: ReferenceMapping): void {
     if (element.syntax) {
         if (element.syntax.parameters) {
-            element.syntax.parameters.forEach(p => {
+            for (const p of element.syntax.parameters) {
                 p.type = restoreReferences(p.type, uidMapping, referenceMapping);
-            });
+            }
         }
 
         if (element.syntax.return) {
             element.syntax.return.type = restoreReferences(element.syntax.return.type, uidMapping, referenceMapping);
         }
     }
+
     if (element.extends) {
         element.extends.name = restoreReferences([element.extends.name as Type], uidMapping, referenceMapping)[0];
     }
-    (element.children as YamlModel[]).forEach(child => {
+
+    for (const child of element.children as YamlModel[]) {
         resolveIds(child, uidMapping, referenceMapping);
-    });
+    }
 }
 
 function restoreReferences(types: Types, uidMapping: UidMapping, referenceMapping: ReferenceMapping): string[] {
@@ -52,7 +54,7 @@ function restoreTypes(types: Types, uidMapping: UidMapping): string[] {
 }
 
 function restoreType(type: Type | string, uidMapping: UidMapping): string {
-    if (typeof(type) === 'string') {
+    if (typeof (type) === 'string') {
         return type;
     }
 
@@ -62,7 +64,7 @@ function restoreType(type: Type | string, uidMapping: UidMapping): string {
     } else if (type.genericType) {
         type.genericType.inner = (type.genericType.inner as Type[]).map(t => restoreType(t, uidMapping));
         type.genericType.outter = restoreType(type.genericType.outter, uidMapping);
-    }  if (type.unionType) {
+    } if (type.unionType) {
         type.unionType.types = (type.unionType.types as Type[]).map(t => restoreType(t, uidMapping));
     } else if (type.intersectionType) {
         type.intersectionType.types = (type.intersectionType.types as Type[]).map(t => restoreType(t, uidMapping));
@@ -82,7 +84,7 @@ export function typeToString(type: Type | string, kind?: string): string {
         return 'function';
     }
 
-    if (typeof(type) === 'string') {
+    if (typeof (type) === 'string') {
         if (type[0] === '@') {
             return type;
         } else if (kind && kind !== 'Property') {

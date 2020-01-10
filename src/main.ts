@@ -80,7 +80,6 @@ if (fs.existsSync(path)) {
 }
 
 const uidMapping: UidMapping = {};
-const referenceMappings: ReferenceMapping[] = [];
 const innerClassReferenceMapping = new Map<string, string[]>();
 
 let collection: YamlModel[] = [];
@@ -89,50 +88,52 @@ if (json) {
     collection = new Parser().traverse(json, uidMapping, context);
 }
 
-if (collection && collection.length) {
-    collection.forEach(rootElement => {
-        let referenceMapping = {};
-        resolveIds(rootElement, uidMapping, referenceMapping);
-        referenceMappings.push(referenceMapping);
-    });
-
-    const rootElementsForTOC = JSON.parse(JSON.stringify(collection));
-    const flattenElements = collection.map((rootElement, index) => {
-        if (rootElement.uid.indexOf('constructor') >= 0) {
-            return [];
-        }
-
-        return postTransform(rootElement, referenceMappings[index]);
-    }).reduce(function (a, b) {
-        return a.concat(b);
-    }, []);
-
-    insertClassReferenceForModule(flattenElements);
-    console.log('Yaml dump start.');
-    fs.ensureDirSync(outputPath);
-    flattenElements.forEach(transfomredClass => {
-        // to add this to handle duplicate class and module under the same hierachy
-        insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
-        transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-        let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
-        filename = filename.split('(')[0];
-        filename = filename.replace(/\//g, '.');
-        console.log(`Dump ${outputPath}/${filename}.yml`);
-        fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
-    });
-    console.log('Yaml dump end.');
-
-    const yamlModels: YamlModel[] = [];
-    flattenElements.forEach(element => {
-        yamlModels.push(element.items[0]);
-    });
-
-    const packageIndex = generatePackage(yamlModels);
-    fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
-    console.log('Package index generated.');
-
-    const toc = generateTOC(rootElementsForTOC, flattenElements[0].items[0].package);
-    fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
-    console.log('Toc generated.');
-
+if (!collection || collection.length === 0) {
+    console.log("Warning: nothing genereatd.");
 }
+
+const referenceMappings: ReferenceMapping[] = [];
+for (const rootElement of collection) {
+    let referenceMapping = {};
+    resolveIds(rootElement, uidMapping, referenceMapping);
+    referenceMappings.push(referenceMapping);
+}
+
+const rootElementsForTOC = JSON.parse(JSON.stringify(collection));
+const flattenElements = collection.map((rootElement, index) => {
+    if (rootElement.uid.indexOf('constructor') >= 0) {
+        return [];
+    }
+
+    return postTransform(rootElement, referenceMappings[index]);
+}).reduce(function (a, b) {
+    return a.concat(b);
+}, []);
+
+insertClassReferenceForModule(flattenElements);
+console.log('Yaml dump start.');
+fs.ensureDirSync(outputPath);
+flattenElements.forEach(transfomredClass => {
+    // to add this to handle duplicate class and module under the same hierachy
+    insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
+    transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
+    let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
+    filename = filename.split('(')[0];
+    filename = filename.replace(/\//g, '.');
+    console.log(`Dump ${outputPath}/${filename}.yml`);
+    fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+});
+console.log('Yaml dump end.');
+
+const yamlModels: YamlModel[] = [];
+flattenElements.forEach(element => {
+    yamlModels.push(element.items[0]);
+});
+
+const packageIndex = generatePackage(yamlModels);
+fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
+console.log('Package index generated.');
+
+const toc = generateTOC(rootElementsForTOC, flattenElements[0].items[0].package);
+fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
+console.log('Toc generated.');
