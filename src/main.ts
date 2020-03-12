@@ -75,7 +75,7 @@ if (fs.existsSync(path)) {
     let dataStr = fs.readFileSync(path).toString();
     json = JSON.parse(dataStr) as Node;
 } else {
-    console.error('Api doc file ' + path + ' doesn\'t exist.');
+    console.error(`API doc file ${path} doesn\'t exist.`);
     program.help();
 }
 
@@ -113,7 +113,8 @@ const flattenElements = collection.map((rootElement, index) => {
 insertClassReferenceForModule(flattenElements);
 console.log('Yaml dump start.');
 fs.ensureDirSync(outputPath);
-flattenElements.forEach(transfomredClass => {
+
+for (let transfomredClass of flattenElements) {
     // to add this to handle duplicate class and module under the same hierachy
     insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
     transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
@@ -122,7 +123,8 @@ flattenElements.forEach(transfomredClass => {
     filename = filename.replace(/\//g, '.');
     console.log(`Dump ${outputPath}/${filename}.yml`);
     fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
-});
+}
+
 console.log('Yaml dump end.');
 
 const yamlModels: YamlModel[] = [];

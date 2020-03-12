@@ -2,6 +2,7 @@ import { YamlModel, Type, Types } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { ReferenceMapping } from './interfaces/ReferenceMapping';
 import { uidRegex } from './common/regex';
+import { setOfTopLevelItems } from './common/constants';
 
 export function resolveIds(element: YamlModel, uidMapping: UidMapping, referenceMapping: ReferenceMapping): void {
     if (element.syntax) {
@@ -22,6 +23,9 @@ export function resolveIds(element: YamlModel, uidMapping: UidMapping, reference
 
     for (const child of element.children as YamlModel[]) {
         resolveIds(child, uidMapping, referenceMapping);
+        if (setOfTopLevelItems.has(child.type)) {
+            referenceMapping[child.uid] = `@uid:${child.uid}!@`;
+        }
     }
 }
 
