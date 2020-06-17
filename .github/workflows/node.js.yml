@@ -18,7 +18,7 @@ jobs:
     - run: npm install
     - run: npm run build --if-present
     - run: npm run test
-    - run: npm publish --tag beta --access public
+    - run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{secrets.npm_token}}
           
