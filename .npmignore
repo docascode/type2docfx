@@ -59,8 +59,8 @@ typings/
 
 # vscode folder
 .vscode
-test/data
-test/out
+tests/data
+tests/out
 src
 
 appveyor.yml
