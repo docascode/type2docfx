@@ -18,11 +18,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 12
-    - name: npm install, build and echo package
-      run: |
-        npm install
-        npm run build --if-present
-        echo publish package
+    - run: npm install
+    - run: npm run build --if-present
 
   publish-npm:
     needs: build
