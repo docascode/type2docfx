@@ -59,10 +59,12 @@ typings/
 
 # vscode folder
 .vscode
-test/data
-test/out
+tests/data
+tests/out
 src
 
 appveyor.yml
 gulpfile.js
 tslint.json
+
+.github/  
