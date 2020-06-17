@@ -6,7 +6,6 @@
   "bin": "./dist/main.js",
   "scripts": {
     "build": "tsc",
-    "ci-publish": "ci-publish",
     "test": "jest",
     "coverage": "jest --coverage"
   },
