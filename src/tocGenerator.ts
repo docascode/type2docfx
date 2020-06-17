@@ -48,8 +48,17 @@ export function generateTOC(elements: YamlModel[], packageUid: string): TocItem[
         });
 
     }
+
+    if (itemsDetails.length === 0) {
+        itemsDetails = null;
+    } else {
+        itemsDetails.splice(0, 0, {
+            name: "Overview",
+            uid: packageUid
+        });
+    }
+
     return [{
-        uid: packageUid,
         name: packageUid,
         items: itemsDetails
     }];
