@@ -16,10 +16,6 @@ export class EnumConverter extends AbstractConverter {
             type: 'field'
         };
 
-        if (node.defaultValue) {
-            model.numericValue = parseInt(node.defaultValue, 10);
-        }
-
         console.log(` - ${node.kindString}: ${uid}`);
         return [model];
     }

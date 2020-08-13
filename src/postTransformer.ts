@@ -177,10 +177,6 @@ function flattening(element: YamlModel): Root[] {
 }
 
 function sortYamlModel(a: YamlModel, b: YamlModel): number {
-  if (a.numericValue !== undefined && b.numericValue !== undefined) {
-    return a.numericValue - b.numericValue;
-  }
-
   // sort classes alphabetically, contructor first
   if (b.name === constructorName) {
     return 1;
