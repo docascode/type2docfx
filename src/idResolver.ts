@@ -34,6 +34,10 @@ export function resolveIds(element: YamlModel, uidMapping: UidMapping, reference
         element.inheritedMembers = restoreReferences(element.inheritedMembers, uidMapping, referenceMapping);
     }
 
+    if (element.implements) {
+        element.implements = restoreReferences(element.implements, uidMapping, referenceMapping);
+    }
+
     for (const child of element.children as YamlModel[]) {
         resolveIds(child, uidMapping, referenceMapping, rootElement);
         if (setOfTopLevelItems.has(child.type)) {

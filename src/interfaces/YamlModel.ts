@@ -15,6 +15,7 @@ export interface YamlModel {
     source?: Source;
     inheritance?: Inheritance[];
     inheritedMembers?: Types;
+    implements?: Type[] | string[];
     deprecated?: Deprecated;
     isPreview?: boolean;
     remarks?: string;

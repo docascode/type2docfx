@@ -12,6 +12,7 @@ export interface Node {
     parameters: Parameter[];
     indexSignature: Node[];
     extendedTypes: ParameterType[];
+    implementedTypes: ParameterType[];
     inheritedFrom: ParameterType;
     sources: Source[];
     typeParameter: ParameterType[];

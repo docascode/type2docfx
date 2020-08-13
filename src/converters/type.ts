@@ -70,6 +70,10 @@ export class TypeConverter extends AbstractConverter {
             };
         }
 
+        if (node.implementedTypes && node.implementedTypes.length) {
+            model.implements = node.implementedTypes.map(type => this.extractType(type)[0]);
+        }
+
         return [model];
     }
 }
