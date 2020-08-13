@@ -30,8 +30,11 @@ interface Flags {
     isPrivate: boolean;
     isProtected: boolean;
     isStatic: boolean;
+    isAbstract: boolean;
     isOptional: boolean;
     isPublic: boolean;
+    isConst: boolean;
+    isReadonly: boolean;
 }
 
 export interface Comment {

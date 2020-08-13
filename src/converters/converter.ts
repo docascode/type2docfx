@@ -24,6 +24,7 @@ export class Converter {
             case 'Enumeration member':
                 return new EnumConverter(references);
             case 'Property':
+            case 'Variable':
                 return new PropertyConverter(references);
             case 'Accessor':
                 return new AccessorConverter(references);
