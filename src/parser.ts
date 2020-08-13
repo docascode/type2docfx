@@ -33,10 +33,11 @@ export class Parser {
                 node.kindString === 'Namespace' ? uid : context.NamespaceName,
                 node.kindString === 'Module' ? uid : context.ModuleName,
                 context.References);
+            const newChild = this.traverse(child, uidMapping, newContext);
             if (models.length > 0) {
-                models[0].children = [].concat(models[0].children, this.traverse(child, uidMapping, newContext));
+                models[0].children = [].concat(models[0].children, newChild);
             } else {
-                collection = [].concat(collection, this.traverse(child, uidMapping, newContext));
+                collection = [].concat(collection, newChild);
             }
         }
 

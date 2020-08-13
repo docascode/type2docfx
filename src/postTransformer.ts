@@ -104,10 +104,10 @@ export function insertClassReferenceForModule(flattenElements: Root[]) {
   }
 }
 
-export function insertInnerClassReference(innerClassReferenceMapping: Map<string, string[]>, transfomredClass: Root) {
-  if ((transfomredClass.items[0].type === 'class' || transfomredClass.items[0].type === 'interface') && innerClassReferenceMapping.has(transfomredClass.items[0].uid)) {
-    const reference = transfomredClass.references || [];
-    const referencedClass = innerClassReferenceMapping.get(transfomredClass.items[0].uid);
+export function insertInnerClassReference(innerClassReferenceMapping: Map<string, string[]>, transformedClass: Root) {
+  if ((transformedClass.items[0].type === 'class' || transformedClass.items[0].type === 'interface') && innerClassReferenceMapping.has(transformedClass.items[0].uid)) {
+    const reference = transformedClass.references || [];
+    const referencedClass = innerClassReferenceMapping.get(transformedClass.items[0].uid);
     referencedClass.forEach(function (item) {
       const names = item.split('.');
       const ref: Reference = {

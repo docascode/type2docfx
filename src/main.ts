@@ -114,15 +114,15 @@ insertClassReferenceForModule(flattenElements);
 console.log('Yaml dump start.');
 fs.ensureDirSync(outputPath);
 
-for (let transfomredClass of flattenElements) {
+for (let transformedClass of flattenElements) {
     // to add this to handle duplicate class and module under the same hierachy
-    insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
-    transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-    let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
+    insertInnerClassReference(innerClassReferenceMapping, transformedClass);
+    transformedClass = JSON.parse(JSON.stringify(transformedClass));
+    let filename = transformedClass.items[0].uid.replace(`${transformedClass.items[0].package}.`, '');
     filename = filename.split('(')[0];
     filename = filename.replace(/\//g, '.');
     console.log(`Dump ${outputPath}/${filename}.yml`);
-    fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+    fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transformedClass)}`);
 }
 
 console.log('Yaml dump end.');
