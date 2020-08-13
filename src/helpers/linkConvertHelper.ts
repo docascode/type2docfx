@@ -46,7 +46,7 @@ export function convertLinkToGfm(text: string, uidPrefix: string = null) {
     var result = '';
     if (!text) {
       // if link text is undefined, it must link to namepath(uid)
-      result = '<xref:' + convertNamepathToUid(target) + '>';
+      result = '<xref uid="' + convertNamepathToUid(target) + '"/>';
       if (tag === '@linkcode') {
         return '<code>' + result + '</code>';
       }
@@ -69,7 +69,7 @@ export function convertLinkToGfm(text: string, uidPrefix: string = null) {
     function convertNamepathToUid(namepath: string) {
       var uid = encodeURIComponent(namepath);
       if (uidPrefix) {
-        uid = uidPrefix + uid;
+        uid = uidPrefix + '.' + uid;
       }
       return uid;
     }
