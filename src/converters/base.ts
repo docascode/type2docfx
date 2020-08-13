@@ -305,15 +305,24 @@ export abstract class AbstractConverter {
         }
         */
         if (node.kindString === 'Method' || node.kindString === 'Function') {
-            const typeParameter = node.signatures[signatureIndex].typeParameter
+            const typeParameter = node.signatures[signatureIndex].typeParameter;
             method.name = `${node.name}${this.getGenericType(typeParameter)}`;
             const functionBody = this.generateCallFunction(method.name, method.syntax.parameters, typeParameter);
-            method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${functionBody}`;
+            let functionReturn = node.signatures[signatureIndex].type.name;
+            if (node.signatures[signatureIndex].type) {
+                functionReturn = typeToString(this.extractType(node.signatures[signatureIndex].type)[0]);
+            }
+            const isStatic = node.flags && node.flags.isStatic ? 'static ' : '';
+            const isAbstract = node.flags && node.flags.isAbstract ? 'abstract ' : '';
+            method.syntax.content = `${isStatic}${isAbstract}${functionBody}: ${functionReturn}`;
             method.type = node.kindString.toLowerCase();
         } else {
             method.name = method.uid.split('.').reverse()[1];
             const functionBody = this.generateCallFunction(method.name, method.syntax.parameters);
-            method.syntax.content = `new ${functionBody}`;
+            const isPublic = node.flags && (node.flags.isPublic || !(node.flags.isProtected || node.flags.isPrivate)) ? 'public ' : '';
+            const isProtected = node.flags && node.flags.isProtected ? 'protected ' : '';
+            const isPrivate = node.flags && node.flags.isPrivate ? 'private ' : '';
+            method.syntax.content = `${isPublic}${isProtected}${isPrivate}${functionBody}: ${method.name}`;
             method.type = 'constructor';
         }
     }
