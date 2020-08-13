@@ -84,7 +84,7 @@ const innerClassReferenceMapping = new Map<string, string[]>();
 
 let collection: YamlModel[] = [];
 if (json) {
-    const context = new Context(repoConfig, '', '', json.name, new Map<string, string[]>());
+    const context = new Context(repoConfig, '', '', json.name, '', '', new Map<string, string[]>());
     collection = new Parser().traverse(json, uidMapping, context);
 }
 

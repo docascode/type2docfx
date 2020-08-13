@@ -30,6 +30,8 @@ export class Parser {
                 uid,
                 node.kindString,
                 context.PackageName,
+                node.kindString === 'Namespace' ? uid : context.NamespaceName,
+                node.kindString === 'Module' ? uid : context.ModuleName,
                 context.References);
             if (models.length > 0) {
                 models[0].children = [].concat(models[0].children, this.traverse(child, uidMapping, newContext));

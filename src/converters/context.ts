@@ -5,6 +5,8 @@ export class Context {
     private parentKind: string;
     private repo: RepoConfig;
     private packageName: string;
+    private namespaceName: string;
+    private moduleName: string;
     private references: Map<string, string[]>
 
     constructor(
@@ -12,9 +14,13 @@ export class Context {
         parentUid: string,
         parentKind: string,
         packageName: string,
+        namespaceName: string,
+        moduleName: string,
         references: Map<string, string[]>) {
         this.repo = repo;
         this.packageName = packageName;
+        this.namespaceName = namespaceName;
+        this.moduleName = moduleName;
         this.parentUid = parentUid;
         this.parentKind = parentKind;
         this.references = references;
@@ -22,6 +28,14 @@ export class Context {
 
     public get PackageName() {
         return this.packageName;
+    }
+
+    public get NamespaceName() {
+        return this.namespaceName;
+    }
+
+    public get ModuleName() {
+        return this.moduleName;
     }
 
     public get References() {

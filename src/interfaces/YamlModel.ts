@@ -10,6 +10,7 @@ export interface YamlModel {
     exceptions?: Array<Exception>;
     numericValue?: number;
     package?: string;
+    namespace?: string;
     module?: string;
     source?: Source;
     extends?: NameWithUrl;

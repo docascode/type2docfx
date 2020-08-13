@@ -21,7 +21,7 @@ describe('converter', () => {
                 const data = helper.generate(sample);
 
                 const node = data as any as Node;
-                const context = new Context(null, '', '', node.name, new Map<string, string[]>());
+                const context = new Context(null, '', '', '', '', node.name, new Map<string, string[]>());
                 const models = new Parser().traverse(node, {}, context);
 
                 const actual = yaml.dump(models, { noRefs: true }).trim();

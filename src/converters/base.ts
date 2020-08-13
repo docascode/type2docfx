@@ -16,6 +16,12 @@ export abstract class AbstractConverter {
         for (const model of models) {
             model.summary = convertLinkToGfm(model.summary);
             model.package = context.PackageName;
+            if (context.NamespaceName) {
+                model.namespace = context.NamespaceName;
+            }
+            if (context.ModuleName) {
+                model.module = context.ModuleName;
+            }
 
             this.setSource(model, node, context);
 

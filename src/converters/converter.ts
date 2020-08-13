@@ -18,6 +18,7 @@ export class Converter {
 
     private createConverter(node: Node, references: Map<string, string[]>): AbstractConverter {
         switch (node.kindString) {
+            case 'Namespace':
             case 'Module':
                 return new ModuleConverter(references);
             case 'Enumeration member':
