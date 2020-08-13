@@ -49,7 +49,6 @@ export function generateTOC(elements: YamlModel[], packageUid: string): TocItem[
 
     }
     return [{
-        uid: packageUid,
         name: packageUid,
         items: itemsDetails
     }];
