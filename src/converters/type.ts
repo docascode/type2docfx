@@ -57,19 +57,6 @@ export class TypeConverter extends AbstractConverter {
             model.inheritedMembers = !model.inheritedMembers.length ? null : model.inheritedMembers;
         }
 
-        if (context.Repo && node.sources && node.sources.length) {
-            model.source = {
-                path: node.sources[0].fileName,
-                // shift one line up as systematic off for TypeDoc
-                startLine: node.sources[0].line,
-                remote: {
-                    path: `${context.Repo.basePath}\\${node.sources[0].fileName}`,
-                    repo: context.Repo.repo,
-                    branch: context.Repo.branch
-                }
-            };
-        }
-
         if (node.implementedTypes && node.implementedTypes.length) {
             model.implements = node.implementedTypes.map(type => this.extractType(type)[0]);
         }
