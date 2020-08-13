@@ -4,7 +4,7 @@ import { ReferenceMapping } from './interfaces/ReferenceMapping';
 import { uidRegex } from './common/regex';
 import { setOfTopLevelItems } from './common/constants';
 
-export function resolveIds(element: YamlModel, uidMapping: UidMapping, referenceMapping: ReferenceMapping): void {
+export function resolveIds(element: YamlModel, uidMapping: UidMapping, referenceMapping: ReferenceMapping, rootElement?: YamlModel): void {
     if (element.syntax) {
         if (element.syntax.parameters) {
             for (const p of element.syntax.parameters) {
@@ -17,12 +17,25 @@ export function resolveIds(element: YamlModel, uidMapping: UidMapping, reference
         }
     }
 
-    if (element.extends) {
-        element.extends.name = restoreReferences([element.extends.name as Type], uidMapping, referenceMapping)[0];
+    if (element.inheritance) {
+        element.inheritance[0].type = restoreReferences([element.inheritance[0].type] as any, uidMapping, referenceMapping)[0];
+        for (let child of (rootElement.children as YamlModel[])) {
+            if(child.uid !== element.inheritance[0].type) continue;
+            if(!child.inheritance) continue;
+            if(child.inheritance[0].type != undefined) {
+                element.inheritance[0].inheritance = child.inheritance;
+            } else {
+                element.inheritance[0].inheritance[0].type = restoreReferences([child.inheritance[0].type] as any, uidMapping, referenceMapping)[0];
+            }
+        }
+    }
+
+    if (element.inheritedMembers) {
+        element.inheritedMembers = restoreReferences(element.inheritedMembers, uidMapping, referenceMapping);
     }
 
     for (const child of element.children as YamlModel[]) {
-        resolveIds(child, uidMapping, referenceMapping);
+        resolveIds(child, uidMapping, referenceMapping, rootElement);
         if (setOfTopLevelItems.has(child.type)) {
             referenceMapping[child.uid] = `@uid:${child.uid}!@`;
         }

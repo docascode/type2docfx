@@ -52,6 +52,10 @@ export class Parser {
             return true;
         }
 
+        if (node.inheritedFrom) {
+            return true;
+        }
+
         if (this.isInternal(node)) {
             return true;
         }

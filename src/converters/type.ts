@@ -1,4 +1,4 @@
-import { YamlModel } from '../interfaces/YamlModel';
+import { YamlModel, Type } from '../interfaces/YamlModel';
 import { Node } from '../interfaces/TypeDocModel';
 import { AbstractConverter } from './base';
 import * as _ from 'lodash';
@@ -45,9 +45,16 @@ export class TypeConverter extends AbstractConverter {
         }
 
         if (node.extendedTypes && node.extendedTypes.length) {
-            model.extends = {
-                name: this.extractType(node.extendedTypes[0])[0]
-            };
+            model.inheritance = [];
+            for (const t of node.extendedTypes) {
+                model.inheritance.push({ type: this.extractType(t)[0] });
+            }
+            model.inheritedMembers = [];
+            for(let child of node.children) {
+                if(!child.inheritedFrom) continue;
+                model.inheritedMembers.push(this.extractType(child.inheritedFrom)[0] as any);
+            }
+            model.inheritedMembers = !model.inheritedMembers.length ? null : model.inheritedMembers;
         }
 
         if (context.Repo && node.sources && node.sources.length) {

@@ -95,7 +95,7 @@ if (!collection || collection.length === 0) {
 const referenceMappings: ReferenceMapping[] = [];
 for (const rootElement of collection) {
     let referenceMapping = {};
-    resolveIds(rootElement, uidMapping, referenceMapping);
+    resolveIds(rootElement, uidMapping, referenceMapping, rootElement);
     referenceMappings.push(referenceMapping);
 }
 

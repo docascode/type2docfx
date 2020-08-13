@@ -13,7 +13,8 @@ export interface YamlModel {
     namespace?: string;
     module?: string;
     source?: Source;
-    extends?: NameWithUrl;
+    inheritance?: Inheritance[];
+    inheritedMembers?: Types;
     deprecated?: Deprecated;
     isPreview?: boolean;
     remarks?: string;
@@ -22,10 +23,11 @@ export interface YamlModel {
 
 export type Types = Type[] | string[];
 
-interface NameWithUrl {
-    name: Type | string;
-    href?: string;
+interface Inheritance {
+    type: Type | string;
+    inheritance?: Inheritance[];
 }
+
 interface Deprecated {
     content: string;
 }

@@ -90,12 +90,8 @@ export abstract class AbstractConverter {
         const inherits = this.extractTextFromComment('inherits', comment);
         if (inherits != null) {
             const tokens = getTextAndLink(inherits);
-            if (tokens.length === 2) {
-                model.extends = {
-                    name: tokens[0],
-                    href: tokens[1]
-                };
-            }
+            if (tokens.length !== 2) return;
+            model.inheritance = [{ type: tokens[0] }];
         }
     }
 
