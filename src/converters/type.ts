@@ -28,14 +28,14 @@ export class TypeConverter extends AbstractConverter {
             fullName: node.name + this.getGenericType(node.typeParameter),
             children: [],
             langs: langs,
-            type: node.kindString.toLowerCase(),
+            type: node.kindString.replace(/\s/g, '').toLowerCase(),
             summary: node.comment ? this.findDescriptionInComment(node.comment) : ''
         };
         if (model.type === 'enumeration') {
             model.type = 'enum';
         }
 
-        if (model.type === 'type alias') {
+        if (model.type === 'typealias') {
             let typeArgumentsContent = this.parseTypeArgumentsForTypeAlias(node);
             if (typeArgumentsContent) {
                 model.syntax = { content: 'type ' + model.name + typeArgumentsContent + ' = ' + this.parseTypeDeclarationForTypeAlias(node.type) };
@@ -59,6 +59,16 @@ export class TypeConverter extends AbstractConverter {
 
         if (node.implementedTypes && node.implementedTypes.length) {
             model.implements = node.implementedTypes.map(type => this.extractType(type)[0]);
+        }
+
+        if (model.type === 'class' || model.type === 'interface' || model.type === "enum") {
+            model.syntax = { content: `${model.type} ${model.name}` };
+            if (model.inheritance) {
+                model.syntax.content += ' extends ' + model.inheritance.map(t => (t.type as Type).typeName).join(', ');
+            }
+            if (model.implements) {
+                model.syntax.content += ' implements ' + (model.implements as Type[]).map(t => t.typeName).join(', ');
+            }
         }
 
         return [model];
