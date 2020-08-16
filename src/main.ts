@@ -66,9 +66,8 @@ if (!repoConfig && program.sourceUrl && program.sourceBranch && program.basePath
     };
 }
 
-if (program.disableAlphabetOrder) {
-    flags.enableAlphabetOrder = false;
-}
+flags.hasModule = program.hasModule || false;
+flags.enableAlphabetOrder = !(program.disableAlphabetOrder || false);
 
 let json = null;
 if (fs.existsSync(path)) {
@@ -132,7 +131,7 @@ flattenElements.forEach(element => {
     yamlModels.push(element.items[0]);
 });
 
-const packageIndex = generatePackage(yamlModels);
+const packageIndex = yamlModels;
 fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
 console.log('Package index generated.');
 

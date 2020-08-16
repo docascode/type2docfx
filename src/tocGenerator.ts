@@ -48,10 +48,7 @@ export function generateTOC(elements: YamlModel[], packageUid: string): TocItem[
         });
 
     }
-    return [{
-        name: packageUid,
-        items: itemsDetails
-    }];
+    return itemsDetails;
 }
 
 function sortTOC(a: YamlModel, b: YamlModel) {
