@@ -33,7 +33,7 @@ export class MethodConverter extends AbstractConverter {
             };
 
             this.extractInformationFromSignature(model, node, index);
-            model.name = this.composeMethodNameFromSignature(model);
+            model.name = this.composeMethodNameFromSignature(model, node.signatures[index].typeParameter);
             model.summary = convertLinkToGfm(model.summary);
             
             models.push(model);
