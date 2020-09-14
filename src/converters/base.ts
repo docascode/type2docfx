@@ -317,7 +317,7 @@ export abstract class AbstractConverter {
     }
 
     protected composeMethodNameFromSignature(method: YamlModel, typeParameters?: ParameterType[]): string {
-        let parameterType = method.syntax.parameters.map(p => {
+        const parameterType = method.syntax.parameters.map(p => {
             return typeToString(p.type[0]);
         }).join(', ');
         return method.name + this.getGenericType(typeParameters)  + '(' + parameterType + ')';
