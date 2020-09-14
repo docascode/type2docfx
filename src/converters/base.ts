@@ -303,13 +303,14 @@ export abstract class AbstractConverter {
         }
         */
         if (node.kindString === 'Method' || node.kindString === 'Function') {
-            method.name = node.name;
-            let functionBody = this.generateCallFunction(method.name, method.syntax.parameters, node.signatures[signatureIndex].typeParameter);
+            const typeParameter = node.signatures[signatureIndex].typeParameter
+            method.name = `${node.name}${this.getGenericType(typeParameter)}`;
+            const functionBody = this.generateCallFunction(method.name, method.syntax.parameters, typeParameter);
             method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${functionBody}`;
             method.type = node.kindString.toLowerCase();
         } else {
             method.name = method.uid.split('.').reverse()[1];
-            let functionBody = this.generateCallFunction(method.name, method.syntax.parameters);
+            const functionBody = this.generateCallFunction(method.name, method.syntax.parameters);
             method.syntax.content = `new ${functionBody}`;
             method.type = 'constructor';
         }
