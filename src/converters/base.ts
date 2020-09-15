@@ -304,7 +304,6 @@ export abstract class AbstractConverter {
         */
         if (node.kindString === 'Method' || node.kindString === 'Function') {
             const typeParameter = node.signatures[signatureIndex].typeParameter
-            method.name = `${node.name}${this.getGenericType(typeParameter)}`;
             const functionBody = this.generateCallFunction(method.name, method.syntax.parameters, typeParameter);
             method.syntax.content = `${node.flags && node.flags.isStatic ? 'static ' : ''}function ${functionBody}`;
             method.type = node.kindString.toLowerCase();
