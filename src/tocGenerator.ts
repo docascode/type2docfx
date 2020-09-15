@@ -3,7 +3,7 @@ import { setOfTopLevelItems } from './common/constants';
 import { TocItem } from './interfaces/TocItem';
 import { flags } from './common/flags';
 
-export function generateItems(element: YamlModel): TocItem {
+function generateItems(element: YamlModel): TocItem {
     let result: TocItem;
     let itemsDetails: TocItem[] = [];
     result = {
@@ -52,16 +52,27 @@ export function generateTOC(elements: YamlModel[], packageUid: string): TocItem[
     if (itemsDetails.length === 0) {
         itemsDetails = null;
     } else {
-        itemsDetails.splice(0, 0, {
-            name: "Overview",
-            uid: packageUid
-        });
+        changeTocToOverview(itemsDetails, packageUid);
     }
 
     return [{
         name: packageUid,
         items: itemsDetails
     }];
+}
+
+function changeTocToOverview(items: TocItem[], uid: string) {
+    items.splice(0, 0, {
+        name: "Overview",
+        uid: uid
+    });
+    for (let item of items) {
+        if (item.items && item.items.length > 0) {
+            const uid = item.uid
+            delete item.uid
+            changeTocToOverview(item.items, uid)
+        }
+    }
 }
 
 function sortTOC(a: YamlModel, b: YamlModel) {
