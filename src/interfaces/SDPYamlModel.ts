@@ -11,6 +11,7 @@ export type CommonYamlModel = BaseYamlModel & {
   fullName?: string;
   isPreview?: boolean;
   isDeprecated?: boolean;
+  remarks?: string;
   customDeprecatedMessage?: string;
 }
 
@@ -34,7 +35,7 @@ export type TypeYamlModel = CommonYamlModel & {
   constructors?: Array<FunctionYamlModel>;
   properties?: Array<FunctionYamlModel>;
   methods?: Array<FunctionYamlModel>;
-  type: string;
+  type: "class" | "interface";
   extends?: Type | string;
 }
 
@@ -95,11 +96,5 @@ export type Exception = {
   type: string;
   description: string;
 }
-
-type NameWithUrl = {
-  name: Type | string;
-  href?: string;
-}
-
 
 type Types = Type[] | string[];
