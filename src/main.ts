@@ -6,17 +6,16 @@ import * as program from 'commander';
 import { Parser } from './parser';
 import { postTransform, insertClassReferenceForModule, insertInnerClassReference } from './postTransformer';
 import { generateTOC } from './tocGenerator';
-import { generatePackage } from './packageGenerator';
 import { resolveIds } from './idResolver';
 import { YamlModel } from './interfaces/YamlModel';
 import { UidMapping } from './interfaces/UidMapping';
 import { RepoConfig } from './interfaces/RepoConfig';
-import { yamlHeader } from './common/constants';
+import { sdpYamlHeaderPrefix, alreadyExistFilename } from './common/constants';
 import { flags } from './common/flags';
 import { ReferenceMapping } from './interfaces/ReferenceMapping';
 import { Context } from './converters/context';
 import { Node } from './interfaces/TypeDocModel';
-
+import { mergeElementsToPackageSDP, convertToSDP } from './helpers/toSdpConvertHelper';
 let pjson = require('../package.json');
 
 let path: string;
@@ -53,7 +52,7 @@ if (repoConfigPath && program.basePath) {
             basePath: program.basePath
         };
     } else {
-        console.log(`Error: repository config file path {${repoConfigPath}} doesn't exit!`);
+        console.error(`repository config file path {${repoConfigPath}} doesn't exit!`);
         program.help();
     }
 }
@@ -80,7 +79,7 @@ if (fs.existsSync(path)) {
 }
 
 const uidMapping: UidMapping = {};
-const innerClassReferenceMapping = new Map<string, string[]>();
+// const innerClassReferenceMapping = new Map<string, string[]>();
 
 let collection: YamlModel[] = [];
 if (json) {
@@ -110,19 +109,23 @@ const flattenElements = collection.map((rootElement, index) => {
     return a.concat(b);
 }, []);
 
-insertClassReferenceForModule(flattenElements);
-console.log('Yaml dump start.');
 fs.ensureDirSync(outputPath);
+console.log('Yaml dump start.');
 
+// insertClassReferenceForModule(flattenElements);
 for (let transfomredClass of flattenElements) {
     // to add this to handle duplicate class and module under the same hierachy
-    insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
+    // insertInnerClassReference(innerClassReferenceMapping, transfomredClass);
     transfomredClass = JSON.parse(JSON.stringify(transfomredClass));
-    let filename = transfomredClass.items[0].uid.replace(`${transfomredClass.items[0].package}.`, '');
-    filename = filename.split('(')[0];
-    filename = filename.replace(/\//g, '.');
-    console.log(`Dump ${outputPath}/${filename}.yml`);
-    fs.writeFileSync(`${outputPath}/${filename}.yml`, `${yamlHeader}\n${serializer.safeDump(transfomredClass)}`);
+    const content = convertToSDP(transfomredClass, flattenElements)
+
+    if (content) {
+        const item = transfomredClass.items[0];
+        // const filename = generateFilename(item.uid.replace(`${item.package}.`, ''));
+        const filename = generateFilename(item.uid.substring(item.uid.lastIndexOf(".")+1, item.uid.length));
+        console.log(`Dump ${outputPath}/${filename}.yml`);
+        fs.writeFileSync(`${outputPath}/${filename}.yml`, `${sdpYamlHeaderPrefix}${content.type}\n${serializer.safeDump(content.model)}`);                
+    }
 }
 
 console.log('Yaml dump end.');
@@ -132,10 +135,21 @@ flattenElements.forEach(element => {
     yamlModels.push(element.items[0]);
 });
 
-const packageIndex = generatePackage(yamlModels);
-fs.writeFileSync(`${outputPath}/index.yml`, `${yamlHeader}\n${serializer.safeDump(packageIndex)}`);
+const packageIndex = mergeElementsToPackageSDP(yamlModels);
+fs.writeFileSync(`${outputPath}/index.yml`, `${sdpYamlHeaderPrefix}Package\n${serializer.safeDump(packageIndex)}`);
 console.log('Package index generated.');
 
 const toc = generateTOC(rootElementsForTOC, flattenElements[0].items[0].package);
 fs.writeFileSync(`${outputPath}/toc.yml`, serializer.safeDump(toc));
 console.log('Toc generated.');
+
+function generateFilename(originName: string): string{
+    let filename = originName.split('(')[0];
+    filename = filename.replace(/\//g, '.');
+    if (alreadyExistFilename.indexOf(filename.toLowerCase()) !== -1) {
+        console.log(`[warning] filename ${filename} is conflict! prefix add _`);
+        filename = "_" + filename;
+    }
+    alreadyExistFilename.push(filename.toLowerCase());
+    return filename;
+}
