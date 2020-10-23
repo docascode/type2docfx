@@ -1,4 +1,4 @@
-import { YamlModel, Root, Type } from "../interfaces/YamlModel";
+import { YamlModel, Root } from "../interfaces/YamlModel";
 import { PackageYamlModel, FieldYamlModel } from "../interfaces/SDPYamlModel";
 import {
   EnumYamlModel,
@@ -8,14 +8,16 @@ import {
   CommonYamlModel,
 } from "../interfaces/SDPYamlModel";
 
-export function mergeElementsToPackageSDP(elements: YamlModel[]): PackageYamlModel {
+export function mergeElementsToPackageSDP(
+  elements: YamlModel[]
+): PackageYamlModel {
   let packageModel: PackageYamlModel = null;
   if (elements && elements.length) {
     packageModel = {
       uid: null,
       name: null,
       summary: "",
-      type: "package"
+      type: "package",
     };
 
     elements.forEach((element) => {
@@ -50,8 +52,8 @@ export function mergeElementsToPackageSDP(elements: YamlModel[]): PackageYamlMod
           }
           packageModel.functions.push(convertToFunctionSDP(element));
           break;
-       default:
-          console.warn("not applied type(package): ", element.type);
+        default:
+          console.log("[warning] not applied type(package): ", element.type);
       }
       // (packageModel.children as string[]).push(element.uid);
       if (!packageModel.uid && element.package) {
@@ -64,17 +66,20 @@ export function mergeElementsToPackageSDP(elements: YamlModel[]): PackageYamlMod
   return packageModel;
 }
 
-export function convertToModule(transfomredClass: Root, baseModel?: PackageYamlModel): PackageYamlModel {
-  const item = transfomredClass.items[0]
+function convertToModule(
+  transfomredClass: Root,
+  baseModel?: PackageYamlModel
+): PackageYamlModel {
+  const item = transfomredClass.items[0];
   const module: PackageYamlModel = {
     ...baseModel,
     uid: item.uid,
     name: item.name,
     type: "module",
     package: item.package,
-    summary: item.summary
-  }
- // 把自己的sub items加到对应的类型里
+    summary: item.summary,
+  };
+  // 把自己的sub items加到对应的类型里
   for (let i = 1; i < transfomredClass.items.length; i++) {
     const ele = transfomredClass.items[i];
     switch (ele.type) {
@@ -90,8 +95,8 @@ export function convertToModule(transfomredClass: Root, baseModel?: PackageYamlM
         }
         module.functions.push(convertToFunctionSDP(ele));
         break;
-     default:
-        console.warn("not applied type(module): ", ele.type);
+      default:
+        console.log("[warning] not applied type(module): ", ele.type);
     }
   }
 
@@ -99,23 +104,42 @@ export function convertToModule(transfomredClass: Root, baseModel?: PackageYamlM
 }
 
 export function convertToSDP(
-  transfomredClass: Root
+  transfomredClass: Root,
+  allTransfomredClasses: Root[]
 ): { model: CommonYamlModel; type: string } | undefined {
   const element = transfomredClass.items[0];
   switch (element.type) {
     case "class":
     case "interface":
-      return { model: convertToTypeSDP(transfomredClass, element.type === "class"), type: "Type" };
+      return {
+        model: convertToTypeSDP(transfomredClass, element.type === "class"),
+        type: "Type",
+      };
     case "enum":
       if (transfomredClass.items.length < 2) {
-        console.warn(
-          `enum ${element.uid}/${element.name} does not have fields`
-        );
+        console.log(`[warning] enum ${element.uid}/${element.name} does not have fields`);
         return undefined;
       }
       return { model: convertToEnumSDP(transfomredClass), type: "Enum" };
     case "type alias":
       return { model: convertToTypeAliasSDP(element), type: "TypeAlias" };
+    case "module":
+      const moduleChildren: YamlModel[] = [];
+      allTransfomredClasses
+        .filter((value) => {
+          const uid = value.items[0].uid;
+          return (element.children as Array<string>).indexOf(uid) !== -1;
+        })
+        .forEach((item) => {
+          moduleChildren.push(item.items[0]);
+        });
+      return {
+        model: convertToModule(
+          transfomredClass,
+          mergeElementsToPackageSDP(moduleChildren)
+        ),
+        type: "Package",
+      };
     default:
       console.log("not applied type: ", element.type);
       return undefined;
@@ -133,7 +157,7 @@ function convertToEnumSDP(transfomredClass: Root): EnumYamlModel {
       package: ele.package,
       summary: ele.summary,
     };
-  
+
     if (ele.numericValue !== null && !isNaN(ele.numericValue)) {
       field.numericValue = ele.numericValue;
     }
@@ -150,11 +174,14 @@ function convertToEnumSDP(transfomredClass: Root): EnumYamlModel {
 function convertToTypeAliasSDP(element: YamlModel): TypeAliasYamlModel {
   return {
     ...convertCommonYamlModel(element),
-    syntax: element.syntax.content
-  }
+    syntax: element.syntax.content,
+  };
 }
 
-export function convertToTypeSDP(transfomredClass: Root, isClass: boolean): TypeYamlModel {
+export function convertToTypeSDP(
+  transfomredClass: Root,
+  isClass: boolean
+): TypeYamlModel {
   const element = transfomredClass.items[0];
   const constructors = [];
   const properties = [];
@@ -162,22 +189,21 @@ export function convertToTypeSDP(transfomredClass: Root, isClass: boolean): Type
   for (let i = 1; i < transfomredClass.items.length; i++) {
     const ele = transfomredClass.items[i];
     const item = convertCommonYamlModel(ele);
-    if (ele.type === "constructor" && isClass) {
+    if (ele.type === "constructor") {
       // interface不需要此字段
-      constructors.push(item);
+      isClass && constructors.push(item);
     } else if (ele.type === "property") {
       properties.push(item);
     } else if (ele.type === "method") {
       methods.push(item);
     } else {
-      console.warn(
-        `${ele.uid}#${ele.name} is not applied sub type ${ele.type} for type yaml`
+      console.log(`[warning] ${ele.uid}#${ele.name} is not applied sub type ${ele.type} for type yaml`
       );
     }
   }
   const result: TypeYamlModel = {
     ...convertCommonYamlModel(element),
-    type: element.type,
+    type: isClass ? "class" : "interface",
   };
   if (constructors.length > 0) {
     result.constructors = constructors;
@@ -199,8 +225,9 @@ export function convertToTypeSDP(transfomredClass: Root, isClass: boolean): Type
 
 function convertToFunctionSDP(element: YamlModel): FunctionYamlModel {
   const model = convertCommonYamlModel(element);
-  delete model.fullName
-  return model
+  // don't need these fields
+  delete model.fullName;
+  return model;
 }
 
 function convertCommonYamlModel(element: YamlModel): CommonYamlModel {
@@ -216,9 +243,15 @@ function convertCommonYamlModel(element: YamlModel): CommonYamlModel {
   }
 
   // because mustache meet same variable in different level
-	// such as: { "pre": true, "list": [{}]}
-	// if item in list wants to use pre but the pre is not assigned, it will use outer pre field.
-	// so, there need to set below variable explict
+  // such as: { "pre": true, "list": [{}]}
+  // if item in list wants to use pre but the pre is not assigned, it will use outer pre field.
+  // so, there need to set below variable explict
+
+  if (element.remarks) {
+    result.remarks = element.remarks;
+  } else {
+    result.remarks = "";
+  }
 
   result.isPreview = element.isPreview;
   if (!result.isPreview) {
@@ -253,7 +286,9 @@ function convertCommonYamlModel(element: YamlModel): CommonYamlModel {
     if (syntax.return) {
       result.syntax.return = {
         ...syntax.return,
-        type: convertSelfTypeToXref(escapeMarkdown(syntax.return.type[0] as string)),
+        type: convertSelfTypeToXref(
+          escapeMarkdown(syntax.return.type[0] as string)
+        ),
       };
     }
   }
@@ -263,17 +298,15 @@ function convertCommonYamlModel(element: YamlModel): CommonYamlModel {
 
 function escapeMarkdown(name: string): string {
   // eg: [key: string]: string
-  const markdownLinkRegEx = /^\s*(\[.+\]):(.+)/g
-  return name.replace(markdownLinkRegEx, `$1\\:$2`)
+  const markdownLinkRegEx = /^\s*(\[.+\]):(.+)/g;
+  return name.replace(markdownLinkRegEx, `$1\\:$2`);
 }
 
 function convertSelfTypeToXref(name: string): string {
   let result = name;
   // parse < >
-  result = result.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-  const uidRegEx = /(@?[\w\d\-/]+\.[\w\d\-\./]+)/g
+  result = result.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const uidRegEx = /(@?[\w\d\-/]+\.[\w\d\-\./]+)/g;
 
- 
-
-  return result.replace(uidRegEx, `<xref uid="$1" />`)
+  return result.replace(uidRegEx, `<xref uid="$1" />`);
 }
