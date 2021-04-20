@@ -13,22 +13,22 @@ export abstract class AbstractConverter {
 
     public convert(node: Node, context: Context): Array<YamlModel> {
         var models = this.generate(node, context) || [];
-        for (const model of models) {
+        models.forEach((model, i) => {
             model.summary = convertLinkToGfm(model.summary);
             model.package = context.PackageName;
 
             this.setSource(model, node, context);
 
-            if (node.comment || node.signatures && node.signatures.length && node.signatures[0].comment) {
+            if (node.comment || (node.signatures && node.signatures.length && node.signatures[i].comment)) {
                 this.setCustomModuleName(model, node.comment);
 
-                const comment = node.comment ? node.comment : node.signatures[0].comment;
+                const comment = node.comment ? node.comment : node.signatures[i].comment;
                 this.setDeprecated(model, comment);
                 this.setIsPreview(model, comment);
                 this.setRemarks(model, comment);
                 this.setInherits(model, comment);
             }
-        }
+        })
 
         return models;
     }
