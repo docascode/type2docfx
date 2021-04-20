@@ -68,3 +68,5 @@ gulpfile.js
 tslint.json
 
 .github/  
+*.ps1
+_temp

@@ -58,3 +58,7 @@ typings/
 .env
 
 dist/
+
+_temp
+
+*.ps1
