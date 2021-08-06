@@ -1,17 +1,18 @@
 {
   "name": "type2docfx",
-  "version": "0.10.5",
-  "description": "A tool to convert json format output from TypeDoc to universal reference model for DocFx to consume.",
+  "version": "0.11.29-beta",
+  "description": "A tool to convert json format output from TypeDoc to schema driven reference model for DocFx to consume.",
   "main": "./dist/main.js",
   "bin": "./dist/main.js",
   "scripts": {
     "build": "tsc",
     "test": "jest",
+    "prepublishOnly": "tsc",
     "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wuhanyumsft/type2docfx.git"
+    "url": "git+https://github.com/docascode/type2docfx.git"
   },
   "keywords": [
     "typescript",
@@ -21,17 +22,17 @@
   "author": "Simon Wu (siw)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/wuhanyumsft/type2docfx/issues"
+    "url": "https://github.com/docascode/type2docfx/issues"
   },
-  "homepage": "https://github.com/wuhanyumsft/type2docfx#readme",
+  "homepage": "https://github.com/docascode/type2docfx#readme",
   "devDependencies": {
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^4.0.9",
-    "@types/jest": "^24.0.23",
+    "@types/jest": "^26.0.24",
     "@types/js-yaml": "^3.12.1",
     "@types/lodash": "^4.14.149",
-    "jest": "^24.9.0",
-    "ts-jest": "^24.2.0",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
     "tslint": "^5.20.1",
     "typedoc": "^0.15.3",
     "typescript": "^3.7.3"
